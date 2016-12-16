@@ -27,8 +27,8 @@ before_install:
 install: true
 
 script:
-    - mkdir -p cpp/build
-    - cd cpp/build
+    - mkdir -p build
+    - cd build
     - cmake .. -DBUILD_TESTS=ON 
     - sudo make install
     - make test
