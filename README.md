@@ -13,7 +13,7 @@
 - [Documentation](#documentation)
 - [Help](#help)
 
-[![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/ortelio/rapp-api-cpp.svg?branch=master)](https://travis-ci.org/ortelio/rapp-api-cpp)
 
 The RAPP API for C++ uses C++14 features and allows your apps to access the RAPP platform.
 It is portable on Linuxes and relies on cross-platform libraries: 
