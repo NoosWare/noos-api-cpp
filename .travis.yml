@@ -1,0 +1,34 @@
+# RAPP API Travis Continuous Integration Configuration File
+# Author: Maria Ramos <m.ramos@ortelio.co.uk>
+# 
+language: g++ 
+sudo: required
+dist: trusty
+compiler:
+    - g++
+os:
+    - linux
+
+branches:
+    only:
+    - master
+
+#branches:
+#    except:
+#    - master
+
+before_install: 
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    - sudo apt-get update -y
+    - sudo apt-get install gcc-4.9 g++-4.9 libboost1.55-all-dev cmake -y
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
+    - sudo update-alternatives --set g++ /usr/bin/g++-4.9
+
+install: true
+
+script:
+    - mkdir -p cpp/build
+    - cd cpp/build
+    - cmake .. -DBUILD_TESTS=ON 
+    - sudo make install
+    - make test
