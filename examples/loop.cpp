@@ -32,7 +32,7 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"10.130.7.99", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"127.0.0.1", "8080", "mysecret", "alex"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*

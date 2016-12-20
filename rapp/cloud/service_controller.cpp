@@ -10,6 +10,7 @@ service_controller::service_controller(rapp::cloud::platform info)
   resol_(io_),
   timeout_(1)
 {
+    // TODO: test the info params?
     derr_cb_ = std::bind(&service_controller::default_error_handler, 
                          this, 
                          std::placeholders::_1);

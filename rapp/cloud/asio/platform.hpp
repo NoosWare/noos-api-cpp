@@ -1,7 +1,7 @@
 #ifndef RAPP_ASIO_PLATFORM
 #define RAPP_ASIO_PLATFORM
 /**
- * Copyright 2015 RAPP
+ * Copyright 2016 Ortelio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
  * limitations under the License.
  */
 #include <string>
-namespace rapp {
-namespace cloud {
+namespace rapp
+{
+namespace cloud
+{
 /**
- * \struct platform
- * \version 0.7.0
- * \date 12 August 2016
- * \brief use to construct a service controller with correct params
+ * @struct platform
+ * @version 0.7.2
+ * @date 19 December 2016
+ * @author Alex Giokas <a.giokas@ortelio.co.uk>
+ *
+ * @brief use to construct a service controller with correct params
  *
  * Set the correct RAPP platform endpoint using an address (host name)
  * the port, your RAPP authentication token and (optionally) the protocol.
@@ -32,6 +36,7 @@ struct platform
    std::string address;
    std::string port;
    std::string token;
+   std::string user;
    std::string protocol;
 };
 }

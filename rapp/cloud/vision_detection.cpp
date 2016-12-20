@@ -8,7 +8,7 @@ face_detection::face_detection(
                                 bool fast,
                                 std::function<void(std::vector<rapp::object::face>)> callback
                               )
-: http_request("POST /hop/face_detection HTTP/1.1\r\n"),
+: http_request("POST /face_detection HTTP/1.1\r\n"),
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -34,7 +34,9 @@ void face_detection::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
+    #if (!NDEBUG)
         std::cerr << "error JSON: " << error <<std::endl;
+    #endif
     }
     else {
         auto it_faces = json_f.find("faces");
@@ -45,12 +47,11 @@ void face_detection::deserialise(std::string json) const
     }
 }
 
-/// Class door_angle_detection
 door_angle_detection::door_angle_detection(
                                             const rapp::object::picture & image,
                                             std::function<void(double door_angle)> callback
                                           )
-: http_request("POST /hop/hazard_detection_door_check HTTP/1.1\r\n"), 
+: http_request("POST /hazard_detection_door_check HTTP/1.1\r\n"), 
   delegate_(callback)
 {
     http_request::make_multipart_form();

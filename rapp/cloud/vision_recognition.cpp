@@ -14,6 +14,7 @@ object_recognition::object_recognition(
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
+
 /**
  * \brief handle the rapp-platform JSON reply
  */
@@ -39,10 +40,10 @@ void object_recognition::deserialise(std::string json) const
 }
 
 qr_recognition::qr_recognition(
-                               const rapp::object::picture & image,
-                               std::function<void(std::vector<rapp::object::qr_code>)> callback
-                             )
-: http_request("POST /hop/qr_detection HTTP/1.1\r\n"), 
+                                const rapp::object::picture & image,
+                                std::function<void(std::vector<rapp::object::qr_code>)> callback
+                              )
+: http_request("POST /qr_detection HTTP/1.1\r\n"), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -77,7 +78,6 @@ void qr_recognition::deserialise(std::string json) const
         delegate_(qr_codes);
     }
 }
-
 
 }
 }

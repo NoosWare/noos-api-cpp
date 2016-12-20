@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 RAPP
+ * Copyright 2016 Ortelio
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <rapp/cloud/service_controller.hpp>
 #include <rapp/cloud/vision_detection.hpp>
 #include <rapp/objects/picture.hpp>
 /*
- * \brief example to detect faces in a picture
+ * @brief example to detect faces in a picture
  */
 int main()
 {
@@ -27,7 +26,7 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"10.130.7.99", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"127.0.0.1", "8080", "mysecret", "alex"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*

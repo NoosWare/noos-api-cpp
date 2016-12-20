@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-	rapp::cloud::platform info = {"10.130.7.99", "9002", "rapp_token"}; 
+	rapp::cloud::platform info = {"10.130.3.24", "8080", "mysecret", "alex"}; 
 	rapp::cloud::service_controller ctrl(info);
 
     /*

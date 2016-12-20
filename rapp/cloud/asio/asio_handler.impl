@@ -28,21 +28,19 @@ void asio_handler<T>::set_socket(const std::shared_ptr<T> socket)
 template <class T> 
 void asio_handler<T>::write_request(const boost::system::error_code & err,
                                     const std::size_t bytes)
-{       
-    //if (!err) {
-        // read until first newline
-        boost::asio::async_read_until(*socket_,
-                                      buffer_,
-                                      "\r\n",
-                                      boost::bind(&asio_handler::read_status_line, 
-                                                  this, 
-                                                  boost::asio::placeholders::error,
-                                                  boost::asio::placeholders::bytes_transferred));
-    //}
-    //else {
-        // request error/wrong request, header or post
-        //end(err);       
-	//}
+{
+    if (err){ //&& !socket_->available()) {
+        end(err);
+        return;
+    }
+    // BUG: gets stuck waiting for a reply
+    boost::asio::async_read_until(*socket_,
+                                  buffer_,
+                                  "\r\n",
+                                  boost::bind(&asio_handler::read_status_line, 
+                                              this, 
+                                              boost::asio::placeholders::error,
+                                              boost::asio::placeholders::bytes_transferred));
 }
 
 template <class T>

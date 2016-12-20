@@ -65,9 +65,9 @@ unsigned int http_response::strip_http_header(unsigned int bytes)
 
 std::string http_response::to_string() 
 {
-	std::string buffer((std::istreambuf_iterator<char>(&buffer_)), 
+	std::string result((std::istreambuf_iterator<char>(&buffer_)), 
 						std::istreambuf_iterator<char>());
-	return buffer;
+	return result;
 }
 
 bool http_response::check_http_header()
@@ -99,7 +99,9 @@ bool http_response::check_http_header()
 	// HTTP reply is not 200
 	else if (status_code != 200) {
 		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
-        //std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
+        #if (!NDEBUG)
+        std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
+        #endif
         error_cb_(err);
 		return false;
 	}
