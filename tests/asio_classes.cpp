@@ -80,6 +80,7 @@ BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 
     std::string head2 = "hop/test\r\n";
                 head2 += "Host: http://example:8080\r\n";
+                head2 += "User-Token: \r\n";
                 head2 += "Accept-Token: token\r\n";
                 head2 += "Content-Length: 8\r\n";
                 head2 += "\r\n\r\n";
@@ -140,8 +141,9 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
     BOOST_CHECK(pic);
     const auto bytes = pic->bytearray();
     std::string string_post4 = "--" + boundary_example + "\r\n"
-                             + "Content-Disposition: form-data; name=\"blah\";"
-                             + " filename=\"" + file + "\"\r\n\r\n";
+                             + "Content-Disposition: form-data; name=\"blah\"\r\n"
+                             //+ " filename=\"" + file + "\"\r\n\r\n";
+                             + "Content-Type: application/octet-stream\r\n\r\n";
     string_post4.insert(string_post4.end(), bytes.begin(), bytes.end());
     string_post4 += "\r\n";                     
 
@@ -150,7 +152,7 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
     post5->add_content("blah", file, bytes);
 
     // test the content dispoition for files with manual string
-    BOOST_CHECK_EQUAL(post5->to_string(), string_post4);
+    BOOST_CHECK_EQUAL(post5->to_string().size(), string_post4.size());
 
     // check post sizes
     unsigned int str_size = string_post4.size()*sizeof(std::string::value_type);

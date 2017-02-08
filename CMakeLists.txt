@@ -219,7 +219,7 @@ if (${BUILD_TESTS})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
             add_executable(${TARGET} ${TESTS}/${ITEM})
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET})
+            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT}) ######
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
             add_test(${TARGET} ${TEST_DIR}/${TARGET})
