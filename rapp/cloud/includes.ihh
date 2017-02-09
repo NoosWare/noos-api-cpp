@@ -17,5 +17,6 @@
 #include <boost/thread/mutex.hpp>
 
 #include <rapp/misc/json.hpp>
+#include <rapp/misc/misc.hpp>
 
 using json = nlohmann::json;

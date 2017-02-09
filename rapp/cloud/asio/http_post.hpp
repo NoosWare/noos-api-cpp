@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 #include "includes.ihh"
-namespace rapp {
-namespace types {    
-    typedef char byte;
+namespace rapp 
+{
+namespace types 
+{    
+typedef char byte;
 }
-namespace cloud {
+namespace cloud
+{
 /**
  * \class http_post 
  * \brief use to store and pass POST data and realted info  
@@ -45,9 +48,9 @@ public:
      * \param newline adds newline return at the end of content
 	 */
     void add_content(
-                     const std::string name, 
-                     const std::string content,
-                     bool newline
+                      const std::string name, 
+                      const std::string content,
+                      bool newline
                     );
 
 	/**

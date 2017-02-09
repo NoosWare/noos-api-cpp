@@ -21,49 +21,26 @@
 #include <rapp/objects/human.hpp>
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
+#include <rapp/cloud/vision_batch.hpp>
+#include <rapp/cloud/cloud_base.hpp>
 
-namespace rapp {
-namespace cloud {
-/**
- * \class door_angle_detection
- * \brief detect open doors
- * \version 0.7.0
- * \date September 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- */
-class door_angle_detection : public http_request
+namespace rapp 
 {
-public:
-    /**
-    * \brief Constructor
-    * \param image is a picture object pointer
-    * \param callback is the function that will receive a vector of detected qr(s)
-    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
-    */
-    door_angle_detection(
-                          const rapp::object::picture & image,
-                          std::function<void(double door_angle)> callback
-                        );
-    
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
-    void deserialise(std::string json) const;
-private:
-    /// The callback called upon completion of receiving the detected faces
-    std::function<void(double)> delegate_;
-};
+namespace cloud 
+{
 
 /**
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
- * \version 0.7.0
- * \date September 2016
+ * \version 0.7.3
+ * \date February 2017
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public http_request
+class face_detection 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
+    typedef std::function<void(std::vector<rapp::object::face>)> face_detect_callback;
     /**
      * \brief constructor
      * \param image is the input image \see rapp::object::picture
@@ -73,9 +50,19 @@ public:
     face_detection(
                     const rapp::object::picture & image,
                     bool fast,
-                    std::function<void(std::vector<rapp::object::face>)> callback
+                    face_detect_callback callback
                   );
     
+    /**
+     * \brief construct without an image - part of a vision batch
+     * \param boost defines if this is an optimised fast call
+     * \param callback is the functor called when cloud replies
+     */
+    face_detection(
+                    bool fast,
+                    face_detect_callback callback
+                  );
+
     /** 
 	 * \brief handle the rapp-platform JSON reply
 	 */
@@ -83,8 +70,51 @@ public:
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::face>)> delegate_;
+    /// name of service (header)
+    static const std::string face_post__;
 };
 
+/**
+ * \class door_angle_detection
+ * \brief detect open doors
+ * \version 0.7.3
+ * \date February 2017
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ */
+class door_angle_detection 
+: public http_request, public vision_batch, public cloud_base
+{
+public:
+    typedef std::function<void(double door_angle)> door_callback;
+
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a number with the angle of the door
+    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    */
+    door_angle_detection(
+                          const rapp::object::picture & image,
+                          door_callback callback
+                        );
+    
+    /**
+     * \brief Constructor without image
+     * \param callback will receive the angle of the door
+     */
+    door_angle_detection(door_callback callback);
+
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(double)> delegate_;
+    /// name of service (header)
+    static const std::string door_post__;
+
+};
 /**
  * \class light_detection 
  * \brief detect the level of light
@@ -92,20 +122,28 @@ private:
  * \date September 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class light_detection : public http_request
+class light_detection 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
+    typedef std::function<void(int light_level)> light_callback;
+
     /**
     * \brief Constructor
     * \param image is a picture object pointer
-    * \param callback is the function that will receive a vector of detected qr(s)
-    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    * \param callback is the function that will receive the luminosity    
     */
     light_detection(
                      const rapp::object::picture & image,
-                     std::function<void(int light_level)> callback
+                     light_callback callback
                    );
     
+    /**
+     * \brief Constructor
+     * \param callback will receive the luminosity
+     */
+    light_detection(light_callback callback);
+
 	/**
 	 * \brief handle the rapp-platform JSON reply
 	 */
@@ -113,6 +151,9 @@ public:
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(int)> delegate_;
+    /// name of service (header)
+    static const std::string light_post__;
+
 };
 
 /**
@@ -122,7 +163,8 @@ private:
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class human_detection : public http_request
+class human_detection 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
     /**
@@ -142,6 +184,9 @@ public:
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::human>)> delegate_;
+    /// name of service (header)
+    static const std::string human_post__;
+
 };
 
 /**
@@ -151,7 +196,8 @@ private:
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_learn_object : public http_request
+class object_detection_learn_object 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
     /**
@@ -174,6 +220,9 @@ public:
 
 private:
     std::function<void(int)> delegate_;
+    /// name of service (header)
+    static const std::string learn_object_post__;
+
 };
 
 /**
@@ -183,7 +232,8 @@ private:
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_clear_models : public http_request
+class object_detection_clear_models 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
     /**
@@ -203,6 +253,9 @@ public:
 
 private:
     std::function<void(int)> delegate_;
+    /// name of service (header)
+    static const std::string clear_post__;
+
 };
 
 /**
@@ -212,7 +265,8 @@ private:
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_load_models : public http_request
+class object_detection_load_models 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
     /**
@@ -234,6 +288,9 @@ public:
 
 private:
     std::function<void(int)> delegate_;
+    /// name of service (header)
+    static const std::string load_post__;
+
 };
 
 /**
@@ -243,7 +300,8 @@ private:
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_find_objects : public http_request
+class object_detection_find_objects 
+: public http_request, public vision_batch, public cloud_base
 {
 public:
     /**
@@ -273,6 +331,9 @@ private:
                        std::vector<rapp::object::point>, 
                        std::vector<double>,
                        int)> delegate_;
+    /// name of service (header)
+    static const std::string find_obj_post__;
+
 };
 
 }

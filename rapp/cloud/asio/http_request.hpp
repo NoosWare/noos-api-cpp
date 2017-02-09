@@ -21,8 +21,10 @@
 #include "http_post.hpp"
 #include "platform.hpp"
 
-namespace rapp {
-namespace cloud {
+namespace rapp 
+{
+namespace cloud 
+{
 /**
  * \class http_request
  * \brief wrapper for the classes `http_header` &`http_post` used for cloud requests

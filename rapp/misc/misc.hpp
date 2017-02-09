@@ -7,8 +7,10 @@
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \date July 2016
  */
-namespace rapp {
-namespace misc {
+namespace rapp 
+{
+namespace misc 
+{
 
 /// \brief decode base64
 /// \param val must be encoded using base64
@@ -124,6 +126,27 @@ T get_json_value(const std::string key, const nlohmann::json & json_f)
     }
     return it->get<T>();
 }
+
+/// \brief method to check if JSON data is correct
+inline bool check_json(
+                         nlohmann::json & json,
+                         const std::string json_str
+                      )
+{
+    try {
+        json = nlohmann::json::parse(json_str);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+    auto error = misc::get_json_value<std::string>("error", json);
+    if (!error.empty()) {
+        std::cerr << "error JSON: " << error <<std::endl;
+        return false;
+    }
+    return true;
+} 
 
 }
 }
