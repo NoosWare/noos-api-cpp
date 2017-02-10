@@ -1,9 +1,11 @@
 #ifndef RAPP_CONFIG
 #define RAPP_CONFIG
 #include "includes.ihh"
-namespace rapp {
-namespace config {
-
+namespace rapp
+{
+/// \brief configuration loaders
+namespace config
+{
 /// \brief helper function, loads YAML configuration file
 rapp::cloud::platform load_yaml_config(std::string filename);
 

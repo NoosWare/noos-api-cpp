@@ -18,9 +18,12 @@
  */
 #include <rapp/objects/audio.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-
-namespace rapp {
-namespace cloud {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace cloud
+{
 /**
  * \class speech_recognition_google
  * \brief delegate speech-to-text to Google via RAPP
@@ -104,7 +107,7 @@ private:
 };
 
 /**
- * \class set_denoise_profile
+ * \class set_noise_profile
  * \brief setting the noising audio profile for speech recognition 
  * \version 0.7.0
  * \date September 2016
@@ -126,13 +129,11 @@ public:
 						 const std::vector<rapp::types::byte> audio_bytearray,
                          const rapp::types::audio_source audio_src
 					   );
-
     /**
      * \brief handle platform reply (error notifications only)
      */
     void deserialise(std::string json) const;
 };
-
 
 }
 }

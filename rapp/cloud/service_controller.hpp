@@ -37,7 +37,6 @@ namespace cloud
 class service_controller
 {
 public:
-
     /** 
      * @brief construct a service controller using a rapp::cloud::platform object
      * @param info must contain all required fields

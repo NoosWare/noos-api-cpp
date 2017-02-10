@@ -21,9 +21,12 @@
 #include <rapp/objects/pose_stamped.hpp>
 #include <rapp/objects/picture.hpp>
 #include <rapp/objects/yaml.hpp>
-
-namespace rapp {
-namespace cloud {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace cloud
+{
 /**
  * \class plan_path_2d
  * \brief plan a 2D path
@@ -48,19 +51,17 @@ public:
                   const rapp::object::pose_stamped goal,
                   std::function<void(rapp::object::planned_path)> callback
                 );
-        
     /**
      * \brief handle platform's JSON reply
      */
     void deserialise(std::string json) const;
-
 private:
     // 
     std::function<void(rapp::object::planned_path path)> delegate_;
 };
 
 /**
- * \class plan_upload_map
+ * \class path_upload_map
  * \brief upload a map
  * \version 0.7.0
  * \date September 2016

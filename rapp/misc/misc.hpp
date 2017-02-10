@@ -1,15 +1,16 @@
 #ifndef RAPP_MISC
 #define RAPP_MISC
 #include "includes.ihh"
+namespace rapp
+{
 /**
  * \brief common misc helper functions
  * \version 0.6.0
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \date July 2016
  */
-namespace rapp {
-namespace misc {
-
+namespace misc
+{
 /// \brief decode base64
 /// \param val must be encoded using base64
 inline std::string decode64(const std::string &val)
@@ -124,13 +125,13 @@ T get_json_value(const std::string key, const nlohmann::json & json_f)
     }
     return it->get<T>();
 }
-
 }
 }
 
 // c++11 - add `std::make_unique`
 #if __cplusplus==201103L
-namespace std {
+namespace std
+{
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
 {
@@ -138,8 +139,5 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 }
 #endif
-
-
-
 //
 #endif

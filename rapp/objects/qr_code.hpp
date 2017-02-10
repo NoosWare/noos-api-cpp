@@ -15,12 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "includes.ihh"
-namespace rapp {
-namespace object {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace object
+{
 /**
- * \class qrCode
+ * \class qr_code
  * \brief class which should encapsulate a QR code
  * \version 0.7.0
  * \date 25 August 2016

@@ -17,9 +17,12 @@
  * limitations under the License.
  */
 #include <rapp/cloud/asio/http_request.hpp>
-
-namespace rapp {
-namespace cloud {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace cloud
+{
 /**
  * \class available_services
  * \brief requests available services from platform

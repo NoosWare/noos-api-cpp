@@ -145,7 +145,7 @@ private:
 };
 
 /**
- * \class learn_object
+ * \class object_detection_learn_object
  * \brief learn object gives by the user
  * \version 0.7.0
  * \date October 2016
@@ -177,7 +177,7 @@ private:
 };
 
 /**
- * \class clear_models
+ * \class object_detection_clear_models
  * \brief Clears operational memory for selected user
  * \version 0.7.0
  * \date October 2016
@@ -206,7 +206,7 @@ private:
 };
 
 /**
- * \class load_models
+ * \class object_detection_load_models
  * \brief Load one or more models to operational memory
  * \version 0.7.0
  * \date October 2016
@@ -237,7 +237,7 @@ private:
 };
 
 /**
- * \class find_objects
+ * \class object_detection_find_objects
  * \brief user can provide query image to detect objects
  * \version 0.7.0
  * \date October 2016

@@ -17,9 +17,13 @@
  */
 #include "includes.ihh"
 #include <boost/asio.hpp>
-
-namespace rapp {
-namespace cloud {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace cloud
+{
+/// \brief error code produced by boost::asio
 typedef boost::system::error_code error_code;
 /**
  * \class http_response

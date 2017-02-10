@@ -17,11 +17,15 @@
  */
 #include "includes.ihh"
 #include <boost/asio.hpp>
-namespace rapp{
-namespace cloud {
+/// \brief robot application platform namespace
+namespace rapp
+{
+/// \brief cloud specific classes and functionality namespace
+namespace cloud
+{
 /**
- * \class asio_response
- * \version 0.7.0
+ * \class asio_timer
+ * \version 0.7.2
  * \date 12 August 2016 
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  * \brief used by asio_handler to detect connection time-outs 

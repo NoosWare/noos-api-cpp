@@ -102,7 +102,7 @@ void asio_handler<T>::read_content(
                                   )
 {
     if (!err) {
-        // received all data 
+        // received all data - will call asio_http::shutdown and close the connection
         if (http_response::consume_buffer(cloud_cb_, bytes)) {
             close_cb_(boost::system::errc::make_error_code(
                                            boost::system::errc::success));
