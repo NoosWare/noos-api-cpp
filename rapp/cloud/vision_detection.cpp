@@ -6,7 +6,7 @@ namespace cloud
 
 const std::string face_detection::face_post__ = "POST /face_detection HTTP/1.1\r\n";   
 const std::string door_angle_detection::door_post__ = "POST /hazard_detection_door_check HTTP/1.1\r\n";
-const std::string light_detection::light_post__ = "POST /hazard_detection_light_check HTTP/1.1\r\n";
+const std::string light_detection::light_post__ = "POST /light_detection HTTP/1.1\r\n";
 const std::string human_detection::human_post__ = "POST /human_detection HTTP/1.1\r\n";
 const std::string object_detection_learn_object::learn_object_post__ = "POST /object_detection_learn_object HTTP/1.1\r\n";
 const std::string object_detection_clear_models::clear_post__ = "POST /object_detection_clear_models HTTP/1.1\r\n";
@@ -61,6 +61,7 @@ void face_detection::deserialise(std::string json) const
     }
 }
 
+///Class door_angle_detection
 door_angle_detection::door_angle_detection(
                                             const rapp::object::picture & image,
                                             door_callback callback
@@ -81,6 +82,8 @@ door_angle_detection::door_angle_detection(door_callback callback)
   delegate_(callback)
 {
     single_callable = false;
+    json json_doc;
+    http_request::add_content("door_angle_detection", json_doc.dump(-1), true);
 }
 
 void door_angle_detection::deserialise(std::string json) const
@@ -114,6 +117,8 @@ light_detection::light_detection(light_callback callback)
   delegate_(callback)
 {
     single_callable = false;
+    json json_doc;
+    http_request::add_content("light_detection", json_doc.dump(-1), true);
 }
 
 void light_detection::deserialise(std::string json) const
@@ -130,7 +135,7 @@ void light_detection::deserialise(std::string json) const
 /// Class human_detection
 human_detection::human_detection(
                                   const rapp::object::picture & image,
-                                  std::function<void(std::vector<rapp::object::human>)> callback
+                                  human_callback callback
                                 )
 : http_request(human_post__), 
   delegate_(callback)
@@ -140,6 +145,15 @@ human_detection::human_detection(
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
+}
+
+human_detection::human_detection(human_callback callback)
+: http_request(human_post__), 
+  delegate_(callback)
+{
+    single_callable = false;
+    json json_doc;
+    http_request::add_content("human_detection", json_doc.dump(-1), true);
 }
 
 void human_detection::deserialise(std::string json) const
@@ -158,11 +172,12 @@ void human_detection::deserialise(std::string json) const
         delegate_(humans);
     }
 }
+/// Class object_detection_learn_object
 object_detection_learn_object::object_detection_learn_object(
                                                               const rapp::object::picture & image,
                                                               const std::string name,
                                                               const std::string user,
-                                                              std::function<void(int)> callback
+                                                              learn_callback callback
                                                             )
 : http_request(learn_object_post__), 
   delegate_(callback)
@@ -177,6 +192,20 @@ object_detection_learn_object::object_detection_learn_object(
     http_request::close();
 }
     
+object_detection_learn_object::object_detection_learn_object(
+                                                              const std::string name,
+                                                              const std::string user,
+                                                              learn_callback callback
+                                                            )
+: http_request(learn_object_post__), 
+  delegate_(callback)
+{
+    single_callable = false;
+    json json_doc = {{"name", name},
+                     {"user", user}};
+    http_request::add_content("object_detection_learn_object", json_doc.dump(-1), true);
+}
+
 void object_detection_learn_object::deserialise(std::string json) const {
 
    if (json.empty()) {
@@ -189,9 +218,10 @@ void object_detection_learn_object::deserialise(std::string json) const {
 
 }
 
+/// Class object_detection_clear_models
 object_detection_clear_models::object_detection_clear_models(
                                                               const std::string user,
-                                                              std::function<void(int)> callback
+                                                              clear_callback callback
                                                             )
 : http_request(clear_post__), 
   delegate_(callback)
@@ -216,10 +246,11 @@ void object_detection_clear_models::deserialise(std::string json) const {
 
 }
 
+///Class object_detection_load_models
 object_detection_load_models::object_detection_load_models(
                                                             const std::string user,
                                                             const std::vector<std::string> names,
-                                                            std::function<void(int)> callback
+                                                            load_callback callback
                                                           )
 : http_request(load_post__), 
   delegate_(callback)
@@ -244,14 +275,12 @@ void object_detection_load_models::deserialise(std::string json) const {
 
 }
 
+/// Class object_detection_find_objects
 object_detection_find_objects::object_detection_find_objects(
                                                               const rapp::object::picture & image,
                                                               const std::string user,
                                                               const int limit,
-                                                              std::function<void(std::vector<std::string>,
-                                                                                 std::vector<rapp::object::point>, 
-                                                                                 std::vector<double>,
-                                                                                 int)> callback
+                                                              find_callback callback
                                                              )
 : http_request(find_obj_post__), 
   delegate_(callback)
@@ -264,6 +293,20 @@ object_detection_find_objects::object_detection_find_objects(
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
+}
+
+object_detection_find_objects::object_detection_find_objects(
+                                                              const std::string user,
+                                                              const int limit,
+                                                              find_callback callback
+                                                             )
+: http_request(find_obj_post__), 
+  delegate_(callback)
+{
+    single_callable = false;
+    json json_doc = {{"user", user},
+                     {"limit", limit}};
+    http_request::add_content("object_detection_find_object", json_doc.dump(-1), true);
 }
 
 void object_detection_find_objects::deserialise(std::string json) const {

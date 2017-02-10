@@ -20,8 +20,13 @@
 #include <rapp/objects/qr_code.hpp>
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-namespace rapp {
-namespace cloud {
+#include <rapp/cloud/vision_batch.hpp>
+#include <rapp/cloud/cloud_base.hpp>
+
+namespace rapp 
+{
+namespace cloud 
+{
 /**
  * \class object_recognition
  * \brief recognize object from an image
@@ -29,9 +34,11 @@ namespace cloud {
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class object_recognition : public http_request
+class object_recognition 
+: public http_request, public vision_class, public cloud_base
 {
 public:
+    typedef std::function<void(std::string)> object_recognition_callback; 
     /**
     * \brief Constructor
     * \param image is a picture object pointer
@@ -39,8 +46,13 @@ public:
     */
     object_recognition(
                         const rapp::object::picture & image,
-                        std::function<void(std::string)> callback
+                        object_recognition_callback callback
                       );
+    /**
+     * \brief Constructor without image
+     * \param callback will receive a string 
+     */
+    object_recognition(object_recognition_callback callback);
     
 	/**
 	 * \brief handle the rapp-platform JSON reply
@@ -49,7 +61,9 @@ public:
 
 private:
     /// The callback called upon completion of receiving the detected faces
-    std::function<void(std::string)> delegate_;
+    object_recognition_callback delegate_;
+    //name header http
+    static const std::string obj_recogn_post__;
 };
 
 /**
@@ -59,9 +73,11 @@ private:
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class qr_recognition : public http_request
+class qr_recognition 
+: public http_request, public vision_class, public cloud_base
 {
 public:
+    typedef std::function<void(std::vector<rapp::object::qr_code>)> qr_callback;
     /**
     * \brief Constructor
     * \param image is a picture object pointer
@@ -69,15 +85,24 @@ public:
     */
     qr_recognition(
                     const rapp::object::picture & image,
-                    std::function<void(std::vector<rapp::object::qr_code>)> callback
+                    qr_callback callback
                   );
+
+    /**
+     * \brief Constructor without image
+     * \param callback will receive a vector of detected qr(s)
+     */
+    qr_recognition(qr_callback callback);
+
     /**
 	 * \brief handle the rapp-platform JSON reply
 	 */
     void deserialise(std::string json) const;
 private:
     /// The callback called upon completion of receiving the qr codes
-    std::function<void(std::vector<rapp::object::qr_code>)> delegate_;
+    qr_callback delegate_;
+    /// HTTP name header
+    static const std::string qr_post__;
 };
 
 }

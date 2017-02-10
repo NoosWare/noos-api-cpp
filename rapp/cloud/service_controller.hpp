@@ -20,6 +20,8 @@
 #include <rapp/cloud/asio/asio_http.hpp>
 #include <rapp/cloud/asio/asio_https.hpp>
 #include <rapp/cloud/asio/caller.hpp>
+#include <rapp/cloud/vision_batch.hpp>
+
 namespace rapp 
 {
 namespace cloud
@@ -79,6 +81,9 @@ public:
 
 	/// @brief handle asio errors
 	void default_error_handler(boost::system::error_code) const;
+
+    /// @brief make a call with vision batch services
+    void batch_call(vision_batch & batch);
 
 private:
 	// cloud params

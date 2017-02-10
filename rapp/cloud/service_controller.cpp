@@ -46,5 +46,26 @@ void service_controller::default_error_handler(boost::system::error_code error) 
 #endif
 }
 
+void service_controller::batch_call(vision_batch & batch)
+{
+    batch.end(); 
+
+    boost::asio::streambuf request;
+    for (auto obj : batch.get_services()) {
+        obj->fill_buffer(boost::ref(request), info_);
+        std::function<void(std::string)> callback = [&](auto reply) {
+            obj->deserialise(reply);
+        };
+    }
+    //// create an asio_socket and run the request
+    //auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
+    //assert(asio);
+    //// start
+    //asio->begin(query_, resol_, timeout_);
+    //io_.run();
+    //io_.reset();
+
+}
+
 }
 }
