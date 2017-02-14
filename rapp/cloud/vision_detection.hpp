@@ -37,7 +37,7 @@ namespace cloud
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class face_detection 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class 
 {
 public:
     typedef std::function<void(std::vector<rapp::object::face>)> face_detect_callback;
@@ -52,7 +52,6 @@ public:
                     bool fast,
                     face_detect_callback callback
                   );
-    
     /**
      * \brief construct without an image - part of a vision batch
      * \param boost defines if this is an optimised fast call
@@ -62,12 +61,18 @@ public:
                     bool fast,
                     face_detect_callback callback
                   );
-
-    /** 
-	 * \brief handle the rapp-platform JSON reply
-	 */
+     
+	/// \brief handle the rapp-platform JSON reply for single call
     void deserialise(std::string json) const;
+
+    /// \return parameters of the class in json format
+    std::string make_parameters() const;
+
+	/// \brief handle the rapp-platform JSON reply for vision batch
+    void deserialise(nlohmann::json json) const;
+
 private:
+    bool fast_;
     /// The callback called upon completion of receiving the detected faces
     face_detect_callback delegate_;
     /// name of service (header)
@@ -82,7 +87,7 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class door_angle_detection 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class
 {
 public:
     typedef std::function<void(double door_angle)> door_callback;
@@ -104,10 +109,15 @@ public:
      */
     door_angle_detection(door_callback callback);
 
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
+
+	/// \brief handle the rapp-platform JSON reply for a vision batch
+    void deserialise(nlohmann::json json) const;
+
+    /// \return parameters in json format
+    std::string make_parameters() const;
+
 private:
     /// The callback called upon completion of receiving the detected faces
     door_callback delegate_;
@@ -123,7 +133,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class light_detection 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class  
 {
 public:
     typedef std::function<void(int light_level)> light_callback;
@@ -144,10 +154,16 @@ public:
      */
     light_detection(light_callback callback);
 
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
+
+	/// \brief handle the rapp-platform JSON reply for a vision batch
+    void deserialise(nlohmann::json json) const;
+
+    /// \return parameters of the class in json format
+    std::string make_parameters() const;
+
+
 private:
     /// The callback called upon completion of receiving the detected faces
     light_callback delegate_;
@@ -164,7 +180,7 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class human_detection 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class
 {
 public:
     typedef std::function<void(std::vector<rapp::object::human>)> human_callback;
@@ -185,10 +201,16 @@ public:
      */
     human_detection(human_callback callback);
 
-    /**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply a single call
     void deserialise(std::string json) const;
+    
+	/// \brief handle the rapp-platform JSON reply a vision batch
+    void deserialise(nlohmann::json json) const;
+
+    /// \return parameters of the class in json format
+    std::string make_parameters() const;
+
+
 private:
     /// The callback called upon completion of receiving the detected faces
     human_callback delegate_;
@@ -205,7 +227,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_learn_object 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class
 {
 public:
     typedef std::function<void(int)> learn_callback;
@@ -234,16 +256,26 @@ public:
                                    learn_callback callback
                                  );
 
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply
     void deserialise(std::string json) const;
 
+	/// \brief handle the rapp-platform JSON reply
+    void deserialise(nlohmann::json json) const;
+
+	/// \return paramenters in json format
+    std::string make_parameters() const;
+
+
 private:
+    /// parameter name
+    std::string name__;
+    /// parameter user
+    std::string user__;
+    /// callback
     learn_callback delegate_;
     /// name of service (header)
     static const std::string learn_object_post__;
-
+    
 };
 
 /**
@@ -324,7 +356,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_find_objects 
-: public http_request, public vision_class, public cloud_base
+: public http_request, public cloud_base, public virtual vision_class  
 {
 public:
     typedef std::function<void(std::vector<std::string>,
@@ -357,16 +389,24 @@ public:
                                    find_callback callback
                                  );
 
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
 
+	/// \brief handle the rapp-platform JSON reply for a vision batch
+    void deserialise(nlohmann::json json) const;
+
+    /// \return parameters of the class in json format
+    std::string make_parameters() const;
+
 private:
+    ///parameters user
+    std::string user__;
+    ///parameters limit
+    int limit__;
+    /// delegate
     find_callback delegate_;
     /// name of service (header)
     static const std::string find_obj_post__;
-
 };
 
 }

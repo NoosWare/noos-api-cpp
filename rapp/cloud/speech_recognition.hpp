@@ -57,6 +57,8 @@ public:
 private:
     /// The callback called upon completion of receiving the detected words and alternatives
     std::function<void(std::vector<std::string>, std::vector<std::vector<std::string>>)> delegate_;
+    /// HTTP header name
+    static const std::string google_speech_post__;
 };
 
 /**
@@ -101,6 +103,8 @@ public:
 private:
     /// The callback called upon completion of receiving the detected words
     std::function<void(std::vector<std::string> words)> delegate_;
+    ///HTTP header name
+    static const std::string sphinx4_speech_post__;
 };
 
 /**
@@ -131,6 +135,11 @@ public:
      * \brief handle platform reply (error notifications only)
      */
     void deserialise(std::string json) const;
+
+private:
+    ///HTTP header name
+    static const std::string noise_post__;
+
 };
 
 

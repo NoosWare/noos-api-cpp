@@ -16,17 +16,8 @@ void available_services::deserialise(std::string json)
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << "Exception " << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-         std::cerr << "error JSON: " << error << std::endl; 
-    }
-    else {
+
+    if(misc::check_json(json_f, json)) {
         std::vector<service> services;
         for (auto it_s : json_f["services"]) {
             services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 

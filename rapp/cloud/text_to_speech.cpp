@@ -1,13 +1,17 @@
 #include "text_to_speech.hpp"
-namespace rapp {
-namespace cloud {
+namespace rapp 
+{
+namespace cloud 
+{
+
+const std::string text_to_speech::text_to_speech_post__ = "POST /hop/text_to_speech HTTP/1.1\r\n";
 
 text_to_speech::text_to_speech(
                                 const std::string text,
                                 const std::string language,
                                 std::function<void(audio_file)> callback
                               )
-: http_request("POST /hop/text_to_speech HTTP/1.1\r\n"), 
+: http_request(text_to_speech_post__), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -23,17 +27,7 @@ void text_to_speech::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "error JSON: " << error <<std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         std::vector<rapp::types::byte> bytearray;
         std::string decoded = rapp::misc::decode64(json_f["payload"]);
         std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));

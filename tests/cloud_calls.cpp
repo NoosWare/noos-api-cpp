@@ -16,6 +16,7 @@
 #include <rapp/cloud/weather_report.hpp>
 #include <rapp/cloud/email.hpp>
 #include <rapp/cloud/authentication.hpp>
+#include <rapp/cloud/vision_batch.hpp>
 
 BOOST_AUTO_TEST_SUITE (cloud_calls)
 
@@ -391,7 +392,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 
     };
     auto pic = rapp::object::picture("tests/data/object_classes_picture_1.png");
-    rapp::cloud::face_detection fd(pic, false, face_call); 
+    auto fd = std::make_shared<rapp::cloud::face_detection>(pic, false, face_call); 
     auto j1 = R"(
               {
                 "faces":[{ 
@@ -407,31 +408,31 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
                  "error" : ""
                })"_json;
     std::string j1_string = j1.dump(-1);
-    fd.deserialise(j1_string);
+    fd->deserialise(j1_string);
     //Class door_angle_detection
     auto door_call = [] (double angle) {
         BOOST_CHECK_EQUAL(angle, 5);
     };
-    rapp::cloud::door_angle_detection dad(pic, door_call);
+    auto dad = std::make_shared<rapp::cloud::door_angle_detection>(pic, door_call);
     auto j2 = R"(
               {
                 "door_angle" : 5,
                 "error" : ""
               })"_json;
     std::string j2_string = j2.dump(-1);
-    dad.deserialise(j2_string);
+    dad->deserialise(j2_string);
     //Class light_detection
     auto light_call = [] (int level) {
        BOOST_CHECK_EQUAL(level, 500);
     };
-    rapp::cloud::light_detection ld(pic, light_call);
+    auto ld = std::make_shared<rapp::cloud::light_detection>(pic, light_call);
     auto j3 = R"(
               {
                 "light_level" : 500,
                 "error" : ""
               })"_json;
     std::string j3_string = j3.dump(-1);
-    ld.deserialise(j3_string); 
+    ld->deserialise(j3_string); 
     //Class human_detection
     auto human_call = [] (std::vector<rapp::object::human> humans) {
         BOOST_CHECK_EQUAL(humans.at(0).get_left_x(), 1);
@@ -440,7 +441,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
         BOOST_CHECK_EQUAL(humans.at(0).get_right_y(), 4);
 
     };
-    rapp::cloud::human_detection hd(pic,human_call);
+    auto hd = std::make_shared<rapp::cloud::human_detection>(pic, human_call);
     auto j4 = R"(
               {
                   "humans":[{ 
@@ -456,7 +457,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
                   "error" : ""
               })"_json;
     std::string j4_string = j4.dump(-1);
-    hd.deserialise(j4_string);
+    hd->deserialise(j4_string);
 }
 
 /*
@@ -630,7 +631,7 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
         BOOST_CHECK(qrs.at(0) == qr2);
     };
     auto pic_qr = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
-    rapp::cloud::qr_recognition qd(pic_qr, qr_call);
+    auto qd = std::make_shared<rapp::cloud::qr_recognition>(pic_qr, qr_call);
     auto j1 = R"(
               {
                 "qr_centers":[{ 
@@ -641,35 +642,35 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
                 "error" : ""
               })"_json;
     std::string j1_string = j1.dump(-1);
-    qd.deserialise(j1_string);
+    qd->deserialise(j1_string);
 
     //Class object_recognition
     auto object_call = [] (std::string object) {
         BOOST_CHECK_EQUAL(object, "something");
     };
     auto pic = rapp::object::picture("tests/data/object_classes_picture_2.jpg");
-    rapp::cloud::object_recognition objr(pic, object_call);
+    auto objr = std::make_shared<rapp::cloud::object_recognition>(pic, object_call);
     auto j2 = R"(
               {
                 "object_class" : "something",
                 "error" : ""
               })"_json;
     std::string j2_string = j2.dump(-1);
-    objr.deserialise(j2_string);
+    objr->deserialise(j2_string);
 
     //Class object_detection_learn_object
     auto learn_call = [] (int result)
     {
         BOOST_CHECK_EQUAL(result, 0);
     };
-    rapp::cloud::object_detection_learn_object odlo(pic, "cat", "user", learn_call);
+    auto odlo = std::make_shared<rapp::cloud::object_detection_learn_object>(pic, "cat", "user", learn_call);
     auto j3 = R"(
               {
                   "result" : 0,
                   "error" : ""
               })"_json;
     std::string j3_string = j3.dump(-1);
-    odlo.deserialise(j3_string);
+    odlo->deserialise(j3_string);
 
     //Class object_detection_clear_models
     auto clear_call = [] (int result)
@@ -712,7 +713,7 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
         BOOST_CHECK_EQUAL(scores.at(0), 0.9);
         BOOST_CHECK_EQUAL(result, 0);
     };
-    rapp::cloud::object_detection_find_objects odfo(pic, "user", 1, find_call);
+    auto odfo = std::make_shared<rapp::cloud::object_detection_find_objects>(pic, "user", 1, find_call);
     auto j6 = R"(
               {
                 "found_names": ["cat"],
@@ -731,7 +732,65 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
                 "error": ""
               })"_json;
     std::string j6_string = j6.dump(-1);
-    odfo.deserialise(j6_string);
+    odfo->deserialise(j6_string);
 }
+
+/**
+ *
+ */
+BOOST_AUTO_TEST_CASE(vision_batch_test)
+{
+    //Vision batch
+    auto pic = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
+    rapp::cloud::vision_batch vb(pic);    
+
+    //Class qr_recognition
+    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
+        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
+        rapp::object::qr_code qr2(1 ,2, "label");
+        BOOST_CHECK(qrs.at(0) == qr2);
+    };
+    //rapp::cloud::qr_recognition qr_recogn(qr_call); 
+
+    //Class face_detection
+    auto face_call = [] (std::vector<rapp::object::face> faces) {
+        BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
+        BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
+        BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
+        BOOST_CHECK_EQUAL(faces.at(0).get_right_y(), 4);
+
+    };
+
+    vb.insert<rapp::cloud::face_detection>("face_detection", true, face_call); 
+    vb.insert<rapp::cloud::qr_recognition>("qr_recognition", qr_call);
+    vb.end();
+
+    auto j1 = R"(
+              {
+                "face_detection" : { "faces":[{ 
+                                                "up_left_point":{
+                                                                    "x": 1, 
+                                                                    "y": 2
+                                                }, 
+                                                "down_right_point":{
+                                                                    "x": 3, 
+                                                                    "y": 4
+                                                } 
+                                           }],
+                                     "error" : ""
+                                   },
+                "qr_recognition" : { "qr_centers":[{ 
+                                                    "x": 1, 
+                                                    "y": 2
+                                                  }], 
+                                     "qr_messages":["label"],
+                                     "error" : ""
+                                   }
+              })"_json;
+    std::string j1_str = j1.dump(-1);
+    vb.deserialise(j1_str);
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -2,6 +2,10 @@
 namespace rapp {
 namespace cloud {
 
+const std::string speech_recognition_google::google_speech_post__ = "POST /hop/speech_detection_google HTTP/1.1\r\n";
+const std::string speech_recognition_sphinx4::sphinx4_speech_post__ = "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
+const std::string set_noise_profile::noise_post__ = "POST /hop/set_noise_profile HTTP/1.1\r\n"; 
+
 speech_recognition_google::speech_recognition_google(
                                                       const std::vector<rapp::types::byte> audio_bytearray,
                                                       const rapp::types::audio_source audio_src,
@@ -9,7 +13,7 @@ speech_recognition_google::speech_recognition_google(
                                                       std::function<void(std::vector<std::string>, 
                                                                          std::vector<std::vector<std::string>>)> callback
                                                     )
-: http_request("POST /hop/speech_detection_google HTTP/1.1\r\n"), 
+: http_request(google_speech_post__), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -50,17 +54,7 @@ void speech_recognition_google::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "error JSON: " << error << std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         delegate_(json_f["words"], json_f["alternatives"]);
     }
 }
@@ -74,7 +68,7 @@ speech_recognition_sphinx4::speech_recognition_sphinx4(
                                                         const std::vector<std::string> sentences,
                                                         std::function<void(std::vector<std::string> words)> callback
                                                       )
-: http_request("POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n"), 
+: http_request(sphinx4_speech_post__), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -117,17 +111,7 @@ void speech_recognition_sphinx4::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "error JSON: " << error <<std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         delegate_(json_f["words"]);
     }
 }
@@ -136,7 +120,7 @@ set_noise_profile::set_noise_profile(
                                        const std::vector<rapp::types::byte> audio_bytearray,
                                        const rapp::types::audio_source audio_src
                                     )
-: http_request("POST /hop/set_noise_profile HTTP/1.1\r\n") 
+: http_request(noise_post__) 
 {
     http_request::make_multipart_form();
     std::string audio_type;
@@ -174,17 +158,7 @@ void set_noise_profile::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "error JSON: " << error <<std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         std::cout << "Noise_profile created" << std::endl;
     }
 }

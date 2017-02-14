@@ -19,7 +19,7 @@ void http_request::fill_buffer(
 {
 	std::ostream http_request_stream(&buffer);
 	http_request_stream << header_->to_string(info, post_->size());
-    //std::cerr << header_->to_string(info, post_->size()) << post_->to_string();
+    //std::cerr << header_->to_string(info, post_->size()) << post_->to_string(); //comment after tests
     if (post_->size() > 0) {
         http_request_stream << post_->to_string();
     }

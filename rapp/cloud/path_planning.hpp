@@ -22,8 +22,10 @@
 #include <rapp/objects/picture.hpp>
 #include <rapp/objects/yaml.hpp>
 
-namespace rapp {
-namespace cloud {
+namespace rapp 
+{
+namespace cloud 
+{
 /**
  * \class plan_path_2d
  * \brief plan a 2D path
@@ -55,8 +57,10 @@ public:
     void deserialise(std::string json) const;
 
 private:
-    // 
+    //callback 
     std::function<void(rapp::object::planned_path path)> delegate_;
+    //HTTP header name
+    static const std::string plan_path_post__;
 };
 
 /**
@@ -91,6 +95,8 @@ public:
 private:
      /// delegate
      std::function<void(std::string)> delegate_;
+     /// HTTP header name
+     static const std::string path_upload_post__;
 };
 }
 }

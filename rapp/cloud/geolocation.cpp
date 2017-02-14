@@ -33,17 +33,7 @@ void geolocation::deserialise(std::string json) const
        throw std::runtime_error("Empty json");
     }
     nlohmann::json json_f;
-    try { 
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "Error JSON: " << error <<std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         delegate_(json_f["city"],
                   json_f["country"], 
                   json_f["country_code"], 

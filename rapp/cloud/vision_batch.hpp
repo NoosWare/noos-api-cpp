@@ -3,7 +3,6 @@
 
 #include <rapp/cloud/includes.ihh>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/cloud_base.hpp>
 #include <rapp/objects/picture.hpp>
 #include <rapp/cloud/asio/platform.hpp>
 
@@ -21,22 +20,15 @@ namespace cloud
 struct vision_class
 {
     /**
-     * \brief virtual deserialise function
+     * \brief virtual deserialise function to a vision batch
      * \param JSON string
      */
-    virtual void deserialise (std::string json) = 0;
+    virtual void deserialise(nlohmann::json json) const = 0;
 
     /**
-     * \brief virtual fill_buffer
-     * \param buffer
-     * \param info is the platform information
-     */ 
-    virtual void fill_buffer(
-                              boost::asio::streambuf & buffer,
-                              rapp::cloud::platform info
-                            ) = 0;
-
-
+     * \brief return a string of the cloud JSON parameters
+     */
+    virtual std::string make_parameters() const = 0;
 };
     
 /**
@@ -46,7 +38,7 @@ struct vision_class
  * @date 09.02.0217
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class vision_batch :public http_request
+class vision_batch : public http_request
 {
 public:
 
@@ -54,53 +46,42 @@ public:
      * \brief Constructor
      * \param image use for the batch
      */
-    vision_batch(const rapp::object::picture & image)
-    : http_request(batch_post__),
-      image__(image)
-    {
-        http_request::make_multipart_form();
-        std::string fname = rapp::misc::random_boundary() + "." + image__.type();
-        http_request::add_content("file", fname, image.bytearray());
-        //http_request::close(); when?
-    };
+    vision_batch(const rapp::object::picture & image);
 
     /**
      * \brief template to add services to the batch
-     * \param
+     * \param service is the name of the service ( "face_detection", "human_detection", etc)
+     * \param args the arguments needed to do the service call
      */
-    template <typename vision_service, typename... Args>
-    void insert(Args... args)   
+    template <class service_class, typename... Args>
+    void insert(std::string service, Args... args)   
     {
-        static_assert(std::is_base_of<vision_class, vision_service>::value,
-                     "vision_batch::insert param must be a vision_batch type"); 
-        auto object = vision_service(args...);
-        if (object.is_single_callable()) {
-            throw std::runtime_error("Wrong constructor for using it in vision batch");
+        static_assert(std::is_base_of<vision_class, service_class>::value,
+                     "param must be a vision_class"); 
+        auto object = std::make_shared<service_class>(args...);
+        if (object->is_single_callable()) {
+            throw std::runtime_error("object is single callable");
         }
-        else {
-            services__.push_back(object); 
-        }
-            
+        services__[service] = object;
+        http_request::add_content(service, object->make_parameters(), true);
     }
 
-    void end()
-    {
-        http_request::close();
-    };
+    /**
+     * \brief deserialise method 
+     * \param JSON reply data 
+     */
+    void deserialise(std::string json_str);
 
-    std::vector<std::shared_ptr<vision_class>> get_services()
-    {
-        return services__;
-    }
+    /// \brief End of the request(no more services inserted)
+    void end();
 
 private:
     ///image use for all the vision services
     rapp::object::picture image__;
     ///HTTP header name
-    const std::string batch_post__ = "POST /vision_batch HTTP/1.1\r\n";
+    static const std::string batch_post__;
     ///container of services
-    std::vector<std::shared_ptr<vision_class>> services__; //not working
-
+    std::map<std::string, std::shared_ptr<vision_class>> services__;
 };
 
 }

@@ -1,5 +1,5 @@
-#ifndef RAPP_CLOUD_TEXT2SPEECH
-#define RAPP_CLOUD_TEXT2SPEECH
+#ifndef RAPP_CLOUD_TEXT_TO_SPEECH
+#define RAPP_CLOUD_TEXT_TO_SPEECH
 #include "includes.ihh"
 /**
  * Copyright 2015 RAPP
@@ -19,8 +19,10 @@
 #include <rapp/objects/audio.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 
-namespace rapp {
-namespace cloud {
+namespace rapp 
+{
+namespace cloud 
+{
 /**
  * \class text_to_speech
  * \brief request speech audio from text
@@ -52,6 +54,8 @@ public:
 private:
     /// 
     std::function<void(audio_file wav)> delegate_;
+    /// HTTP header name
+    static const std::string text_to_speech_post__;
 };
 }
 }

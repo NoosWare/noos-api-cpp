@@ -1,9 +1,9 @@
 
-template <typename T, typename... Args>
+template <class service_type, typename... Args>
 void service_controller::make_call(Args... args)
 {
     // create the cloud class
-    auto obj = T(args...);
+    auto obj = service_type(args...);
     boost::asio::streambuf request;
     obj.fill_buffer(boost::ref(request), info_);
     std::function<void(std::string)> callback = [&](auto reply) {

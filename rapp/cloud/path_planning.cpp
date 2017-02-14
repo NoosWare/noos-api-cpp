@@ -1,6 +1,12 @@
 #include "path_planning.hpp"
-namespace rapp {
-namespace cloud {
+
+namespace rapp 
+{
+namespace cloud 
+{
+
+const std::string plan_path_2d::plan_path_post__ = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
+const std::string path_upload_map::path_upload_post__ = "POST /hop/path_planning_upload_map HTTP/1.1\r\n";
 
 // Class plan_path_2d
 plan_path_2d::plan_path_2d(
@@ -11,7 +17,7 @@ plan_path_2d::plan_path_2d(
                             const rapp::object::pose_stamped goal,
                             std::function<void(rapp::object::planned_path)> callback
                           )
-: http_request("POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n"), 
+: http_request(plan_path_post__), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -30,17 +36,7 @@ void plan_path_2d::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    try {
-        json_f = json::parse(json);
-    }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-    }
-    auto error = misc::get_json_value<std::string>("error", json_f);
-    if (!error.empty()) {
-        std::cerr << "error JSON: " << error <<std::endl;
-    }
-    else {
+    if(misc::check_json(json_f, json)) {
         delegate_(rapp::object::planned_path(json_f));
     }
 }
@@ -52,7 +48,7 @@ path_upload_map::path_upload_map(
                                   const std::string map_name,
                                   std::function<void(std::string)> callback
                                 )
-: http_request("POST /hop/path_planning_upload_map HTTP/1.1\r\n"), 
+: http_request(path_upload_post__), 
   delegate_(callback)
 {
 
