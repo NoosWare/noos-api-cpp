@@ -31,7 +31,7 @@ public:
     }
 
 protected:
-    std::atomic<bool> single_callable;
+    bool single_callable;
 };
 }
 }

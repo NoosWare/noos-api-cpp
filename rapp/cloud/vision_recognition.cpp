@@ -3,7 +3,7 @@ namespace rapp {
 namespace cloud {
 
 const std::string object_recognition::obj_recogn_post__ = "POST /object_recognition_caffe HTTP/1.1\r\n";
-const std::string qr_recognition::qr_post__ = "POST /qr_recognition HTTP/1.1\r\n";
+const std::string qr_recognition::qr_post__ = "POST /qr_detection HTTP/1.1\r\n";
 
 /// Class object_recognition
 object_recognition::object_recognition(
