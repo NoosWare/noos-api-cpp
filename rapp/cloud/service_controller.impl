@@ -44,3 +44,20 @@ void service_controller::make_calls(Args... args)
     io_.reset();
 }
 
+///
+template <class service_type>
+void service_controller::make_call(service_type obj)
+{
+    boost::asio::streambuf request;
+    obj.fill_buffer(boost::ref(request), info_);
+    std::function<void(std::string)> callback = [&](auto reply) {
+        obj.deserialise(reply);
+    };
+    // create an asio_socket and run the request
+    auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
+    assert(asio);
+    // start
+    asio->begin(query_, resol_, timeout_);
+    io_.run();
+    io_.reset();
+}

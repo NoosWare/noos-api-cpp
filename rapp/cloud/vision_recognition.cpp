@@ -29,7 +29,7 @@ object_recognition::object_recognition(object_recognition_callback callback)
 
 std::string object_recognition::make_parameters() const
 {
-    nlohmann::json json_doc;
+    nlohmann::json json_doc = {{"no_param", ""}};
     return json_doc.dump(-1);
 }
 
@@ -75,7 +75,7 @@ qr_recognition::qr_recognition(qr_callback callback)
   delegate_(callback)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
-    http_request::add_content("qr_recognition", json_doc.dump(-1), true);
+    http_request::add_content("qr_detection", json_doc.dump(-1), true);
 
 }
 

@@ -762,7 +762,7 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
     };
 
     vb.insert<rapp::cloud::face_detection>("face_detection", true, face_call); 
-    vb.insert<rapp::cloud::qr_recognition>("qr_recognition", qr_call);
+    vb.insert<rapp::cloud::qr_recognition>("qr_detection", qr_call);
     vb.end();
 
     auto j1 = R"(
@@ -779,7 +779,7 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
                                            }],
                                      "error" : ""
                                    },
-                "qr_recognition" : { "qr_centers":[{ 
+                "qr_detection" :   { "qr_centers":[{ 
                                                     "x": 1, 
                                                     "y": 2
                                                   }], 

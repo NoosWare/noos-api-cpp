@@ -26,7 +26,7 @@ int main()
     * Then proceed to create a cloud controller.
     * We'll use this object to create cloud calls to the platform.
     */
-    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"localhost", "8080", "mysecret", "alex"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*

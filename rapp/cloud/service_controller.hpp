@@ -65,8 +65,15 @@ public:
      * @typename `T` is a templated cloud class
      * @param `args` is the `T` cloud class arguments
      */
-    template <typename T, typename... Args>
+    template <class service_type, typename... Args>
     void make_call(Args... args);
+
+    /** 
+     * @brief make_call will instantly run an asynchronous cloud job
+     * @class 'service_type' is a templated cloud class
+     */
+    template <class service_type>
+    void make_call(service_type obj);
 
     /** 
      * @brief create batch of cloud calls using a variadic template

@@ -15,13 +15,14 @@
  */
 #include <rapp/cloud/service_controller.hpp>
 #include <rapp/cloud/vision_detection.hpp>
+#include <rapp/cloud/vision_recognition.hpp>
 #include <rapp/objects/picture.hpp>
-/*
+/**
  * @brief example to detect faces in a picture
  */
 int main()
 {
-    /*
+    /**
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
@@ -29,28 +30,38 @@ int main()
     rapp::cloud::platform info = {"localhost", "8080", "mysecret", "alex"}; 
     rapp::cloud::service_controller ctrl(info);
 
-    /*
+    /**
      * The image is loaded from its path to a picture class.
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
     auto pic = rapp::object::picture("data/object_classes_picture_1.png");
 
-    /*
+    /**
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive a vector of rapp::object::face and
      * we show the size of the vector to know how many faces have 
      * been found.
      */
-    auto callback = [&](std::vector<rapp::object::face> faces) { 
+    auto face_callback = [&](std::vector<rapp::object::face> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
     };
 
-    /*
-     * We make a call to face_detection class to detect faces in the file
-     * For more information \see rapp::cloud::face_detection
+    auto qr_callback = [&](std::vector<rapp::object::qr_code> qrs) { 
+        std::cout << "Found " << qrs.size() << " qrs!" << std::endl;
+    };
+
+    rapp::cloud::vision_batch vision_services(pic);
+    vision_services.insert<rapp::cloud::face_detection>("face_detection", true, face_callback); 
+    vision_services.insert<rapp::cloud::qr_recognition>("qr_detection", qr_callback); 
+    vision_services.end();
+
+    /**
+     * We make a call to vision batch with face_detection and qr_detection
+     * services with the same image.
+     * For more information \see rapp::cloud::vision_batch
      */
-    ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
+    ctrl.make_call<rapp::cloud::vision_batch>(std::move(vision_services)); 
     return 0;
 }

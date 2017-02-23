@@ -28,8 +28,12 @@ void vision_batch::deserialise(std::string json_str)
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;
     }
-    for(const auto obj : services__) {
-        obj.second->deserialise(json[obj.first]);
+    for (auto obj_array : json) {
+        for(const auto obj : services__) {
+            if (!obj_array[obj.first].empty()) {
+                obj.second->deserialise(obj_array[obj.first]);
+            }
+        }
     }
 }
 

@@ -236,6 +236,7 @@ endif()
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
                   batch.cpp
+                  vision_batch.cpp
                   class_reactor.cpp
                   loop.cpp
                   face_detect.cpp
