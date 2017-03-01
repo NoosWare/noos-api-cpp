@@ -143,7 +143,9 @@ inline bool check_json(
     }
     auto error = misc::get_json_value<std::string>(error_str, json);
     if (!error.empty()) {
+    #ifdef (!NDEBUG)
         std::cerr << "error JSON: " << error <<std::endl;
+    #endif
         return false;
     }
     return true;
