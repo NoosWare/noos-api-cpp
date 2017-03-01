@@ -19,9 +19,7 @@ public:
      * \brief Constructor
      * \param init_value defines if the service is single callable(true) or not
      */
-    cloud_base(bool init_value)
-    : single_callable(init_value)
-    {}
+    cloud_base(bool init_value);
     
     /**
      *  \return boolean to know if it's the service is a 

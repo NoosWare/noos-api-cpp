@@ -737,7 +737,6 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
 
 /**
  *
- */
 BOOST_AUTO_TEST_CASE(vision_batch_test)
 {
     //Vision batch
@@ -791,5 +790,5 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
     vb.deserialise(j1_str);
 
 }
-
+*/
 BOOST_AUTO_TEST_SUITE_END()

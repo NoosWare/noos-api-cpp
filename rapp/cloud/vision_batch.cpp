@@ -32,7 +32,7 @@ void vision_batch::deserialise(std::string json_str)
         for(const auto obj : services__) {
             if (!obj_array[obj.first].empty()) {
                 // obj.second = vision_class / boost::variant
-                obj.second.deserialise(obj_array[obj.first].dump());
+                // TODO -> obj.second.deserialise(obj_array[obj.first].dump());
             }
         }
     }

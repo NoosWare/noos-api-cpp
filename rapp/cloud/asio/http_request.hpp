@@ -81,8 +81,8 @@ public:
     void make_multipart_form();
 
 private:
-    std::unique_ptr<http_header> header_;
-    std::unique_ptr<http_post>   post_;
+    std::shared_ptr<http_header> header_;
+    std::shared_ptr<http_post>   post_;
 };
 }
 }

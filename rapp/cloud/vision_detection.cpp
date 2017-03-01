@@ -267,6 +267,22 @@ object_detection_clear_models::object_detection_clear_models(
     http_request::close();
 }
 
+void object_detection_clear_models::deserialise(std::string json) const 
+{
+
+    if (json.empty()) {
+         throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["result"]);
+        }
+    }
+
+}
+
 ///Class object_detection_load_models
 object_detection_load_models::object_detection_load_models(
                                                             const std::string user,

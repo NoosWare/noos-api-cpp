@@ -6,14 +6,14 @@ namespace cloud
 template <class service_class, typename... Args>
 void vision_batch::insert_service(Args... args)
 {
-    static_assert(std::is_base_of<vision_class, service_class>::value,
-                 "param must be a vision_class"); 
+    //static_assert(std::is_base_of<vision_class, service_class>::value,
+    //             "param must be a vision_class"); 
     auto object = service_class(args...);
     if (object.is_single_callable()) {
         throw std::runtime_error("object is single callable");
     }
     services__[object.uri] = object;
-    http_request::add_content(object.uri, object->make_parameters(), true);
+    http_request::add_content(object.uri, object.make_parameters(), true);
 }
 
 }
