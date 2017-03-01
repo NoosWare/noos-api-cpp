@@ -25,10 +25,11 @@ struct vision_class
      */
     virtual void deserialise(nlohmann::json json) const = 0;
 
-    /**
-     * \brief return a string of the cloud JSON parameters
-     */
+    /// \brief return a string of the cloud JSON parameters
     virtual std::string make_parameters() const = 0;
+
+    /// \return a string with the service name
+    virtual std::string get_name() const = 0;
 };
     
 /**
@@ -49,12 +50,37 @@ public:
     vision_batch(const rapp::object::picture & image);
 
     /**
+     * \brief Template Constructor
+     * \param image use for the batch
+     * \param args are the different services
+     */
+    //template<typename... Args>
+    //vision_batch(const rapp::object::picture & image, Args... args)
+    //: http_request(batch_post__), image__(image)
+    //{
+    //    http_request::make_multipart_form();
+    //    std::string fname = rapp::misc::random_boundary() + "." + image__.type();
+    //    http_request::add_content("file", fname, image.bytearray());
+
+    //    misc::for_each_arg([&](auto & obj) { 
+    //        if (obj.is_single_callable()) {
+    //            throw std::runtime_error("object is single callable");
+    //        }
+    //        std::shared_ptr<vision_class> ptr_object = std::make_shared<>(obj); 
+    //        services__["blah"] = ptr_object;
+    //    }, args...);
+    //    for (auto& service : services__) {
+    //        http_request::add_content(service->get_name(), service->make_parameters(), true);
+    //    }
+    //}
+
+    /**
      * \brief template to add services to the batch
      * \param service is the name of the service ( "face_detection", "human_detection", etc)
      * \param args the arguments needed to do the service call
      */
     template <class service_class, typename... Args>
-    void insert(std::string service, Args... args)   
+    void insert_service(Args... args)   
     {
         static_assert(std::is_base_of<vision_class, service_class>::value,
                      "param must be a vision_class"); 
@@ -62,8 +88,9 @@ public:
         if (object->is_single_callable()) {
             throw std::runtime_error("object is single callable");
         }
-        services__[service] = object;
-        http_request::add_content(service, object->make_parameters(), true);
+        auto service_name = object->get_name();
+        services__[service_name] = object;
+        http_request::add_content(service_name, object->make_parameters(), true);
     }
 
     /**

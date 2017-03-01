@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 #include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/vision_batch.hpp>
 #include <rapp/cloud/vision_detection.hpp>
 #include <rapp/cloud/vision_recognition.hpp>
 #include <rapp/objects/picture.hpp>
+#include <iostream>
+
 /**
  * @brief example to detect faces in a picture
  */
@@ -53,8 +56,8 @@ int main()
     };
 
     rapp::cloud::vision_batch vision_services(pic);
-    vision_services.insert<rapp::cloud::face_detection>("face_detection", true, face_callback); 
-    vision_services.insert<rapp::cloud::qr_recognition>("qr_detection", qr_callback); 
+    vision_services.insert_service<rapp::cloud::face_detection>(true, face_callback); 
+    vision_services.insert_service<rapp::cloud::qr_recognition>(qr_callback); 
     vision_services.end();
 
     /**
@@ -63,5 +66,16 @@ int main()
      * For more information \see rapp::cloud::vision_batch
      */
     ctrl.make_call<rapp::cloud::vision_batch>(std::move(vision_services)); 
+    //TODO: If this works do a method to return the name of the service instead of doing this
+    //      A lot of possible errors.
+    //std::vector<std::string> services_names = {"face_detection", "qr_detection"};
+    //rapp::cloud::vision_batch vision_services(  pic,
+    //                                            rapp::cloud::face_detection(false, face_callback),
+    //                                            rapp::cloud::qr_recognition(qr_callback));
+
+    //ctrl.make_call<rapp::cloud::vision_batch>(pic,
+    //                                          //services_names,
+    //                                          rapp::cloud::face_detection(false, face_callback),
+    //                                          rapp::cloud::qr_recognition(qr_callback));
     return 0;
 }

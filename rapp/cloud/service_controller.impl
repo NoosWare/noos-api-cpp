@@ -44,7 +44,6 @@ void service_controller::make_calls(Args... args)
     io_.reset();
 }
 
-///
 template <class service_type>
 void service_controller::make_call(service_type obj)
 {

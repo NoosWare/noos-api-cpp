@@ -4,14 +4,24 @@ namespace rapp
 namespace cloud 
 {
 
-const std::string face_detection::face_post__ = "POST /face_detection HTTP/1.1\r\n";   
-const std::string door_angle_detection::door_post__ = "POST /hazard_detection_door_check HTTP/1.1\r\n";
-const std::string light_detection::light_post__ = "POST /light_detection HTTP/1.1\r\n";
-const std::string human_detection::human_post__ = "POST /human_detection HTTP/1.1\r\n";
-const std::string object_detection_learn_object::learn_object_post__ = "POST /object_detection_learn_object HTTP/1.1\r\n";
-const std::string object_detection_clear_models::clear_post__ = "POST /object_detection_clear_models HTTP/1.1\r\n";
-const std::string object_detection_load_models::load_post__ = "POST /object_detection_load_models HTTP/1.1\r\n";
-const std::string object_detection_find_objects::find_obj_post__ = "POST /object_detection_find_objects HTTP/1.1\r\n";
+//service names
+const std::string face_detection::face_service__ = "face_detection";
+const std::string door_angle_detection::door_service__ = "hazard_detection_door_check";
+const std::string light_detection::light_service__ = "light_detection";
+const std::string human_detection::human_service__ = "human_detection";
+const std::string object_detection_learn_object::learn_object_service__ = "object_detection_learn_object";
+const std::string object_detection_clear_models::clear_service__ = "object_detection_clear_models";
+const std::string object_detection_load_models::load_service__ = "object_detection_load_models";
+const std::string object_detection_find_objects::find_obj_service__ = "object_detection_find_objects";
+//POST
+const std::string face_detection::face_post__ = "POST /" + face_service__ + " HTTP/1.1\r\n";   
+const std::string door_angle_detection::door_post__ = "POST /" + door_service__ + " HTTP/1.1\r\n";
+const std::string light_detection::light_post__ = "POST /" + light_service__ + " HTTP/1.1\r\n";
+const std::string human_detection::human_post__ = "POST /" + human_service__ + " HTTP/1.1\r\n";
+const std::string object_detection_learn_object::learn_object_post__ = "POST /" + learn_object_service__ + " HTTP/1.1\r\n";
+const std::string object_detection_clear_models::clear_post__ = "POST /" + clear_service__ + " HTTP/1.1\r\n";
+const std::string object_detection_load_models::load_post__ = "POST /" + load_service__ + " HTTP/1.1\r\n";
+const std::string object_detection_find_objects::find_obj_post__ = "POST /" + find_obj_service__ + " HTTP/1.1\r\n";
 
 ///Class face_detection
 face_detection::face_detection(
@@ -80,6 +90,11 @@ void face_detection::deserialise(nlohmann::json json) const
     }
 }
 
+std::string face_detection::get_name() const
+{
+    return face_service__;
+}
+
 ///Class door_angle_detection
 door_angle_detection::door_angle_detection(
                                             const rapp::object::picture & image,
@@ -126,6 +141,11 @@ void door_angle_detection::deserialise(nlohmann::json json) const
     if(misc::check_error(json)) {
         delegate_(json["door_angle"]);
     }
+}
+
+std::string door_angle_detection::get_name() const
+{
+    return door_service__;
 }
 
 /// Class light_detection
@@ -178,6 +198,11 @@ void light_detection::deserialise(nlohmann::json json) const
     if(misc::check_error(json)) {
         delegate_(json["light_level"]);
     }
+}
+
+std::string light_detection::get_name() const
+{
+    return light_service__;
 }
 
 /// Class human_detection
@@ -238,6 +263,11 @@ void human_detection::deserialise(nlohmann::json json) const
         }
         delegate_(humans);
     }
+}
+
+std::string human_detection::get_name() const
+{
+    return human_service__;
 }
 
 /// Class object_detection_learn_object
@@ -304,6 +334,11 @@ void object_detection_learn_object::deserialise(nlohmann::json json) const
     }
 }
 
+std::string object_detection_learn_object::get_name() const
+{
+    return learn_object_service__;
+}
+
 /// Class object_detection_clear_models
 object_detection_clear_models::object_detection_clear_models(
                                                               const std::string user,
@@ -330,6 +365,11 @@ void object_detection_clear_models::deserialise(std::string json) const {
         delegate_(json_f["result"]);
     }
 
+}
+
+std::string object_detection_clear_models::get_name() const
+{
+    return clear_service__;
 }
 
 ///Class object_detection_load_models
@@ -359,6 +399,11 @@ void object_detection_load_models::deserialise(std::string json) const {
         delegate_(json_f["result"]);
     }
 
+}
+
+std::string object_detection_load_models::get_name() const
+{
+    return load_service__;
 }
 
 /// Class object_detection_find_objects
@@ -439,6 +484,11 @@ void object_detection_find_objects::deserialise(nlohmann::json json) const {
                   json["found_scores"],
                   json["result"]);
     }
+}
+
+std::string object_detection_find_objects::get_name() const
+{
+    return find_obj_service__;
 }
 
 }

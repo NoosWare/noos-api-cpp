@@ -761,36 +761,35 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
 
     };
 
-    vb.insert<rapp::cloud::face_detection>("face_detection", true, face_call); 
-    vb.insert<rapp::cloud::qr_recognition>("qr_detection", qr_call);
+    vb.insert_service<rapp::cloud::face_detection>(true, face_call); 
+    vb.insert_service<rapp::cloud::qr_recognition>(qr_call);
     vb.end();
 
     auto j1 = R"(
-              {
-                "face_detection" : { "faces":[{ 
-                                                "up_left_point":{
-                                                                    "x": 1, 
-                                                                    "y": 2
-                                                }, 
-                                                "down_right_point":{
-                                                                    "x": 3, 
-                                                                    "y": 4
-                                                } 
-                                           }],
-                                     "error" : ""
-                                   },
-                "qr_detection" :   { "qr_centers":[{ 
-                                                    "x": 1, 
-                                                    "y": 2
-                                                  }], 
-                                     "qr_messages":["label"],
-                                     "error" : ""
-                                   }
-              })"_json;
+              [{
+                    "face_detection" : { "faces":[{ 
+                                                    "up_left_point":{
+                                                                        "x": 1, 
+                                                                        "y": 2
+                                                    }, 
+                                                    "down_right_point":{
+                                                                        "x": 3, 
+                                                                        "y": 4
+                                                    } 
+                                               }],
+                                         "error" : ""
+                                       },
+                    "qr_detection" :   { "qr_centers":[{ 
+                                                        "x": 1, 
+                                                        "y": 2
+                                                      }], 
+                                         "qr_messages":["label"],
+                                         "error" : ""
+                                       }
+              }])"_json;
     std::string j1_str = j1.dump(-1);
     vb.deserialise(j1_str);
 
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()

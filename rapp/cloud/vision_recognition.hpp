@@ -63,9 +63,14 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
+
 private:
     /// The callback called upon completion of receiving the detected faces
     object_recognition_callback delegate_;
+    //name header http
+    static const std::string obj_recognition_service__;
     //name header http
     static const std::string obj_recogn_post__;
 };
@@ -107,9 +112,14 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
+
 private:
     /// The callback called upon completion of receiving the qr codes
     qr_callback delegate_;
+    //name header http
+    static const std::string qr_service__;
     /// HTTP name header
     static const std::string qr_post__;
 };

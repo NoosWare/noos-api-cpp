@@ -71,10 +71,15 @@ public:
 	/// \brief handle the rapp-platform JSON reply for vision batch
     void deserialise(nlohmann::json json) const;
 
+    /// \return the service name
+    std::string get_name() const;
+
 private:
     bool fast_;
     /// The callback called upon completion of receiving the detected faces
     face_detect_callback delegate_;
+    /// name of service
+    static const std::string face_service__;
     /// name of service (header)
     static const std::string face_post__;
 };
@@ -118,9 +123,14 @@ public:
     /// \return parameters in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
+
 private:
     /// The callback called upon completion of receiving the detected faces
     door_callback delegate_;
+    /// name of service
+    static const std::string door_service__;
     /// name of service (header)
     static const std::string door_post__;
 
@@ -163,10 +173,14 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     light_callback delegate_;
+    /// name of service
+    static const std::string light_service__;
     /// name of service (header)
     static const std::string light_post__;
 
@@ -210,10 +224,14 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     human_callback delegate_;
+    /// name of service
+    static const std::string human_service__;
     /// name of service (header)
     static const std::string human_post__;
 
@@ -265,6 +283,8 @@ public:
 	/// \return paramenters in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
 
 private:
     /// parameter name
@@ -273,6 +293,8 @@ private:
     std::string user__;
     /// callback
     learn_callback delegate_;
+    /// name of service
+    static const std::string learn_object_service__;
     /// name of service (header)
     static const std::string learn_object_post__;
     
@@ -300,13 +322,16 @@ public:
                                     clear_callback callback
                                  );
     
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+    /// \brief handle the rapp-platform JSON reply
     void deserialise(std::string json) const;
+
+    /// \return the service name
+    std::string get_name() const;
 
 private:
     clear_callback delegate_;
+    /// name of service
+    static const std::string clear_service__;
     /// name of service (header)
     static const std::string clear_post__;
 
@@ -336,13 +361,16 @@ public:
                                   load_callback callback
                                 );
     
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
+	/// \brief handle the rapp-platform JSON reply
     void deserialise(std::string json) const;
+
+    /// \return the service name
+    std::string get_name() const;
 
 private:
     load_callback delegate_;
+    /// name of service
+    static const std::string load_service__;
     /// name of service (header)
     static const std::string load_post__;
 
@@ -398,6 +426,9 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
+    /// \return the service name
+    std::string get_name() const;
+
 private:
     ///parameters user
     std::string user__;
@@ -405,6 +436,8 @@ private:
     int limit__;
     /// delegate
     find_callback delegate_;
+    /// name of service
+    static const std::string find_obj_service__;
     /// name of service (header)
     static const std::string find_obj_post__;
 };

@@ -2,8 +2,12 @@
 namespace rapp {
 namespace cloud {
 
-const std::string object_recognition::obj_recogn_post__ = "POST /object_recognition_caffe HTTP/1.1\r\n";
-const std::string qr_recognition::qr_post__ = "POST /qr_detection HTTP/1.1\r\n";
+//service names
+const std::string object_recognition::obj_recognition_service__ = "object_recognition_caffe";
+const std::string qr_recognition::qr_service__ = "qr_detection";
+//POST    
+const std::string object_recognition::obj_recogn_post__ = "POST /" + obj_recognition_service__ + " HTTP/1.1\r\n";
+const std::string qr_recognition::qr_post__ = "POST /" + qr_service__ + " HTTP/1.1\r\n";
 
 /// Class object_recognition
 object_recognition::object_recognition(
@@ -52,6 +56,11 @@ void object_recognition::deserialise(nlohmann::json json) const
     if(misc::check_error(json)) {
         delegate_(json["object_class"]);
     }    
+}
+
+std::string object_recognition::get_name() const
+{
+    return obj_recognition_service__;
 }
 
 /// CLass qr_recognition
@@ -116,6 +125,11 @@ void qr_recognition::deserialise(nlohmann::json json) const
         }
         delegate_(qr_codes);
     }
+}
+
+std::string qr_recognition::get_name() const
+{
+    return qr_service__;
 }
 
 }
