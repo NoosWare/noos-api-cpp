@@ -75,8 +75,6 @@ private:
     bool fast_;
     /// The callback called upon completion of receiving the detected faces
     face_detect_callback delegate_;
-    /// name of service
-    static const std::string face_service__;
 };
 
 /**
@@ -87,7 +85,7 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class door_angle_detection 
-: public http_request, public cloud_base, public virtual vision_class
+: public http_request, public cloud_base
 {
 public:
     typedef std::function<void(double door_angle)> door_callback;
@@ -115,16 +113,12 @@ public:
     /// \return parameters in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     door_callback delegate_;
-    /// name of service
-    static const std::string door_service__;
-    /// name of service (header)
-    static const std::string door_post__;
 };
 /**
  * \class light_detection 
@@ -134,7 +128,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class light_detection 
-: public http_request, public cloud_base, public virtual vision_class  
+: public http_request, public cloud_base  
 {
 public:
     typedef std::function<void(int light_level)> light_callback;
@@ -161,17 +155,12 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     light_callback delegate_;
-    /// name of service
-    static const std::string light_service__;
-    /// name of service (header)
-    static const std::string light_post__;
-
 };
 
 /**
@@ -182,7 +171,7 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class human_detection 
-: public http_request, public cloud_base, public virtual vision_class
+: public http_request, public cloud_base
 {
 public:
     typedef std::function<void(std::vector<rapp::object::human>)> human_callback;
@@ -209,16 +198,12 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     human_callback delegate_;
-    /// name of service
-    static const std::string human_service__;
-    /// name of service (header)
-    static const std::string human_post__;
 };
 
 /**
@@ -229,7 +214,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_learn_object 
-: public http_request, public cloud_base, public virtual vision_class
+: public http_request, public cloud_base
 {
 public:
     typedef std::function<void(int)> learn_callback;
@@ -264,8 +249,8 @@ public:
 	/// \return paramenters in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     /// parameter name
@@ -274,10 +259,6 @@ private:
     std::string user__;
     /// callback
     learn_callback delegate_;
-    /// name of service
-    static const std::string learn_object_service__;
-    /// name of service (header)
-    static const std::string learn_object_post__;
 };
 
 /**
@@ -305,15 +286,11 @@ public:
     /// \brief handle the rapp-platform JSON reply
     void deserialise(std::string json) const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     clear_callback delegate_;
-    /// name of service
-    static const std::string clear_service__;
-    /// name of service (header)
-    static const std::string clear_post__;
 };
 
 /**
@@ -343,15 +320,11 @@ public:
 	/// \brief handle the rapp-platform JSON reply
     void deserialise(std::string json) const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     load_callback delegate_;
-    /// name of service
-    static const std::string load_service__;
-    /// name of service (header)
-    static const std::string load_post__;
 };
 
 /**
@@ -362,7 +335,7 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_find_objects 
-: public http_request, public cloud_base, public virtual vision_class  
+: public http_request, public cloud_base  
 {
 public:
     typedef std::function<void(std::vector<std::string>,
@@ -401,8 +374,8 @@ public:
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    /// name of service
+    static const std::string uri;
 
 private:
     ///parameters user
@@ -411,10 +384,6 @@ private:
     int limit__;
     /// delegate
     find_callback delegate_;
-    /// name of service
-    static const std::string find_obj_service__;
-    /// name of service (header)
-    static const std::string find_obj_post__;
 };
 
 }

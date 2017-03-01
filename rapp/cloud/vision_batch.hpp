@@ -5,11 +5,30 @@
 #include <rapp/cloud/asio/http_request.hpp>
 #include <rapp/objects/picture.hpp>
 #include <rapp/cloud/asio/platform.hpp>
+#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/cloud/vision_recognition.hpp>
 
 namespace rapp
 {
 namespace cloud
 {
+
+/**
+ * @brief visitor
+ * @version 0.7.3
+ * @date 01.03.0217
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+template<class T>
+struct visitor : public boost::static_visitor<>
+{
+    void operator() (const T obj ) const 
+    { 
+        //do sth
+        return; 
+    }
+};
+
 /**
  * @brief vision_batch
  * @note creates a call with multiple vision services
@@ -26,28 +45,6 @@ public:
      * \param image use for the batch
      */
     vision_batch(const rapp::object::picture & image);
-
-    /*
-    template<typename... Args>
-    vision_batch(const rapp::object::picture & image, Args... args)
-    : http_request(batch_post__), image__(image)
-    {
-        http_request::make_multipart_form();
-        std::string fname = rapp::misc::random_boundary() + "." + image__.type();
-        http_request::add_content("file", fname, image.bytearray());
-
-        misc::for_each_arg([&](auto & obj) { 
-            if (obj.is_single_callable()) {
-                throw std::runtime_error("object is single callable");
-            }
-            std::shared_ptr<vision_class> ptr_object = std::make_shared<>(obj); 
-            services__["blah"] = ptr_object;
-        }, args...);
-        for (auto& service : services__) {
-            http_request::add_content(service->get_name(), service->make_parameters(), true);
-        }
-    }
-    */
 
     /**
      * \brief template to add services to the batch

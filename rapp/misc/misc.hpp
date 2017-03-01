@@ -141,25 +141,19 @@ inline bool check_json(
         std::cerr << e.what() << std::endl;
         return false;
     }
-    auto error = misc::get_json_value<std::string>(error_str, json);
-    if (!error.empty()) {
-    #ifdef (!NDEBUG)
-        std::cerr << "error JSON: " << error <<std::endl;
-    #endif
-        return false;
-    }
     return true;
 } 
 
-/// \brief method to check if JSON data is correct
 inline bool check_error(
-                         nlohmann::json & json,
+                         const nlohmann::json json,
                          const std::string error_str = "error"
                       )
 {
     auto error = misc::get_json_value<std::string>(error_str, json);
     if (!error.empty()) {
+    #if (!NDEBUG)
         std::cerr << "error JSON: " << error <<std::endl;
+    #endif
         return false;
     }
     return true;

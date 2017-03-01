@@ -35,7 +35,7 @@ namespace cloud
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class object_recognition 
-: public http_request, public cloud_base, public virtual vision_class
+: public http_request, public cloud_base
 {
 public:
     typedef std::function<void(std::string)> object_recognition_callback; 
@@ -57,22 +57,15 @@ public:
 	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
 
-	/// \brief handle the rapp-platform JSON reply for a vision batch
-    void deserialise(nlohmann::json json) const;
-
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    //name header http
+    static const std::string uri;
 
 private:
     /// The callback called upon completion of receiving the detected faces
     object_recognition_callback delegate_;
-    //name header http
-    static const std::string obj_recognition_service__;
-    //name header http
-    static const std::string obj_recogn_post__;
 };
 
 /**
@@ -83,7 +76,7 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class qr_recognition 
-: public http_request, public cloud_base, public virtual vision_class
+: public http_request, public cloud_base
 {
 public:
     typedef std::function<void(std::vector<rapp::object::qr_code>)> qr_callback;
@@ -106,22 +99,15 @@ public:
 	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
 
-	/// \brief handle the rapp-platform JSON reply for a vision batch
-    void deserialise(nlohmann::json json) const;
-
     /// \return parameters of the class in json format
     std::string make_parameters() const;
 
-    /// \return the service name
-    std::string get_name() const;
+    //name header http
+    static const std::string uri;
 
 private:
     /// The callback called upon completion of receiving the qr codes
     qr_callback delegate_;
-    //name header http
-    static const std::string qr_service__;
-    /// HTTP name header
-    static const std::string qr_post__;
 };
 
 }

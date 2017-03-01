@@ -5,10 +5,10 @@ namespace rapp
 namespace cloud
 {
 
-const std::string vision_batch::uri__ = "POST /vision_batch HTTP/1.1\r\n";
+const std::string vision_batch::uri = "POST /vision_batch HTTP/1.1\r\n";
 
 vision_batch::vision_batch(const rapp::object::picture & image)
-: http_request(uri__),
+: http_request(uri),
   image__(image)
 {
     http_request::make_multipart_form();

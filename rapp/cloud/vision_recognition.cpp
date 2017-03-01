@@ -3,18 +3,15 @@ namespace rapp {
 namespace cloud {
 
 //service names
-const std::string object_recognition::obj_recognition_service__ = "object_recognition_caffe";
-const std::string qr_recognition::qr_service__ = "qr_detection";
-//POST    
-const std::string object_recognition::obj_recogn_post__ = "POST /" + obj_recognition_service__ + " HTTP/1.1\r\n";
-const std::string qr_recognition::qr_post__ = "POST /" + qr_service__ + " HTTP/1.1\r\n";
+const std::string object_recognition::uri = "object_recognition_caffe";
+const std::string qr_recognition::uri = "qr_detection";
 
 /// Class object_recognition
 object_recognition::object_recognition(
                                         const rapp::object::picture & image,
                                         object_recognition_callback callback
                                       )
-: http_request(obj_recogn_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -26,7 +23,7 @@ object_recognition::object_recognition(
 }
 
 object_recognition::object_recognition(object_recognition_callback callback)
-: http_request(obj_recogn_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   delegate_(callback)
 {}
@@ -43,24 +40,11 @@ void object_recognition::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        delegate_(json_f["object_class"]);
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["object_class"]);
+        }
     }    
-}
-
-void object_recognition::deserialise(nlohmann::json json) const
-{
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    if(misc::check_error(json)) {
-        delegate_(json["object_class"]);
-    }    
-}
-
-std::string object_recognition::get_name() const
-{
-    return obj_recognition_service__;
 }
 
 /// CLass qr_recognition
@@ -68,7 +52,7 @@ qr_recognition::qr_recognition(
                                 const rapp::object::picture & image,
                                 qr_callback callback
                               )
-: http_request(qr_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -79,7 +63,7 @@ qr_recognition::qr_recognition(
 }
 
 qr_recognition::qr_recognition(qr_callback callback)
-: http_request(qr_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   delegate_(callback)
 {
@@ -101,35 +85,16 @@ void qr_recognition::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        unsigned int i = 0;
-        for (auto & obj : json_f["qr_centers"]) {
-            qr_codes.push_back(rapp::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
-            i++;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            unsigned int i = 0;
+            for (auto & obj : json_f["qr_centers"]) {
+                qr_codes.push_back(rapp::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
+                i++;
+            }
+            delegate_(qr_codes);
         }
-        delegate_(qr_codes);
     }
-}
-
-void qr_recognition::deserialise(nlohmann::json json) const
-{
-    std::vector<rapp::object::qr_code> qr_codes;
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    if(misc::check_error(json)) {
-        unsigned int i = 0;
-        for (auto & obj : json["qr_centers"]) {
-            qr_codes.push_back(rapp::object::qr_code(obj["x"], obj["y"], json["qr_messages"].at(i)));
-            i++;
-        }
-        delegate_(qr_codes);
-    }
-}
-
-std::string qr_recognition::get_name() const
-{
-    return qr_service__;
 }
 
 }

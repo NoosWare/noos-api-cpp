@@ -17,13 +17,15 @@ void available_services::deserialise(std::string json)
     }
     nlohmann::json json_f;
 
-    if(misc::check_json(json_f, json)) {
-        std::vector<service> services;
-        for (auto it_s : json_f["services"]) {
-            services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
-                                              misc::get_json_value<std::string>("url", it_s)));
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            std::vector<service> services;
+            for (auto it_s : json_f["services"]) {
+                services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
+                                                  misc::get_json_value<std::string>("url", it_s)));
+            }
+            delegate_(services);
         }
-        delegate_(services);
     }
 }
 

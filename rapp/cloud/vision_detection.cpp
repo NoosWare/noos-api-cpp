@@ -6,22 +6,13 @@ namespace cloud
 
 //service names
 const std::string face_detection::uri = "face_detection";
-const std::string door_angle_detection::door_service__ = "hazard_detection_door_check";
-const std::string light_detection::light_service__ = "light_detection";
-const std::string human_detection::human_service__ = "human_detection";
-const std::string object_detection_learn_object::learn_object_service__ = "object_detection_learn_object";
-const std::string object_detection_clear_models::clear_service__ = "object_detection_clear_models";
-const std::string object_detection_load_models::load_service__ = "object_detection_load_models";
-const std::string object_detection_find_objects::find_obj_service__ = "object_detection_find_objects";
-//POST
-const std::string face_detection::face_post__ = "POST /" + face_service__ + " HTTP/1.1\r\n";   
-const std::string door_angle_detection::door_post__ = "POST /" + door_service__ + " HTTP/1.1\r\n";
-const std::string light_detection::light_post__ = "POST /" + light_service__ + " HTTP/1.1\r\n";
-const std::string human_detection::human_post__ = "POST /" + human_service__ + " HTTP/1.1\r\n";
-const std::string object_detection_learn_object::learn_object_post__ = "POST /" + learn_object_service__ + " HTTP/1.1\r\n";
-const std::string object_detection_clear_models::clear_post__ = "POST /" + clear_service__ + " HTTP/1.1\r\n";
-const std::string object_detection_load_models::load_post__ = "POST /" + load_service__ + " HTTP/1.1\r\n";
-const std::string object_detection_find_objects::find_obj_post__ = "POST /" + find_obj_service__ + " HTTP/1.1\r\n";
+const std::string door_angle_detection::uri = "hazard_detection_door_check";
+const std::string light_detection::uri= "light_detection";
+const std::string human_detection::uri= "human_detection";
+const std::string object_detection_learn_object::uri= "object_detection_learn_object";
+const std::string object_detection_clear_models::uri= "object_detection_clear_models";
+const std::string object_detection_load_models::uri= "object_detection_load_models";
+const std::string object_detection_find_objects::uri= "object_detection_find_objects";
 
 ///Class face_detection
 face_detection::face_detection(
@@ -46,7 +37,7 @@ face_detection::face_detection(
                                 bool fast,
                                 face_detect_callback callback
                               )
-: http_request(face_post__),
+: http_request(make_http_uri(uri)),
   cloud_base(false),
   fast_(fast),
   delegate_(callback)
@@ -67,11 +58,13 @@ void face_detection::deserialise(std::string json) const
     nlohmann::json json_f;
 
     if (misc::check_json(json_f, json)) {
-        auto it_faces = json_f.find("faces");
-        for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
-            faces.push_back(rapp::object::face(it));
+        if (misc::check_error(json_f)) {
+            auto it_faces = json_f.find("faces");
+            for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
+                faces.push_back(rapp::object::face(it));
+            }
+            delegate_(faces);
         }
-        delegate_(faces);
     }
 }
 
@@ -80,7 +73,7 @@ door_angle_detection::door_angle_detection(
                                             const rapp::object::picture & image,
                                             door_callback callback
                                           )
-: http_request(door_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -91,7 +84,7 @@ door_angle_detection::door_angle_detection(
 }
 
 door_angle_detection::door_angle_detection(door_callback callback)
-: http_request(door_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   delegate_(callback)
 {}
@@ -108,8 +101,10 @@ void door_angle_detection::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        delegate_(json_f["door_angle"]);
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["door_angle"]);
+        }
     }
 }
 
@@ -118,7 +113,7 @@ light_detection::light_detection(
                                   const rapp::object::picture & image,
                                   light_callback callback
                                 )
-: http_request(light_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -129,7 +124,7 @@ light_detection::light_detection(
 }
 
 light_detection::light_detection(light_callback callback)
-: http_request(light_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   delegate_(callback)
 {
@@ -149,8 +144,10 @@ void light_detection::deserialise(std::string json) const
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        delegate_(json_f["light_level"]);
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["light_level"]);
+        }
     }
 }
 
@@ -159,7 +156,7 @@ human_detection::human_detection(
                                   const rapp::object::picture & image,
                                   human_callback callback
                                 )
-: http_request(human_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -170,7 +167,7 @@ human_detection::human_detection(
 }
 
 human_detection::human_detection(human_callback callback)
-: http_request(human_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   delegate_(callback)
 {}
@@ -189,12 +186,14 @@ void human_detection::deserialise(std::string json) const
     std::vector<rapp::object::human> humans;
     nlohmann::json json_f; 
 
-    if(misc::check_json(json_f, json)) {
-        auto it_human = json_f.find("humans");
-        for (auto it = it_human->begin(); it != it_human->end(); it++ ) {
-            humans.push_back(rapp::object::human(it));
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_human = json_f.find("humans");
+            for (auto it = it_human->begin(); it != it_human->end(); it++ ) {
+                humans.push_back(rapp::object::human(it));
+            }
+            delegate_(humans);
         }
-        delegate_(humans);
     }
 }
 
@@ -205,7 +204,7 @@ object_detection_learn_object::object_detection_learn_object(
                                                               const std::string user,
                                                               learn_callback callback
                                                             )
-: http_request(learn_object_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   name__(name),
   user__(user),
@@ -225,7 +224,7 @@ object_detection_learn_object::object_detection_learn_object(
                                                               const std::string user,
                                                               learn_callback callback
                                                             )
-: http_request(learn_object_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   name__(name),
   user__(user),
@@ -245,8 +244,10 @@ void object_detection_learn_object::deserialise(std::string json) const {
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        delegate_(json_f["result"]);
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["result"]);
+        }
     }
 
 }
@@ -256,7 +257,7 @@ object_detection_clear_models::object_detection_clear_models(
                                                               const std::string user,
                                                               clear_callback callback
                                                             )
-: http_request(clear_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -272,7 +273,7 @@ object_detection_load_models::object_detection_load_models(
                                                             const std::vector<std::string> names,
                                                             load_callback callback
                                                           )
-: http_request(load_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate_(callback)
 {
@@ -289,8 +290,10 @@ void object_detection_load_models::deserialise(std::string json) const {
         throw std::runtime_error("empty json reply");
     }
     nlohmann::json json_f;
-    if(misc::check_json(json_f, json)) {
-        delegate_(json_f["result"]);
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            delegate_(json_f["result"]);
+        }
     }
 
 }
@@ -302,7 +305,7 @@ object_detection_find_objects::object_detection_find_objects(
                                                               const int limit,
                                                               find_callback callback
                                                              )
-: http_request(find_obj_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(true),
   user__(user),
   limit__(limit),
@@ -322,7 +325,7 @@ object_detection_find_objects::object_detection_find_objects(
                                                               const int limit,
                                                               find_callback callback
                                                              )
-: http_request(find_obj_post__), 
+: http_request(make_http_uri(uri)), 
   cloud_base(false),
   user__(user),
   limit__(limit),
@@ -344,15 +347,17 @@ void object_detection_find_objects::deserialise(std::string json) const {
     std::vector<rapp::object::point> points;
     nlohmann::json json_f;
 
-    if(misc::check_json(json_f, json)) {
-        auto it_center = json_f.find("found_centers");
-        for (auto it = it_center->begin(); it != it_center->end(); it++) {
-            points.push_back(rapp::object::point(it));
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_center = json_f.find("found_centers");
+            for (auto it = it_center->begin(); it != it_center->end(); it++) {
+                points.push_back(rapp::object::point(it));
+            }
+            delegate_(json_f["found_names"],
+                      points, 
+                      json_f["found_scores"],
+                      json_f["result"]);
         }
-        delegate_(json_f["found_names"],
-                  points, 
-                  json_f["found_scores"],
-                  json_f["result"]);
     }
 }
 
