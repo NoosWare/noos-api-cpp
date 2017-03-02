@@ -34,9 +34,11 @@ namespace cloud
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class object_recognition 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<object_recognition,std::string>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(std::string)> object_recognition_callback; 
     /**
     * \brief Constructor
@@ -75,9 +77,11 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class qr_recognition 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<qr_recognition,std::vector<rapp::object::qr_code>>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(std::vector<rapp::object::qr_code>)> qr_callback;
     /**
     * \brief Constructor

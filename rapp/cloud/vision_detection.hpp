@@ -20,6 +20,7 @@
 #include <rapp/objects/picture.hpp>
 #include <rapp/objects/human.hpp>
 #include <rapp/objects/point.hpp>
+#include <rapp/objects/orb_object.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 #include <rapp/cloud/cloud_base.hpp>
 #include <rapp/cloud/deserialize.hpp>
@@ -36,9 +37,11 @@ namespace cloud
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class face_detection 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<face_detection,std::vector<rapp::object::face>>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(std::vector<rapp::object::face>)> face_detect_callback;
     /**
      * \brief constructor
@@ -61,7 +64,7 @@ public:
                     face_detect_callback callback
                   );
 
-	/// \brief handle the rapp-platform JSON reply for single call
+	/// \brief handle the rapp-platform JSON reply for single call - TODO @DEPRECATE
     void deserialise(std::string json) const;
 
     /// \return parameters of the class in json format
@@ -84,9 +87,11 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class door_angle_detection 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<door_angle_detection,double>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(double door_angle)> door_callback;
 
     /**
@@ -106,7 +111,7 @@ public:
      */
     door_angle_detection(door_callback callback);
 
-	/// \brief handle the rapp-platform JSON reply for a single call
+	/// \brief handle the rapp-platform JSON reply for a single call - TODO @DEPRECATE
     void deserialise(std::string json) const;
 
     /// \return parameters in json format
@@ -127,9 +132,11 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class light_detection 
-: public http_request, public cloud_base  
+: public http_request, 
+  public cloud_base<light_detection,int>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(int light_level)> light_callback;
 
     /**
@@ -151,7 +158,7 @@ public:
 	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
 
-    /// \return parameters of the class in json format
+    /// \return parameters of the class in json format - TODO @DEPRECATE
     std::string make_parameters() const;
 
     /// name of service
@@ -170,9 +177,11 @@ private:
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class human_detection 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<human_detection,std::vector<rapp::object::human>>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(std::vector<rapp::object::human>)> human_callback;
     /**
     * \brief Constructor
@@ -191,7 +200,7 @@ public:
      */
     human_detection(human_callback callback);
 
-	/// \brief handle the rapp-platform JSON reply a single call
+	/// \brief handle the rapp-platform JSON reply a single call - TODO @DEPRECATE
     void deserialise(std::string json) const;
     
     /// \return parameters of the class in json format
@@ -213,9 +222,11 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_learn_object 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<object_detection_learn_object,int>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(int)> learn_callback;
     /**
     * \brief Constructor
@@ -242,7 +253,7 @@ public:
                                    learn_callback callback
                                  );
 
-	/// \brief handle the rapp-platform JSON reply
+	/// \brief handle the rapp-platform JSON reply - TODO: @DEPERCATE
     void deserialise(std::string json) const;
 
 	/// \return paramenters in json format
@@ -268,9 +279,11 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_clear_models 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<object_detection_clear_models,int>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(int)> clear_callback;
     /**
     * \brief Constructor
@@ -300,9 +313,11 @@ private:
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_load_models 
-: public http_request, public cloud_base
+: public http_request, 
+  public cloud_base<object_detection_load_models,int>
 {
 public:
+    // TODO: rename to `callback`
     typedef std::function<void(int)> load_callback;
     /**
     * \brief Constructor
@@ -316,7 +331,7 @@ public:
                                   load_callback callback
                                 );
     
-	/// \brief handle the rapp-platform JSON reply
+	/// \brief handle the rapp-platform JSON reply - TODO @DEPRECATE
     void deserialise(std::string json) const;
 
     /// name of service
@@ -329,18 +344,16 @@ private:
 /**
  * \class object_detection_find_objects
  * \brief user can provide query image to detect objects
- * \version 0.7.0
+ * \version 0.7.2
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class object_detection_find_objects 
-: public http_request, public cloud_base  
+: public http_request, 
+  public cloud_base<object_detection_find_objects,rapp::object::orb_object>
 {
 public:
-    typedef std::function<void(std::vector<std::string>,
-                               std::vector<rapp::object::point>, 
-                               std::vector<double>,
-                               int)> find_callback;
+    typedef std::function<void(rapp::object::orb_object)> callback;
     /**
     * \brief Constructor
     * \param fname is the path (id) of query image
@@ -352,7 +365,7 @@ public:
                                   const rapp::object::picture & image,
                                   const std::string user,
                                   const int limit,
-                                  find_callback callback
+                                  callback delegate
                                 );
     
     /**
@@ -364,7 +377,7 @@ public:
     object_detection_find_objects(
                                    const std::string user,
                                    const int limit,
-                                   find_callback callback
+                                   callback delegate
                                  );
 
 	/// \brief handle the rapp-platform JSON reply for a single call
@@ -382,7 +395,7 @@ private:
     ///parameters limit
     int limit__;
     /// delegate
-    find_callback delegate_;
+    callback delegate_;
 };
 
 }

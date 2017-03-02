@@ -246,13 +246,13 @@ object_detection_find_objects::object_detection_find_objects(
                                                               const rapp::object::picture & image,
                                                               const std::string user,
                                                               const int limit,
-                                                              find_callback callback
+                                                              callback delegate
                                                              )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
   user__(user),
   limit__(limit),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -266,13 +266,13 @@ object_detection_find_objects::object_detection_find_objects(
 object_detection_find_objects::object_detection_find_objects(
                                                               const std::string user,
                                                               const int limit,
-                                                              find_callback callback
+                                                              callback delegate
                                                              )
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
   user__(user),
   limit__(limit),
-  delegate_(callback)
+  delegate_(delegate)
 {}
 
 std::string object_detection_find_objects::make_parameters() const
@@ -296,10 +296,13 @@ void object_detection_find_objects::deserialise(std::string json) const {
             for (auto it = it_center->begin(); it != it_center->end(); it++) {
                 points.push_back(rapp::object::point(it));
             }
+            /**
+             * TODO: replace with `rapp::object::orb_object`
             delegate_(json_f["found_names"],
                       points, 
                       json_f["found_scores"],
                       json_f["result"]);
+              */
         }
     }
 }

@@ -55,27 +55,12 @@ int main()
         std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
 
-    using namespace rapp::cloud;
-    vision_batch<face_detection,human_detection> batch(pic, 
-                                                       face_detection(true, face_cb), 
-                                                       human_detection(human_cb));
+    using face_d   = rapp::cloud::face_detection;
+    using human_d  = rapp::cloud::human_detection;
+    using vision_b = rapp::cloud::vision_batch<face_d,human_d>;
 
-    /**
-     * We make a call to vision batch with face_detection and qr_detection
-     * services with the same image.
-     * For more information \see rapp::cloud::vision_batch
-     */
-    //ctrl.make_call<rapp::cloud::vision_batch>(std::move(vision_services)); 
-    //TODO: If this works do a method to return the name of the service instead of doing this
-    //      A lot of possible errors.
-    //std::vector<std::string> services_names = {"face_detection", "qr_detection"};
-    //rapp::cloud::vision_batch vision_services(  pic,
-    //                                            rapp::cloud::face_detection(false, face_callback),
-    //                                            rapp::cloud::qr_recognition(qr_callback));
-
-    //ctrl.make_call<rapp::cloud::vision_batch>(pic,
-    //                                          //services_names,
-    //                                          rapp::cloud::face_detection(false, face_callback),
-    //                                          rapp::cloud::qr_recognition(qr_callback));
+    ctrl.make_call<vision_b>(pic,
+                             face_d(false, face_cb),
+                             human_d(human_cb));
     return 0;
 }

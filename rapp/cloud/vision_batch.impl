@@ -1,0 +1,29 @@
+namespace rapp
+{
+namespace cloud
+{
+template <class... services>
+vision_batch<services...>::vision_batch(
+                                         const rapp::object::picture & image,
+                                         services... args
+                                       )
+: http_request(cloud_base<vision_batch<services...>,void>::make_http_uri("vision_batch")), 
+  cloud_base<vision_batch<services...>,void>(true),
+  image__(image),
+  batch__(std::make_tuple((args)...))
+{
+    http_request::make_multipart_form();
+    std::string fname = rapp::misc::random_boundary() + "." + image__.type();
+    http_request::add_content("file", fname, image.bytearray());
+    //std::get<index__[obj.uri]>(services__);
+    // TODO: expand the arguments, and assign for each object, a named map/index
+}
+
+template <class... services>
+void vision_batch<services...>::deserialise(std::string json)
+{
+    // TODO:...
+}
+
+}
+}

@@ -62,15 +62,12 @@ int main()
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive the data of the objects found. 
     */
-    auto find_cb = [](std::vector<std::string> obj_names,
-                     std::vector<rapp::object::point> points, 
-                     std::vector<double> scores,
-                     int result) 
+    auto find_cb = [](const rapp::object::orb_object obj) 
     {
-        std::cout << "Number of objects found: " << obj_names.size() << std::endl;
-        std::cout << "Size vector points: " << points.size() << std::endl;
-        std::cout << "Size of scores: " << scores.size() << std::endl;
-        std::cout << "Result: " << result << std::endl; 
+        std::cout << "Number of objects found: " << obj.names.size() << std::endl;
+        std::cout << "Size vector points: " << obj.points.size() << std::endl;
+        std::cout << "Size of scores: " << obj.scores.size() << std::endl;
+        std::cout << "Result: " << obj.result << std::endl; 
     };
     /*
      * We make a call to learn_object class to learn objects from the file

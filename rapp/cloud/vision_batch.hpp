@@ -21,9 +21,10 @@ namespace cloud
  * @date 09.02.0217
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-template <typename... services>
+template <class... services> 
 class vision_batch 
-: public http_request, public cloud_base 
+: public http_request, 
+  public cloud_base<vision_batch<services...>,void>
 {
 public:
     /**
@@ -31,41 +32,23 @@ public:
      * \param image use for the batch
      */
     vision_batch(
-                 const rapp::object::picture & image,
-                 services... args
-                )
-    : http_request(uri), 
-      cloud_base(true),
-      image__(image)
-    {
-        /*
-        http_request::make_multipart_form();
-        std::string fname = rapp::misc::random_boundary() + "." + image__.type();
-        http_request::add_content("file", fname, image.bytearray());
-        */
-        services__ = std::make_tuple((args)...);
-        //std::get<index__[obj.uri]>(services__);
-    }
-
-    /// \brief Deserialise of every single object in services__
-    void deserialise(std::string json_str);
-
-    /// \brief URI of vision batch
-    std::string uri() const
-    {
-        return make_http_uri("vision_batch");
-    }
+                  const rapp::object::picture & image,
+                  services... args
+                );
+   
+    /// \brief process the JSON reply and delegate to services
+    void deserialise(std::string json);
 
 private:
-    ///image use for all the vision services
+    /// \brief image use for all the vision services
     const rapp::object::picture & image__;
-    /// named index
+    /// \brief named index map
     std::map<std::string, unsigned int> index__;
-    /// sub-services
-    std::tuple<services...> services__;
+    /// \brief batch services
+    std::tuple<services...> batch__;
 };
 
 }
 }
-//#include "vision_batch.imp"
+#include "vision_batch.impl"
 #endif

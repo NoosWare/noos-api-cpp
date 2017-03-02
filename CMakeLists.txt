@@ -68,8 +68,6 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/speech_recognition.cpp
              ${INCLUDES}/cloud/text_to_speech.cpp
              ${INCLUDES}/cloud/service_controller.cpp
-             ${INCLUDES}/cloud/vision_batch.cpp
-             ${INCLUDES}/cloud/cloud_base.cpp
              ${INCLUDES}/config/config.cpp
              ${INCLUDES}/objects/time.cpp
              ${INCLUDES}/objects/quaternion.cpp
