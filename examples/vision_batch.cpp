@@ -47,25 +47,25 @@ int main()
      * we show the size of the vector to know how many faces have 
      * been found.
      */
-    auto face_callback = [&](std::vector<rapp::object::face> faces) { 
+    auto face_cb = [&](std::vector<rapp::object::face> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
     };
 
-    auto qr_callback = [&](std::vector<rapp::object::qr_code> qrs) { 
-        std::cout << "Found " << qrs.size() << " qrs!" << std::endl;
+    auto human_cb = [&](std::vector<rapp::object::human> humans) { 
+        std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
 
-    rapp::cloud::vision_batch vision_services(pic);
-    vision_services.insert_service<rapp::cloud::face_detection>(true, face_callback); 
-    vision_services.insert_service<rapp::cloud::qr_recognition>(qr_callback); 
-    vision_services.end();
+    using namespace rapp::cloud;
+    vision_batch<face_detection,human_detection> batch(pic, 
+                                                       face_detection(true, face_cb), 
+                                                       human_detection(human_cb));
 
     /**
      * We make a call to vision batch with face_detection and qr_detection
      * services with the same image.
      * For more information \see rapp::cloud::vision_batch
      */
-    ctrl.make_call<rapp::cloud::vision_batch>(std::move(vision_services)); 
+    //ctrl.make_call<rapp::cloud::vision_batch>(std::move(vision_services)); 
     //TODO: If this works do a method to return the name of the service instead of doing this
     //      A lot of possible errors.
     //std::vector<std::string> services_names = {"face_detection", "qr_detection"};

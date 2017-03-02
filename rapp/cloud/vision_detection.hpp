@@ -22,7 +22,7 @@
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 #include <rapp/cloud/cloud_base.hpp>
-
+#include <rapp/cloud/deserialize.hpp>
 namespace rapp 
 {
 namespace cloud 

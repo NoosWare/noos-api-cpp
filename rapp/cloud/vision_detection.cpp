@@ -51,21 +51,7 @@ std::string face_detection::make_parameters() const
 
 void face_detection::deserialise(std::string json) const
 {   
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    std::vector<rapp::object::face> faces;
-    nlohmann::json json_f;
-
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto it_faces = json_f.find("faces");
-            for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
-                faces.push_back(rapp::object::face(it));
-            }
-            delegate_(faces);
-        }
-    }
+    delegate_(rapp::cloud::deserialize<face_detection,std::vector<rapp::object::face>>()(json));
 }
 
 ///Class door_angle_detection
@@ -97,15 +83,7 @@ std::string door_angle_detection::make_parameters() const
 
 void door_angle_detection::deserialise(std::string json) const
 {
-   if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            delegate_(json_f["door_angle"]);
-        }
-    }
+   delegate_(rapp::cloud::deserialize<door_angle_detection, double>()(json));
 }
 
 /// Class light_detection
@@ -140,15 +118,7 @@ std::string light_detection::make_parameters() const
 
 void light_detection::deserialise(std::string json) const
 {
-   if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            delegate_(json_f["light_level"]);
-        }
-    }
+   delegate_(rapp::cloud::deserialize<light_detection, int>()(json));
 }
 
 /// Class human_detection
@@ -180,21 +150,7 @@ std::string human_detection::make_parameters() const
 
 void human_detection::deserialise(std::string json) const
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    std::vector<rapp::object::human> humans;
-    nlohmann::json json_f; 
-
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto it_human = json_f.find("humans");
-            for (auto it = it_human->begin(); it != it_human->end(); it++ ) {
-                humans.push_back(rapp::object::human(it));
-            }
-            delegate_(humans);
-        }
-    }
+    delegate_(rapp::cloud::deserialize<human_detection, std::vector<rapp::object::human>>()(json));
 }
 
 /// Class object_detection_learn_object
@@ -238,18 +194,9 @@ std::string object_detection_learn_object::make_parameters() const
     return json_doc.dump(-1);
 }
 
-void object_detection_learn_object::deserialise(std::string json) const {
-
-   if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            delegate_(json_f["result"]);
-        }
-    }
-
+void object_detection_learn_object::deserialise(std::string json) const 
+{   
+    delegate_(rapp::cloud::deserialize<object_detection_learn_object, int>()(json));
 }
 
 /// Class object_detection_clear_models
@@ -269,18 +216,7 @@ object_detection_clear_models::object_detection_clear_models(
 
 void object_detection_clear_models::deserialise(std::string json) const 
 {
-
-    if (json.empty()) {
-         throw std::runtime_error("empty json reply");
-    }
-    nlohmann::json json_f;
-
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            delegate_(json_f["result"]);
-        }
-    }
-
+    delegate_(rapp::cloud::deserialize<object_detection_clear_models, int>()(json));
 }
 
 ///Class object_detection_load_models
@@ -300,18 +236,9 @@ object_detection_load_models::object_detection_load_models(
     http_request::close();
 }
 
-void object_detection_load_models::deserialise(std::string json) const {
-
-   if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            delegate_(json_f["result"]);
-        }
-    }
-
+void object_detection_load_models::deserialise(std::string json) const 
+{
+   delegate_(rapp::cloud::deserialize<object_detection_load_models, int>()(json));
 }
 
 /// Class object_detection_find_objects

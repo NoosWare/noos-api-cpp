@@ -7,6 +7,7 @@
 #include <rapp/cloud/asio/platform.hpp>
 #include <rapp/cloud/vision_detection.hpp>
 #include <rapp/cloud/vision_recognition.hpp>
+#include <rapp/misc/misc.hpp>
 
 namespace rapp
 {
@@ -20,53 +21,51 @@ namespace cloud
  * @date 09.02.0217
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class vision_batch : public http_request
+template <typename... services>
+class vision_batch 
+: public http_request, public cloud_base 
 {
 public:
-
     /**
      * \brief Constructor
      * \param image use for the batch
      */
-    vision_batch(const rapp::object::picture & image);
-
-    /**
-     * \brief template to add services to the batch
-     * \param service is the name of the service ( "face_detection", "human_detection", etc)
-     * \param args the arguments needed to do the service call
-     */
-    template <class service_class, typename... Args>
-    void insert_service(Args... args);
+    vision_batch(
+                 const rapp::object::picture & image,
+                 services... args
+                )
+    : http_request(uri), 
+      cloud_base(true),
+      image__(image)
+    {
+        /*
+        http_request::make_multipart_form();
+        std::string fname = rapp::misc::random_boundary() + "." + image__.type();
+        http_request::add_content("file", fname, image.bytearray());
+        */
+        services__ = std::make_tuple((args)...);
+        //std::get<index__[obj.uri]>(services__);
+    }
 
     /// \brief Deserialise of every single object in services__
     void deserialise(std::string json_str);
 
-    /// \brief End of the request(no more services inserted)
-    void end();
-
     /// \brief URI of vision batch
-    static const std::string uri;
+    std::string uri() const
+    {
+        return make_http_uri("vision_batch");
+    }
 
 private:
-    /*
-    typedef boost::variant<
-                           face_detection,
-                           qr_recognition,
-                           human_detection,
-                           door_angle_detection,
-                           light_detection,
-                           object_detection_learn_object,
-                           object_detection_clear_models,
-                           object_detection_load_models,
-                           object_detection_find_objects> vision_class;
-    */
     ///image use for all the vision services
-    rapp::object::picture image__;
-    ///container of services
-    std::map<std::string, boost::any> services__;
+    const rapp::object::picture & image__;
+    /// named index
+    std::map<std::string, unsigned int> index__;
+    /// sub-services
+    std::tuple<services...> services__;
 };
 
 }
 }
-#include "vision_batch.imp"
+//#include "vision_batch.imp"
 #endif

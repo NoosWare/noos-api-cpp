@@ -2,7 +2,7 @@ namespace rapp
 {
 namespace cloud
 {
-
+/*
 template <class service_class, typename... Args>
 void vision_batch::insert_service(Args... args)
 {
@@ -13,6 +13,23 @@ void vision_batch::insert_service(Args... args)
     services__[object.uri] = object;
     http_request::add_content(object.uri, object.make_parameters(), true);
 }
+*/
+
+/*
+template <typename... services>
+vision_batch<services...>::vision_batch(
+                                         rapp::object::picture image,
+                                         services... arg
+                                       )
+*/
+
+/*
+template <typename... services>
+std::string vision_batch<services...>::uri() const
+{
+    return make_http_uri("vision_batch");
+}
+*/
 
 }
 }
