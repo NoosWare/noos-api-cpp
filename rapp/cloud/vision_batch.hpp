@@ -12,29 +12,6 @@ namespace rapp
 {
 namespace cloud
 {
-/**
- *  @brief forward declaration
- *  @see vision_detection.hpp
- *  @see vision_recognition.hpp
- */
-class face_detection;
-class qr_recognition;
-
-/**
- * @brief visitor
- * @version 0.7.3
- * @date 01.03.0217
- * @author Maria Ramos <m.ramos@ortelio.co.uk>
- */
-template<class T>
-struct visitor : public boost::static_visitor<>
-{
-    void operator() (const T & obj) const 
-    { 
-        //do sth
-        return; 
-    }
-};
 
 /**
  * @brief vision_batch
@@ -71,20 +48,22 @@ public:
     static const std::string uri;
 
 private:
-    typedef boost::variant<face_detection,
-                           qr_recognition> vision_class;
-                           //human_detection,
-                           //door_angle_detection,
-                           //light_detection,
-                           //object_detection_learn_object,
-                           //object_detection_clear_models,
-                           //object_detection_load_models,
-                           //object_detection_find_objects> vision_class;
-
+    /*
+    typedef boost::variant<
+                           face_detection,
+                           qr_recognition,
+                           human_detection,
+                           door_angle_detection,
+                           light_detection,
+                           object_detection_learn_object,
+                           object_detection_clear_models,
+                           object_detection_load_models,
+                           object_detection_find_objects> vision_class;
+    */
     ///image use for all the vision services
     rapp::object::picture image__;
     ///container of services
-    std::map<std::string, vision_class> services__;
+    std::map<std::string, boost::any> services__;
 };
 
 }

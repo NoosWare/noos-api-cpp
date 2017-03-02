@@ -28,12 +28,14 @@ void vision_batch::deserialise(std::string json_str)
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;
     }
-    for (auto obj_array : json) {
-        for(const auto obj : services__) {
-            if (!obj_array[obj.first].empty()) {
-                // obj.second = vision_class / boost::variant
-                // TODO -> obj.second.deserialise(obj_array[obj.first].dump());
-            }
+    for (auto json_object : json) {
+        // json_object   TODO: find they key => class
+        for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
+            std::string str = it.value().dump(-1);
+            auto obj = boost::any_cast<>(services__[it.key()]);
+            obj.deserialise(str);
+            //services__[it.key()].deserialise(str);
+
         }
     }
 }

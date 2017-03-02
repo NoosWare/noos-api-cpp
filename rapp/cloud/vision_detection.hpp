@@ -21,7 +21,6 @@
 #include <rapp/objects/human.hpp>
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/vision_batch.hpp>
 #include <rapp/cloud/cloud_base.hpp>
 
 namespace rapp 
@@ -61,7 +60,7 @@ public:
                     bool fast,
                     face_detect_callback callback
                   );
-     
+
 	/// \brief handle the rapp-platform JSON reply for single call
     void deserialise(std::string json) const;
 
@@ -72,7 +71,7 @@ public:
     static const std::string uri;
 
 private:
-    bool fast_;
+    bool fast_ = true;
     /// The callback called upon completion of receiving the detected faces
     face_detect_callback delegate_;
 };

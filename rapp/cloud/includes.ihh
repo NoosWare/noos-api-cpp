@@ -17,6 +17,8 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/variant.hpp>
+#include <boost/any.hpp>
+#include <boost/variant/static_visitor.hpp>
 
 #include <rapp/misc/json.hpp>
 #include <rapp/misc/misc.hpp>

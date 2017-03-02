@@ -20,7 +20,6 @@
 #include <rapp/objects/qr_code.hpp>
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/vision_batch.hpp>
 #include <rapp/cloud/cloud_base.hpp>
 
 namespace rapp 
