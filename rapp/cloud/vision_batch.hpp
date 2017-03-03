@@ -24,7 +24,7 @@ namespace cloud
 template <class... services> 
 class vision_batch 
 : public http_request, 
-  public cloud_base<vision_batch<services...>,void>
+  public cloud_base<vision_batch<services...>,bool>
 {
 public:
     /**
@@ -37,13 +37,27 @@ public:
                 );
    
     /// \brief process the JSON reply and delegate to services
-    void deserialise(std::string json);
+    void deserialise(std::string key);
 
+    /// \brief expand batch type
+    template<std::size_t... batch_size>
+    void expand_batch(std::string json) 
+    {
+        find_process(std::get<batch_size>(batch__)..., json);
+    }
+
+    /// \brief
+    void find_process(services... args, std::string json)
+    {
+        misc::for_each_arg([&](auto & obj){
+            // TODO: if obj.uri == key, then run
+            obj.process(json);
+        }, args...);
+    }
+   
 private:
     /// \brief image use for all the vision services
     const rapp::object::picture & image__;
-    /// \brief named index map
-    std::map<std::string, unsigned int> index__;
     /// \brief batch services
     std::tuple<services...> batch__;
 };

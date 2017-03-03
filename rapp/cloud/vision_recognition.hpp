@@ -21,6 +21,7 @@
 #include <rapp/objects/point.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 #include <rapp/cloud/cloud_base.hpp>
+#include <rapp/cloud/deserialize.hpp>
 
 namespace rapp 
 {
@@ -39,7 +40,7 @@ class object_recognition
 {
 public:
     // TODO: rename to `callback`
-    typedef std::function<void(std::string)> object_recognition_callback; 
+    typedef std::function<void(std::string)> callback; 
     /**
     * \brief Constructor
     * \param image is a picture object pointer
@@ -47,16 +48,13 @@ public:
     */
     object_recognition(
                         const rapp::object::picture & image,
-                        object_recognition_callback callback
+                        callback delegate
                       );
     /**
      * \brief Constructor without image
      * \param callback will receive a string 
      */
-    object_recognition(object_recognition_callback callback);
-    
-	/// \brief handle the rapp-platform JSON reply for a single call
-    void deserialise(std::string json) const;
+    object_recognition(callback delegate);
 
     /// \return parameters of the class in json format
     std::string make_parameters() const;
@@ -64,9 +62,15 @@ public:
     //name header http
     static const std::string uri;
 
+    /// TODO: check and see if it works
+    //        if it works, then make all classes have a `const` public callback `delegate`
+    const callback delegate;
+
 private:
+    // TODO: alternatively, make cloud_base a friend to all inheriting classes
+    friend class cloud_base<object_recognition,std::string>;
     /// The callback called upon completion of receiving the detected faces
-    object_recognition_callback delegate_;
+    callback delegate_;
 };
 
 /**
@@ -82,7 +86,7 @@ class qr_recognition
 {
 public:
     // TODO: rename to `callback`
-    typedef std::function<void(std::vector<rapp::object::qr_code>)> qr_callback;
+    typedef std::function<void(std::vector<rapp::object::qr_code>)> callback;
     /**
     * \brief Constructor
     * \param image is a picture object pointer
@@ -90,17 +94,14 @@ public:
     */
     qr_recognition(
                     const rapp::object::picture & image,
-                    qr_callback callback
+                    callback delegate
                   );
 
     /**
      * \brief Constructor without image
      * \param callback will receive a vector of detected qr(s)
      */
-    qr_recognition(qr_callback callback);
-
-	/// \brief handle the rapp-platform JSON reply for a single call
-    void deserialise(std::string json) const;
+    qr_recognition(callback delegate);
 
     /// \return parameters of the class in json format
     std::string make_parameters() const;
@@ -110,7 +111,7 @@ public:
 
 private:
     /// The callback called upon completion of receiving the qr codes
-    qr_callback delegate_;
+    callback delegate_;
 };
 
 }

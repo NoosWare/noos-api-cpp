@@ -20,6 +20,8 @@
 #include <rapp/objects/human.hpp>
 #include <rapp/objects/point.hpp>
 #include <rapp/objects/orb_object.hpp>
+#include <rapp/objects/qr_code.hpp>
+
 namespace rapp
 {
 namespace cloud
@@ -40,7 +42,8 @@ class object_detection_learn_object;
 class object_detection_clear_models;
 class object_detection_load_models;
 class object_detection_find_objects;
-
+class object_recognition;
+class qr_recognition;
 
 /// specialization for face_detection and faces
 template <>
@@ -159,34 +162,68 @@ inline int deserialize<object_detection_load_models,int>::operator()(std::string
     return -1; 
 }
 
-//template <>
-//int deserialize<object_detection_load_models, int>::operator()(std::string json) 
-//{
-//    if (json.empty()) {
-//        throw std::runtime_error("empty json reply");
-//    }
-//    std::vector<rapp::object::point> points;
-//    nlohmann::json json_f;
-//
-//    if (misc::check_json(json_f, json)) {
-//        if (misc::check_error(json_f)) {
-//            auto it_center = json_f.find("found_centers");
-//            for (auto it = it_center->begin(); it != it_center->end(); it++) {
-//                points.push_back(rapp::object::point(it));
-//            }
-//            //delegate_(json_f["found_names"],
-//            //          points, 
-//            //          json_f["found_scores"],
-//            //          json_f["result"]);
-//        }
-//    }
-//    return -1;
-//}
+template <>
+inline rapp::object::orb_object deserialize<object_detection_find_objects,rapp::object::orb_object>::operator()(std::string json) 
+{
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    std::vector<rapp::object::point> points;
+    nlohmann::json json_f;
 
-// TODO: you repeat this for each cloud class, simply copy-pasting their code in each specialization
-// so when you store a lambda/std::function you will store:
-//  (const std::string json){ return deserialize<face_detection, face>(json); }
-// for each service value in they key map
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_center = json_f.find("found_centers");
+            for (auto it = it_center->begin(); it != it_center->end(); it++) {
+                points.push_back(rapp::object::point(it));
+            }
+            return rapp::object::orb_object {
+                                              json_f["found_names"],
+                                              points, 
+                                              json_f["found_scores"],
+                                              json_f["result"]
+                                            };
+        }
+    }
+    return rapp::object::orb_object{};
+}
+
+template <>
+inline std::string deserialize<object_recognition,std::string>::operator()(std::string json) 
+{
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            return(json_f["object_class"]);
+        }
+    }
+    return "";
+}
+
+template<>
+inline std::vector<rapp::object::qr_code> deserialize<qr_recognition, std::vector<rapp::object::qr_code>>::operator()(std::string json)
+{
+    std::vector<rapp::object::qr_code> qr_codes;
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            unsigned int i = 0;
+            for (auto & obj : json_f["qr_centers"]) {
+                qr_codes.push_back(rapp::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
+                i++;
+            }
+            return qr_codes;
+        }
+    }
+    return qr_codes;
+}
+
 }
 }
 #endif

@@ -39,7 +39,7 @@ public:
      * \brief process json and call delegate functor
      * \return type specified by inheriting class
      */
-    return_type process(std::string json);
+    void process(std::string json);
 
 protected:
     bool single_callable;

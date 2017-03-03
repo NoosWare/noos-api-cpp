@@ -54,19 +54,13 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
-             ${INCLUDES}/cloud/authentication.cpp
-             ${INCLUDES}/cloud/available_services.cpp
-             ${INCLUDES}/cloud/cognitive_exercises.cpp
-             ${INCLUDES}/cloud/email.cpp
-             ${INCLUDES}/cloud/geolocation.cpp
-             ${INCLUDES}/cloud/ontology.cpp
+             #${INCLUDES}/cloud/available_services.cpp
+             #${INCLUDES}/cloud/ontology.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
-             ${INCLUDES}/cloud/weather_report.cpp
-             ${INCLUDES}/cloud/path_planning.cpp
-             ${INCLUDES}/cloud/news.cpp
-             ${INCLUDES}/cloud/speech_recognition.cpp
-             ${INCLUDES}/cloud/text_to_speech.cpp
+             #${INCLUDES}/cloud/path_planning.cpp
+             #${INCLUDES}/cloud/speech_recognition.cpp
+             #${INCLUDES}/cloud/text_to_speech.cpp
              ${INCLUDES}/cloud/service_controller.cpp
              ${INCLUDES}/config/config.cpp
              ${INCLUDES}/objects/time.cpp
@@ -233,7 +227,7 @@ endif()
 #   build examples
 ###
 if (${BUILD_EXAMPLES})
-    set (EXAMPLES available_services.cpp
+    set (EXAMPLES #available_services.cpp
                   batch.cpp
                   vision_batch.cpp
                   class_reactor.cpp
@@ -245,19 +239,15 @@ if (${BUILD_EXAMPLES})
                   light_detection.cpp
                   object_recognition.cpp
                   object_recognition_my_own_models.cpp
-                  knowrob_ontology.cpp
-                  picture_handling.cpp
-                  text_to_speech.cpp
-                  config.cpp
-                  cognitive_games.cpp
-                  geolocation.cpp
-                  weather.cpp
-                  path_planning.cpp
-                  email_handling.cpp
-                  news.cpp
-                  set_noise_profile.cpp
-                  speech_recognition_google.cpp
-                  speech_recognition_sphinx4.cpp)
+                  )
+                  #knowrob_ontology.cpp
+                  #picture_handling.cpp
+                  #text_to_speech.cpp
+                  #config.cpp
+                  #path_planning.cpp
+                  #set_noise_profile.cpp
+                  #speech_recognition_google.cpp
+                  #speech_recognition_sphinx4.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
 

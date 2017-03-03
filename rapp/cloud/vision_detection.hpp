@@ -41,8 +41,8 @@ class face_detection
   public cloud_base<face_detection,std::vector<rapp::object::face>>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(std::vector<rapp::object::face>)> face_detect_callback;
+    // 
+    typedef std::function<void(std::vector<rapp::object::face>)> callback;
     /**
      * \brief constructor
      * \param image is the input image \see rapp::object::picture
@@ -52,7 +52,7 @@ public:
     face_detection(
                     const rapp::object::picture & image,
                     bool fast,
-                    face_detect_callback callback
+                    callback delegate
                   );
     /**
      * \brief construct without an image - part of a vision batch
@@ -61,7 +61,7 @@ public:
      */
     face_detection(
                     bool fast,
-                    face_detect_callback callback
+                    callback delegate
                   );
 
 	/// \brief handle the rapp-platform JSON reply for single call - TODO @DEPRECATE
@@ -76,7 +76,7 @@ public:
 private:
     bool fast_ = true;
     /// The callback called upon completion of receiving the detected faces
-    face_detect_callback delegate_;
+    callback delegate_;
 };
 
 /**
@@ -91,8 +91,8 @@ class door_angle_detection
   public cloud_base<door_angle_detection,double>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(double door_angle)> door_callback;
+    // 
+    typedef std::function<void(double door_angle)> callback;
 
     /**
     * \brief Constructor
@@ -102,14 +102,14 @@ public:
     */
     door_angle_detection(
                           const rapp::object::picture & image,
-                          door_callback callback
+                          callback delegate
                         );
     
     /**
      * \brief Constructor without image
      * \param callback will receive the angle of the door
      */
-    door_angle_detection(door_callback callback);
+    door_angle_detection(callback delegate);
 
 	/// \brief handle the rapp-platform JSON reply for a single call - TODO @DEPRECATE
     void deserialise(std::string json) const;
@@ -122,7 +122,7 @@ public:
 
 private:
     /// The callback called upon completion of receiving the detected faces
-    door_callback delegate_;
+    callback delegate_;
 };
 /**
  * \class light_detection 
@@ -136,8 +136,8 @@ class light_detection
   public cloud_base<light_detection,int>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(int light_level)> light_callback;
+    // 
+    typedef std::function<void(int light_level)> callback;
 
     /**
     * \brief Constructor
@@ -146,14 +146,14 @@ public:
     */
     light_detection(
                      const rapp::object::picture & image,
-                     light_callback callback
+                     callback delegate
                    );
     
     /**
      * \brief Constructor
      * \param callback will receive the luminosity
      */
-    light_detection(light_callback callback);
+    light_detection(callback delegate);
 
 	/// \brief handle the rapp-platform JSON reply for a single call
     void deserialise(std::string json) const;
@@ -166,7 +166,7 @@ public:
 
 private:
     /// The callback called upon completion of receiving the detected faces
-    light_callback delegate_;
+    callback delegate_;
 };
 
 /**
@@ -181,8 +181,8 @@ class human_detection
   public cloud_base<human_detection,std::vector<rapp::object::human>>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(std::vector<rapp::object::human>)> human_callback;
+    // 
+    typedef std::function<void(std::vector<rapp::object::human>)> callback;
     /**
     * \brief Constructor
     * \param image is a picture object pointer
@@ -191,14 +191,14 @@ public:
     */
     human_detection(
                       const rapp::object::picture & image,
-                      human_callback callback
+                      callback delegate
                     );
 
     /**
      * \brief Constructor without image
      * \param callback will receive the coordinates of a square which contain a human
      */
-    human_detection(human_callback callback);
+    human_detection(callback delegate);
 
 	/// \brief handle the rapp-platform JSON reply a single call - TODO @DEPRECATE
     void deserialise(std::string json) const;
@@ -211,7 +211,7 @@ public:
 
 private:
     /// The callback called upon completion of receiving the detected faces
-    human_callback delegate_;
+    callback delegate_;
 };
 
 /**
@@ -226,8 +226,8 @@ class object_detection_learn_object
   public cloud_base<object_detection_learn_object,int>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(int)> learn_callback;
+    // 
+    typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
     * \param fname is the path (id) of model image
@@ -239,7 +239,7 @@ public:
                                    const rapp::object::picture & image,
                                    const std::string name,
                                    const std::string user,
-                                   learn_callback callback
+                                   callback delegate
                                  );
     /**
      * \brief Constructor without image
@@ -250,7 +250,7 @@ public:
     object_detection_learn_object(
                                    const std::string name,
                                    const std::string user,
-                                   learn_callback callback
+                                   callback delegate
                                  );
 
 	/// \brief handle the rapp-platform JSON reply - TODO: @DEPERCATE
@@ -267,8 +267,9 @@ private:
     std::string name__;
     /// parameter user
     std::string user__;
+public:
     /// callback
-    learn_callback delegate_;
+    callback delegate_;
 };
 
 /**
@@ -283,8 +284,8 @@ class object_detection_clear_models
   public cloud_base<object_detection_clear_models,int>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(int)> clear_callback;
+    // 
+    typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
     * \param user is the user name
@@ -292,7 +293,7 @@ public:
     */
     object_detection_clear_models(
                                     const std::string user,
-                                    clear_callback callback
+                                    callback delegate
                                  );
     
     /// \brief handle the rapp-platform JSON reply
@@ -301,8 +302,8 @@ public:
     /// name of service
     static const std::string uri;
 
-private:
-    clear_callback delegate_;
+//private:
+    callback delegate_;
 };
 
 /**
@@ -317,8 +318,8 @@ class object_detection_load_models
   public cloud_base<object_detection_load_models,int>
 {
 public:
-    // TODO: rename to `callback`
-    typedef std::function<void(int)> load_callback;
+    // 
+    typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
     * \param user is the user name
@@ -328,7 +329,7 @@ public:
     object_detection_load_models(
                                   const std::string user,
                                   const std::vector<std::string> names,
-                                  load_callback callback
+                                  callback delegate
                                 );
     
 	/// \brief handle the rapp-platform JSON reply - TODO @DEPRECATE
@@ -337,8 +338,8 @@ public:
     /// name of service
     static const std::string uri;
 
-private:
-    load_callback delegate_;
+//private:
+    callback delegate_;
 };
 
 /**
@@ -394,6 +395,7 @@ private:
     std::string user__;
     ///parameters limit
     int limit__;
+public:
     /// delegate
     callback delegate_;
 };

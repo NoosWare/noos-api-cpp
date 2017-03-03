@@ -7,23 +7,45 @@ vision_batch<services...>::vision_batch(
                                          const rapp::object::picture & image,
                                          services... args
                                        )
-: http_request(cloud_base<vision_batch<services...>,void>::make_http_uri("vision_batch")), 
-  cloud_base<vision_batch<services...>,void>(true),
+: http_request(cloud_base<vision_batch<services...>,bool>::make_http_uri("vision_batch")), 
+  cloud_base<vision_batch<services...>,bool>(true),
   image__(image),
   batch__(std::make_tuple((args)...))
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image__.type();
     http_request::add_content("file", fname, image.bytearray());
-    //std::get<index__[obj.uri]>(services__);
-    // TODO: expand the arguments, and assign for each object, a named map/index
+
+    misc::for_each_arg([&](const auto & obj) {
+            http_request::add_content(obj.uri, obj.make_parameters(), true); 
+    }, args...);
+
+    http_request::close();
 }
 
 template <class... services>
 void vision_batch<services...>::deserialise(std::string json)
 {
-    // TODO:...
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json nlohmann_json;
+    try {
+        nlohmann_json = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    //
+    for (auto json_object : nlohmann_json) {
+		for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
+            std::string json = it.value().dump(-1);
+            expand_batch(json);
+        }
+    }
 }
+
 
 }
 }

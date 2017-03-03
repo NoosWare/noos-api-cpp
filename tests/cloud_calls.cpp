@@ -380,7 +380,6 @@ BOOST_AUTO_TEST_CASE(speech_cloud_test)
  * is correct comparing with a json file done manually 
  * \note: the name of the variables are the initial of
  *  the classes or words corresponding with json.
- */
 BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 {
     //Class face_detection
@@ -459,7 +458,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     std::string j4_string = j4.dump(-1);
     hd->deserialise(j4_string);
 }
-
+*/
 /*
  * \brief check all the weather_report classes
  * A callback is done to check that the desearilization

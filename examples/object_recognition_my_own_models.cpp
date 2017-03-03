@@ -15,6 +15,7 @@
  */
 #include <rapp/cloud/service_controller.hpp>
 #include <rapp/cloud/vision_detection.hpp>
+#include <rapp/objects/orb_object.hpp>
 #include <rapp/objects/picture.hpp>
 /*
  * \brief Example to load, learn and find objects of a picture

@@ -18,12 +18,12 @@ const std::string object_detection_find_objects::uri= "object_detection_find_obj
 face_detection::face_detection(
                                 const rapp::object::picture & image,
                                 bool fast,
-                                face_detect_callback callback
+                                callback delegate
                               )
 : http_request(make_http_uri(uri)),
   cloud_base(true),
   fast_(fast),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -35,12 +35,12 @@ face_detection::face_detection(
 
 face_detection::face_detection(
                                 bool fast,
-                                face_detect_callback callback
+                                callback delegate
                               )
 : http_request(make_http_uri(uri)),
   cloud_base(false),
   fast_(fast),
-  delegate_(callback)
+  delegate_(delegate)
 {}
 
 std::string face_detection::make_parameters() const
@@ -57,11 +57,11 @@ void face_detection::deserialise(std::string json) const
 ///Class door_angle_detection
 door_angle_detection::door_angle_detection(
                                             const rapp::object::picture & image,
-                                            door_callback callback
+                                            callback delegate
                                           )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -69,10 +69,10 @@ door_angle_detection::door_angle_detection(
     http_request::close();
 }
 
-door_angle_detection::door_angle_detection(door_callback callback)
+door_angle_detection::door_angle_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(callback)
+  delegate_(delegate)
 {}
 
 std::string door_angle_detection::make_parameters() const
@@ -89,11 +89,11 @@ void door_angle_detection::deserialise(std::string json) const
 /// Class light_detection
 light_detection::light_detection(
                                   const rapp::object::picture & image,
-                                  light_callback callback
+                                  callback delegate
                                 )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -101,10 +101,10 @@ light_detection::light_detection(
     http_request::close();
 }
 
-light_detection::light_detection(light_callback callback)
+light_detection::light_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(callback)
+  delegate_(delegate)
 {
     nlohmann::json json_doc;
     http_request::add_content("light_detection", json_doc.dump(-1), true);
@@ -124,11 +124,11 @@ void light_detection::deserialise(std::string json) const
 /// Class human_detection
 human_detection::human_detection(
                                   const rapp::object::picture & image,
-                                  human_callback callback
+                                  callback delegate
                                 )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -136,10 +136,10 @@ human_detection::human_detection(
     http_request::close();
 }
 
-human_detection::human_detection(human_callback callback)
+human_detection::human_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(callback)
+  delegate_(delegate)
 {}
 
 std::string human_detection::make_parameters() const
@@ -158,13 +158,13 @@ object_detection_learn_object::object_detection_learn_object(
                                                               const rapp::object::picture & image,
                                                               const std::string name,
                                                               const std::string user,
-                                                              learn_callback callback
+                                                              callback delegate
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
   name__(name),
   user__(user),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -178,13 +178,13 @@ object_detection_learn_object::object_detection_learn_object(
 object_detection_learn_object::object_detection_learn_object(
                                                               const std::string name,
                                                               const std::string user,
-                                                              learn_callback callback
+                                                              callback delegate
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
   name__(name),
   user__(user),
-  delegate_(callback)
+  delegate_(delegate)
 {}
 
 std::string object_detection_learn_object::make_parameters() const
@@ -202,11 +202,11 @@ void object_detection_learn_object::deserialise(std::string json) const
 /// Class object_detection_clear_models
 object_detection_clear_models::object_detection_clear_models(
                                                               const std::string user,
-                                                              clear_callback callback
+                                                              callback delegate
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = {{"user", user}};
@@ -223,11 +223,11 @@ void object_detection_clear_models::deserialise(std::string json) const
 object_detection_load_models::object_detection_load_models(
                                                             const std::string user,
                                                             const std::vector<std::string> names,
-                                                            load_callback callback
+                                                            callback delegate
                                                           )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(callback)
+  delegate_(delegate)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = {{"user", user},

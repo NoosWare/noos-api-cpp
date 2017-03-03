@@ -7,7 +7,7 @@ void service_controller::make_call(Args... args)
     boost::asio::streambuf request;
     obj.fill_buffer(boost::ref(request), info_);
     std::function<void(std::string)> callback = [&](auto reply) {
-        obj.deserialise(reply);
+        obj.process(reply);
     };
     // create an asio_socket and run the request
     auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
@@ -27,7 +27,7 @@ void service_controller::make_calls(Args... args)
     misc::for_each_arg([&](auto & obj) {
         // set the callback
         std::function<void(std::string)> callback = [&](auto reply){
-            obj.deserialise(reply); 
+            obj.process(reply); 
         };
         // allocate buffer  - must live as long as socket
         auto buffer = std::make_shared<boost::asio::streambuf>();
@@ -50,7 +50,7 @@ void service_controller::make_call(service_type obj)
     boost::asio::streambuf request;
     obj.fill_buffer(boost::ref(request), info_);
     std::function<void(std::string)> callback = [&](auto reply) {
-        obj.deserialise(reply);
+        obj.process(reply);
     };
     // create an asio_socket and run the request
     auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
