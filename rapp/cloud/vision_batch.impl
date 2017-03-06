@@ -24,7 +24,7 @@ vision_batch<services...>::vision_batch(
 }
 
 template <class... services>
-void vision_batch<services...>::deserialise(std::string json)
+void vision_batch<services...>::process(std::string json)
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -37,15 +37,31 @@ void vision_batch<services...>::deserialise(std::string json)
         std::cerr << e.what() << std::endl;
     }
 
-    //
+    //needed for expand tuple
+    constexpr auto tuple_size = std::tuple_size<decltype(batch__)>::value;
+
+    //take json part
     for (auto json_object : nlohmann_json) {
 		for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
             std::string json = it.value().dump(-1);
-            expand_batch(json);
+            expand_batch(json, it.key(), std::make_index_sequence<tuple_size>());
         }
     }
 }
 
+template <class... services>
+void vision_batch<services...>::find_process(
+                                              services... args, 
+                                              std::string json, 
+                                              std::string key
+                                            )
+{
+    misc::for_each_arg([&](auto & obj){
+        if (obj.uri == key) {        
+            obj.process(json);
+        }
+    }, args...);
+}
 
 }
 }

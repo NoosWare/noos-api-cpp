@@ -2,21 +2,7 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include <rapp/misc/json.hpp>
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/available_services.hpp>
-#include <rapp/cloud/cognitive_exercises.hpp>
-#include <rapp/cloud/geolocation.hpp>
-#include <rapp/cloud/path_planning.hpp>
-#include <rapp/cloud/news.hpp>
-#include <rapp/cloud/ontology.hpp>
-#include <rapp/cloud/speech_recognition.hpp>
-#include <rapp/cloud/text_to_speech.hpp>
-#include <rapp/cloud/vision_detection.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
-#include <rapp/cloud/weather_report.hpp>
-#include <rapp/cloud/email.hpp>
-#include <rapp/cloud/authentication.hpp>
-#include <rapp/cloud/vision_batch.hpp>
+#include <rapp/cloud.hpp>
 
 BOOST_AUTO_TEST_SUITE (cloud_calls)
 

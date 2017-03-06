@@ -16,30 +16,25 @@
  * limitations under the License.
  */
 #include "includes.ihh"
-#include <rapp/objects/picture.hpp>
-#include <rapp/objects/qr_code.hpp>
-#include <rapp/objects/point.hpp>
+#include <rapp/objects.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/cloud_base.hpp>
-#include <rapp/cloud/deserialize.hpp>
+#include <rapp/cloud.hpp>
 
 namespace rapp 
 {
 namespace cloud 
 {
 /**
- * \class object_recognition
+ * \struct object_recognition
  * \brief recognize object from an image
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class object_recognition 
+struct object_recognition 
 : public http_request, 
   public cloud_base<object_recognition,std::string>
 {
-public:
-    // TODO: rename to `callback`
     typedef std::function<void(std::string)> callback; 
     /**
     * \brief Constructor
@@ -56,36 +51,28 @@ public:
      */
     object_recognition(callback delegate);
 
-    /// \return parameters of the class in json format
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     //name header http
     static const std::string uri;
 
-    /// TODO: check and see if it works
-    //        if it works, then make all classes have a `const` public callback `delegate`
+    //callback 
     const callback delegate;
 
-private:
-    // TODO: alternatively, make cloud_base a friend to all inheriting classes
-    friend class cloud_base<object_recognition,std::string>;
-    /// The callback called upon completion of receiving the detected faces
-    callback delegate_;
 };
 
 /**
- * \class qr_recognition
+ * \struct qr_recognition
  * \brief service request to detect QR codes
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class qr_recognition 
+struct qr_recognition 
 : public http_request, 
   public cloud_base<qr_recognition,std::vector<rapp::object::qr_code>>
 {
-public:
-    // TODO: rename to `callback`
     typedef std::function<void(std::vector<rapp::object::qr_code>)> callback;
     /**
     * \brief Constructor
@@ -103,15 +90,14 @@ public:
      */
     qr_recognition(callback delegate);
 
-    /// \return parameters of the class in json format
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     //name header http
     static const std::string uri;
 
-private:
     /// The callback called upon completion of receiving the qr codes
-    callback delegate_;
+    const callback delegate;
 };
 
 }

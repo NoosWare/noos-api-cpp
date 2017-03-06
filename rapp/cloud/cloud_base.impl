@@ -23,7 +23,7 @@ std::string cloud_base<impl_type,return_type>::make_http_uri(std::string uri) co
 template <class impl_type,class return_type>
 void cloud_base<impl_type,return_type>::process(std::string json)
 {
-    static_cast<impl_type *>(this)->delegate_(rapp::cloud::deserialize<impl_type,return_type>()(json));
+    static_cast<impl_type *>(this)->delegate(rapp::cloud::deserialize<impl_type,return_type>()(json));
 }
 
 }

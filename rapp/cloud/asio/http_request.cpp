@@ -7,8 +7,8 @@ http_request::http_request(const std::string uri)
     if (uri.empty()) {
         throw std::runtime_error("empty uri param");
     }
-    header_ = std::make_unique<rapp::cloud::http_header>(uri);
-    post_   = std::make_unique<rapp::cloud::http_post>(header_->get_boundary());
+    header_ = std::make_shared<rapp::cloud::http_header>(uri);
+    post_   = std::make_shared<rapp::cloud::http_post>(header_->get_boundary());
     assert(header_ && post_);
 }
 

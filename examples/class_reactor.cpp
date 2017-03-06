@@ -43,7 +43,7 @@ public:
      * \param object is the object we want to know its ontology subclasses
      * \param city is the name of the city where we want to know the weather
      */
-    void run(rapp::object::picture pic, std::string object, std::string city)
+    void run(rapp::object::picture pic, std::string object)
     {
         ctrl_.make_calls(face_detection(pic, false, std::bind(&reactor::handle_face, this, std::placeholders::_1)),
                          ontology_subclasses_of(object, true, std::bind(&reactor::handle_ontology_sub, this, std::placeholders::_1)));

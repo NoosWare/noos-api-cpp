@@ -13,7 +13,7 @@ object_recognition::object_recognition(
                                       )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     single_callable = true;
     http_request::make_multipart_form();
@@ -25,7 +25,7 @@ object_recognition::object_recognition(
 object_recognition::object_recognition(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(delegate)
+  delegate(delegate)
 {}
 
 std::string object_recognition::make_parameters() const
@@ -41,7 +41,7 @@ qr_recognition::qr_recognition(
                               )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -52,7 +52,7 @@ qr_recognition::qr_recognition(
 qr_recognition::qr_recognition(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(delegate)
+  delegate(delegate)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
     http_request::add_content("qr_detection", json_doc.dump(-1), true);

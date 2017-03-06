@@ -24,7 +24,7 @@ std::string http_header::to_string(
     std::string user  = "User-Token: " + endpoint.user + "\r\n";
 	std::string token = "Accept-Token: " + endpoint.token + "\r\n";
     if (length > 0) {
-	    content_length_	  = "Content-Length: " + boost::lexical_cast<std::string>(length) +"\r\n";
+	    content_length_	  = "Content-Length: " + boost::lexical_cast<std::string>(length) + "\r\n";
         return uri_ + 
                host + 
                user + 

@@ -3,11 +3,8 @@
 
 #include <rapp/cloud/includes.ihh>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/objects/picture.hpp>
-#include <rapp/cloud/asio/platform.hpp>
-#include <rapp/cloud/vision_detection.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
-#include <rapp/misc/misc.hpp>
+#include <rapp/objects.hpp>
+#include <rapp/cloud.hpp>
 
 namespace rapp
 {
@@ -37,23 +34,25 @@ public:
                 );
    
     /// \brief process the JSON reply and delegate to services
-    void deserialise(std::string key);
+    void process(std::string json);
 
     /// \brief expand batch type
     template<std::size_t... batch_size>
-    void expand_batch(std::string json) 
+    void expand_batch(
+                      std::string json, 
+                      std::string key,
+                      std::index_sequence<batch_size...>
+                     ) 
     {
-        find_process(std::get<batch_size>(batch__)..., json);
+        find_process(std::get<batch_size>(batch__)..., json, key);
     }
 
     /// \brief
-    void find_process(services... args, std::string json)
-    {
-        misc::for_each_arg([&](auto & obj){
-            // TODO: if obj.uri == key, then run
-            obj.process(json);
-        }, args...);
-    }
+    void find_process(
+                       services... args, 
+                       std::string json,
+                       std::string key
+                     );
    
 private:
     /// \brief image use for all the vision services

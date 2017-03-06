@@ -16,31 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <rapp/objects/face.hpp>
-#include <rapp/objects/picture.hpp>
-#include <rapp/objects/human.hpp>
-#include <rapp/objects/point.hpp>
-#include <rapp/objects/orb_object.hpp>
+#include <rapp/objects.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/cloud_base.hpp>
-#include <rapp/cloud/deserialize.hpp>
+#include <rapp/cloud.hpp>
 namespace rapp 
 {
 namespace cloud 
 {
 
 /**
- * \class face_detection
+ * \struct face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
  * \version 0.7.3
  * \date February 2017
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection 
+struct face_detection 
 : public http_request, 
   public cloud_base<face_detection,std::vector<rapp::object::face>>
 {
-public:
     // 
     typedef std::function<void(std::vector<rapp::object::face>)> callback;
     /**
@@ -64,34 +58,30 @@ public:
                     callback delegate
                   );
 
-	/// \brief handle the rapp-platform JSON reply for single call - TODO @DEPRECATE
-    void deserialise(std::string json) const;
-
-    /// \return parameters of the class in json format
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service (header)
     static const std::string uri;
 
-private:
-    bool fast_ = true;
+    /// boolean for fast or slow processing
+    bool fast = true;
+
     /// The callback called upon completion of receiving the detected faces
-    callback delegate_;
+    const callback delegate;
 };
 
 /**
- * \class door_angle_detection
+ * \struct door_angle_detection
  * \brief detect open doors
  * \version 0.7.3
  * \date February 2017
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class door_angle_detection 
+struct door_angle_detection 
 : public http_request, 
   public cloud_base<door_angle_detection,double>
 {
-public:
-    // 
     typedef std::function<void(double door_angle)> callback;
 
     /**
@@ -111,32 +101,26 @@ public:
      */
     door_angle_detection(callback delegate);
 
-	/// \brief handle the rapp-platform JSON reply for a single call - TODO @DEPRECATE
-    void deserialise(std::string json) const;
-
     /// \return parameters in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
 
-private:
     /// The callback called upon completion of receiving the detected faces
-    callback delegate_;
+    const callback delegate;
 };
 /**
- * \class light_detection 
+ * \struct light_detection 
  * \brief detect the level of light
  * \version 0.7.0
  * \date September 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class light_detection 
+struct light_detection 
 : public http_request, 
   public cloud_base<light_detection,int>
 {
-public:
-    // 
     typedef std::function<void(int light_level)> callback;
 
     /**
@@ -155,33 +139,27 @@ public:
      */
     light_detection(callback delegate);
 
-	/// \brief handle the rapp-platform JSON reply for a single call
-    void deserialise(std::string json) const;
-
-    /// \return parameters of the class in json format - TODO @DEPRECATE
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
 
-private:
     /// The callback called upon completion of receiving the detected faces
-    callback delegate_;
+    const callback delegate;
 };
 
 /**
- * \class human_detection
+ * \struct human_detection
  * \brief detect humans in an image
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class human_detection 
+struct human_detection 
 : public http_request, 
   public cloud_base<human_detection,std::vector<rapp::object::human>>
 {
-public:
-    // 
     typedef std::function<void(std::vector<rapp::object::human>)> callback;
     /**
     * \brief Constructor
@@ -200,33 +178,27 @@ public:
      */
     human_detection(callback delegate);
 
-	/// \brief handle the rapp-platform JSON reply a single call - TODO @DEPRECATE
-    void deserialise(std::string json) const;
-    
-    /// \return parameters of the class in json format
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
 
-private:
     /// The callback called upon completion of receiving the detected faces
-    callback delegate_;
+    const callback delegate;
 };
 
 /**
- * \class object_detection_learn_object
+ * \struct object_detection_learn_object
  * \brief learn object gives by the user
  * \version 0.7.0
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_learn_object 
+struct object_detection_learn_object 
 : public http_request, 
   public cloud_base<object_detection_learn_object,int>
 {
-public:
-    // 
     typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
@@ -253,38 +225,31 @@ public:
                                    callback delegate
                                  );
 
-	/// \brief handle the rapp-platform JSON reply - TODO: @DEPERCATE
-    void deserialise(std::string json) const;
-
 	/// \return paramenters in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
 
-private:
     /// parameter name
-    std::string name__;
+    std::string name;
     /// parameter user
-    std::string user__;
-public:
+    std::string user;
     /// callback
-    callback delegate_;
+    const callback delegate;
 };
 
 /**
- * \class object_detection_clear_models
+ * \struct object_detection_clear_models
  * \brief Clears operational memory for selected user
  * \version 0.7.0
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_clear_models 
+struct object_detection_clear_models 
 : public http_request, 
   public cloud_base<object_detection_clear_models,int>
 {
-public:
-    // 
     typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
@@ -296,29 +261,24 @@ public:
                                     callback delegate
                                  );
     
-    /// \brief handle the rapp-platform JSON reply
-    void deserialise(std::string json) const;
-
     /// name of service
     static const std::string uri;
 
-//private:
-    callback delegate_;
+    /// callback
+    const callback delegate;
 };
 
 /**
- * \class object_detection_load_models
+ * \struct object_detection_load_models
  * \brief Load one or more models to operational memory
  * \version 0.7.0
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_load_models 
+struct object_detection_load_models 
 : public http_request, 
   public cloud_base<object_detection_load_models,int>
 {
-public:
-    // 
     typedef std::function<void(int)> callback;
     /**
     * \brief Constructor
@@ -332,28 +292,24 @@ public:
                                   callback delegate
                                 );
     
-	/// \brief handle the rapp-platform JSON reply - TODO @DEPRECATE
-    void deserialise(std::string json) const;
-
     /// name of service
     static const std::string uri;
 
-//private:
-    callback delegate_;
+    /// callback
+    const callback delegate;
 };
 
 /**
- * \class object_detection_find_objects
+ * \struct object_detection_find_objects
  * \brief user can provide query image to detect objects
  * \version 0.7.2
  * \date October 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class object_detection_find_objects 
+struct object_detection_find_objects 
 : public http_request, 
   public cloud_base<object_detection_find_objects,rapp::object::orb_object>
 {
-public:
     typedef std::function<void(rapp::object::orb_object)> callback;
     /**
     * \brief Constructor
@@ -381,23 +337,18 @@ public:
                                    callback delegate
                                  );
 
-	/// \brief handle the rapp-platform JSON reply for a single call
-    void deserialise(std::string json) const;
-
-    /// \return parameters of the class in json format
+    /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
 
-private:
     ///parameters user
-    std::string user__;
+    std::string user;
     ///parameters limit
-    int limit__;
-public:
+    int limit;
     /// delegate
-    callback delegate_;
+    const callback delegate;
 };
 
 }

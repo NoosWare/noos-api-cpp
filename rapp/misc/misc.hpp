@@ -130,8 +130,7 @@ T get_json_value(const std::string key, const nlohmann::json & json_f)
 /// \brief method to check if JSON data is correct
 inline bool check_json(
                          nlohmann::json & json,
-                         const std::string json_str,
-                         const std::string error_str = "error"
+                         const std::string json_str
                       )
 {
     try {
@@ -147,7 +146,7 @@ inline bool check_json(
 inline bool check_error(
                          const nlohmann::json json,
                          const std::string error_str = "error"
-                      )
+                       )
 {
     auto error = misc::get_json_value<std::string>(error_str, json);
     if (!error.empty()) {

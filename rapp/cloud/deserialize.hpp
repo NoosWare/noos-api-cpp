@@ -15,12 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <rapp/objects/face.hpp>
-#include <rapp/objects/picture.hpp>
-#include <rapp/objects/human.hpp>
-#include <rapp/objects/point.hpp>
-#include <rapp/objects/orb_object.hpp>
-#include <rapp/objects/qr_code.hpp>
+#include <rapp/objects.hpp>
 
 namespace rapp
 {
@@ -34,17 +29,18 @@ struct deserialize
 };
 
 /// Forward - Delcare all classes for which we create template specializations
-class face_detection;
-class door_angle_detection;
-class light_detection;
-class human_detection;
-class object_detection_learn_object;
-class object_detection_clear_models;
-class object_detection_load_models;
-class object_detection_find_objects;
-class object_recognition;
-class qr_recognition;
+struct face_detection;
+struct door_angle_detection;
+struct light_detection;
+struct human_detection;
+struct object_detection_learn_object;
+struct object_detection_clear_models;
+struct object_detection_load_models;
+struct object_detection_find_objects;
+struct object_recognition;
+struct qr_recognition;
 
+/// Vision classes
 /// specialization for face_detection and faces
 template <>
 inline std::vector<rapp::object::face> deserialize<face_detection,std::vector<rapp::object::face>>::operator()(std::string json)
@@ -66,6 +62,7 @@ inline std::vector<rapp::object::face> deserialize<face_detection,std::vector<ra
     return faces;
 }
 
+/// specialization for door angle detection
 template <>
 inline double deserialize<door_angle_detection,double>::operator()(std::string json)
 {
@@ -81,6 +78,7 @@ inline double deserialize<door_angle_detection,double>::operator()(std::string j
     return -1; // ?? makes sense??
 }
 
+/// specialization for light detection
 template <>
 inline int deserialize<light_detection,int>::operator()(std::string json)
 {
@@ -95,7 +93,7 @@ inline int deserialize<light_detection,int>::operator()(std::string json)
     }
     return -1;
 }
-
+/// specialization for human detection
 template <>
 inline std::vector<rapp::object::human> 
 deserialize<human_detection,std::vector<rapp::object::human>>::operator()(std::string json)
@@ -117,6 +115,7 @@ deserialize<human_detection,std::vector<rapp::object::human>>::operator()(std::s
     return humans;
 }
 
+/// specialization for learn object detection
 template <>
 inline int deserialize<object_detection_learn_object,int>::operator()(std::string json) 
 {
@@ -132,6 +131,7 @@ inline int deserialize<object_detection_learn_object,int>::operator()(std::strin
     return -1; 
 }
 
+/// specialization for clear models
 template <>
 inline int deserialize<object_detection_clear_models,int>::operator()(std::string json) 
 {
@@ -147,6 +147,7 @@ inline int deserialize<object_detection_clear_models,int>::operator()(std::strin
     return -1; 
 }
 
+/// specialization for load models
 template <>
 inline int deserialize<object_detection_load_models,int>::operator()(std::string json) 
 {
@@ -162,6 +163,7 @@ inline int deserialize<object_detection_load_models,int>::operator()(std::string
     return -1; 
 }
 
+/// specialization for find objects
 template <>
 inline rapp::object::orb_object deserialize<object_detection_find_objects,rapp::object::orb_object>::operator()(std::string json) 
 {

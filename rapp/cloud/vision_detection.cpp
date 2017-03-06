@@ -22,8 +22,8 @@ face_detection::face_detection(
                               )
 : http_request(make_http_uri(uri)),
   cloud_base(true),
-  fast_(fast),
-  delegate_(delegate)
+  fast(fast),
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -39,19 +39,14 @@ face_detection::face_detection(
                               )
 : http_request(make_http_uri(uri)),
   cloud_base(false),
-  fast_(fast),
-  delegate_(delegate)
+  fast(fast),
+  delegate(delegate)
 {}
 
 std::string face_detection::make_parameters() const
 {
-    nlohmann::json json_doc = {{"fast", fast_}};
+    nlohmann::json json_doc = {{"fast", fast}};
     return json_doc.dump(-1);
-}
-
-void face_detection::deserialise(std::string json) const
-{   
-    delegate_(rapp::cloud::deserialize<face_detection,std::vector<rapp::object::face>>()(json));
 }
 
 ///Class door_angle_detection
@@ -61,7 +56,7 @@ door_angle_detection::door_angle_detection(
                                           )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -72,18 +67,13 @@ door_angle_detection::door_angle_detection(
 door_angle_detection::door_angle_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(delegate)
+  delegate(delegate)
 {}
 
 std::string door_angle_detection::make_parameters() const
 {
     nlohmann::json json_doc = {{"no_param", ""}};
     return json_doc.dump(-1);
-}
-
-void door_angle_detection::deserialise(std::string json) const
-{
-   delegate_(rapp::cloud::deserialize<door_angle_detection, double>()(json));
 }
 
 /// Class light_detection
@@ -93,7 +83,7 @@ light_detection::light_detection(
                                 )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -104,7 +94,7 @@ light_detection::light_detection(
 light_detection::light_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(delegate)
+  delegate(delegate)
 {
     nlohmann::json json_doc;
     http_request::add_content("light_detection", json_doc.dump(-1), true);
@@ -116,11 +106,6 @@ std::string light_detection::make_parameters() const
     return json_doc.dump(-1);
 }
 
-void light_detection::deserialise(std::string json) const
-{
-   delegate_(rapp::cloud::deserialize<light_detection, int>()(json));
-}
-
 /// Class human_detection
 human_detection::human_detection(
                                   const rapp::object::picture & image,
@@ -128,7 +113,7 @@ human_detection::human_detection(
                                 )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -139,18 +124,13 @@ human_detection::human_detection(
 human_detection::human_detection(callback delegate)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  delegate_(delegate)
+  delegate(delegate)
 {}
 
 std::string human_detection::make_parameters() const
 {
     nlohmann::json json_doc = {{"no_param", ""}};
     return json_doc.dump(-1);
-}
-
-void human_detection::deserialise(std::string json) const
-{
-    delegate_(rapp::cloud::deserialize<human_detection, std::vector<rapp::object::human>>()(json));
 }
 
 /// Class object_detection_learn_object
@@ -162,14 +142,14 @@ object_detection_learn_object::object_detection_learn_object(
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  name__(name),
-  user__(user),
-  delegate_(delegate)
+  name(name),
+  user(user),
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
-    nlohmann::json json_doc = {{"name", name__},
-                               {"user", user__}};
+    nlohmann::json json_doc = {{"name", name},
+                               {"user", user}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
@@ -182,21 +162,16 @@ object_detection_learn_object::object_detection_learn_object(
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  name__(name),
-  user__(user),
-  delegate_(delegate)
+  name(name),
+  user(user),
+  delegate(delegate)
 {}
 
 std::string object_detection_learn_object::make_parameters() const
 {
-    nlohmann::json json_doc = {{"name", name__},
-                               {"user", user__}};
+    nlohmann::json json_doc = {{"name", name},
+                               {"user", user}};
     return json_doc.dump(-1);
-}
-
-void object_detection_learn_object::deserialise(std::string json) const 
-{   
-    delegate_(rapp::cloud::deserialize<object_detection_learn_object, int>()(json));
 }
 
 /// Class object_detection_clear_models
@@ -206,17 +181,12 @@ object_detection_clear_models::object_detection_clear_models(
                                                             )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = {{"user", user}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
-}
-
-void object_detection_clear_models::deserialise(std::string json) const 
-{
-    delegate_(rapp::cloud::deserialize<object_detection_clear_models, int>()(json));
 }
 
 ///Class object_detection_load_models
@@ -227,18 +197,13 @@ object_detection_load_models::object_detection_load_models(
                                                           )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  delegate_(delegate)
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = {{"user", user},
                      {"names", names}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
-}
-
-void object_detection_load_models::deserialise(std::string json) const 
-{
-   delegate_(rapp::cloud::deserialize<object_detection_load_models, int>()(json));
 }
 
 /// Class object_detection_find_objects
@@ -250,14 +215,14 @@ object_detection_find_objects::object_detection_find_objects(
                                                              )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  user__(user),
-  limit__(limit),
-  delegate_(delegate)
+  user(user),
+  limit(limit),
+  delegate(delegate)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
-    nlohmann::json json_doc = {{"user", user__},
-                     {"limit", limit__}};
+    nlohmann::json json_doc = {{"user", user},
+                     {"limit", limit}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
@@ -270,41 +235,16 @@ object_detection_find_objects::object_detection_find_objects(
                                                              )
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  user__(user),
-  limit__(limit),
-  delegate_(delegate)
+  user(user),
+  limit(limit),
+  delegate(delegate)
 {}
 
 std::string object_detection_find_objects::make_parameters() const
 {
-    nlohmann::json json_doc = {{"user", user__},
-                               {"limit", limit__}};
+    nlohmann::json json_doc = {{"user", user},
+                               {"limit", limit}};
     return json_doc.dump(-1);
-}
-
-void object_detection_find_objects::deserialise(std::string json) const {
-
-   if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    std::vector<rapp::object::point> points;
-    nlohmann::json json_f;
-
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto it_center = json_f.find("found_centers");
-            for (auto it = it_center->begin(); it != it_center->end(); it++) {
-                points.push_back(rapp::object::point(it));
-            }
-            /**
-             * TODO: replace with `rapp::object::orb_object`
-            delegate_(json_f["found_names"],
-                      points, 
-                      json_f["found_scores"],
-                      json_f["result"]);
-              */
-        }
-    }
 }
 
 }
