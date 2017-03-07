@@ -56,6 +56,12 @@ public:
 	 */
     std::string get_boundary() const;
 
+    /**
+     * \brief set if the connection is going to keep_alive or not
+     * \param keep_alive is a boolean to set it
+     */
+    void set_keep_alive(bool keep_alive);
+
 private:    
     /// URI
 	std::string uri_;
@@ -64,6 +70,7 @@ private:
 	std::string content_length_;
 	std::string content_type_;
     std::string boundary_;
+    bool keep_alive_ = false;
 };
 }
 }

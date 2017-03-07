@@ -83,6 +83,10 @@ public:
 	/// \param err is propagated from boost asio
     void end(const boost::system::error_code & err);
 
+    /// \brief set keep alive option
+    /// \param keep_alive is a boolean to indicate the type of connection
+    void set_keep_alive(bool keep_alive);
+
 protected:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
@@ -92,6 +96,8 @@ protected:
     std::function<void(const boost::system::error_code)> error_cb_;
     /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
+    /// keep alive
+    bool keep_alive_ = false;
 };
 
 }

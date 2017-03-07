@@ -89,6 +89,15 @@ public:
 	/// @brief handle asio errors
 	void default_error_handler(boost::system::error_code) const;
     
+    /**
+     * @brief create batch of cloud calls using a variadic template
+     *        keeping alive the connection.
+     * @param `args` is a variadic template of cloud classes
+     * @note construct inline passing each class's arguments
+     */
+    template <class service_type, typename... Args>
+    void make_loop(Args... args);
+ 
 private:
 	// cloud params
     rapp::cloud::platform info_;
