@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/objects/picture.hpp>
-#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/objects.hpp>
+#include <rapp/cloud.hpp>
 #include <iostream>
 /*
  * \brief example to do a cloud batch 

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
-#include <rapp/objects/picture.hpp>
+#include <rapp/cloud.hpp>
+#include <rapp/objects.hpp>
+#include <iostream>
+
 /*
  * \brief Example to detect qr in a file
  */

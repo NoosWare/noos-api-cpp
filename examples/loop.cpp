@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_detection.hpp>
-#include <rapp/objects/picture.hpp>
+#include <rapp/cloud.hpp>
+#include <rapp/objects.hpp>
 #include <boost/asio.hpp>
 #include <functional>
 #include <iostream>

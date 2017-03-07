@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/ontology.hpp>
+#include <rapp/cloud.hpp>
+#include <rapp/objects.hpp>
 #include <iostream>
 /*
  * This example does a query of subclasses and superclass of the argv[1]
