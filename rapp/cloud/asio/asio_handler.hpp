@@ -19,6 +19,7 @@
 #include <boost/asio/ssl.hpp>
 #include "http_response.hpp"
 #include "asio_timer.hpp"
+#include "keep_alive.hpp"
 
 typedef boost::asio::ip::tcp::socket http_socket;
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
@@ -51,7 +52,8 @@ public:
     asio_handler(
                   const std::function<void(std::string)> cloud_function,
                   const std::function<void(const boost::system::error_code)> error_function,
-                  const std::function<void(const boost::system::error_code)> shutdown_function
+                  const std::function<void(const boost::system::error_code)> shutdown_function,
+                  bool keep_alive = false
                 );
 
     /// \brief set socket pointer
@@ -83,10 +85,6 @@ public:
 	/// \param err is propagated from boost asio
     void end(const boost::system::error_code & err);
 
-    /// \brief set keep alive option
-    /// \param keep_alive is a boolean to indicate the type of connection
-    void set_keep_alive(bool keep_alive);
-
 protected:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
@@ -97,7 +95,7 @@ protected:
     /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
     /// keep alive
-    bool keep_alive_ = false;
+    keep_alive keep_alive_;  
 };
 
 }

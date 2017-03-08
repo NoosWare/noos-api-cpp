@@ -63,12 +63,11 @@ void service_controller::make_call(service_type obj)
 
 //Keep Alive
 template <class service_type, typename... Args>
-void service_controller::make_loop(Args... args)
+void service_controller::loop_call(Args... args)
 {
     // create the cloud class
     auto obj = service_type(args...); //create object every time?
     boost::asio::streambuf request;
-    obj.set_keep_alive(true); //set header keep alive
     obj.fill_buffer(boost::ref(request), info_);
     std::function<void(std::string)> callback = [&](auto reply) {
         obj.process(reply);
@@ -77,7 +76,6 @@ void service_controller::make_loop(Args... args)
     auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
     assert(asio);
     // start
-    asio->set_keep_alive(true);
     asio->begin(query_, resol_, timeout_);
     io_.run();
     // ???

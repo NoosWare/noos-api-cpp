@@ -96,7 +96,7 @@ public:
      * @note construct inline passing each class's arguments
      */
     template <class service_type, typename... Args>
-    void make_loop(Args... args);
+    void loop_call(Args... args);
  
 private:
 	// cloud params

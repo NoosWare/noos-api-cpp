@@ -7,13 +7,15 @@ template <class T>
 asio_handler<T>::asio_handler(
                                const std::function<void(std::string)> cloud_function,
                                const std::function<void(boost::system::error_code)> error_function,
-                               const std::function<void(boost::system::error_code)> shutdown_function
+                               const std::function<void(boost::system::error_code)> shutdown_function,
+                               bool keep_alive
 							 )
 : 
   http_response(error_function), 
   cloud_cb_(cloud_function), 
   error_cb_(error_function),
-  close_cb_(shutdown_function)
+  close_cb_(shutdown_function),
+  keep_alive_(keep_alive)
 {
     assert(cloud_cb_ && error_cb_);
 }
@@ -104,19 +106,19 @@ void asio_handler<T>::read_content(
     if (!err) {
         // received all data 
         if (http_response::consume_buffer(cloud_cb_, bytes)) {
-            ///If keep alive call write_request
-            if (!keep_alive_) {
+           ///TODO: Solve SIGSEGV ->deadline_timer (asio_http) 
+           //if (!keep_alive_.get_value()) {
                 close_cb_(boost::system::errc::make_error_code(
                                                boost::system::errc::success));
-            }
-            else {
-                boost::asio::async_write(*socket_.get(),
-                                         buffer_,
-                                         boost::bind(&asio_handler::write_request, 
-                                                     this,
-                                                     boost::asio::placeholders::error,
-                                                     boost::asio::placeholders::bytes_transferred));
-            }
+           //}
+           //else {
+                //boost::asio::async_write(*socket_.get(),
+                //                         buffer_,
+                //                         boost::bind(&asio_handler::write_request, 
+                //                                     this,
+                //                                     boost::asio::placeholders::error,
+                //                                     boost::asio::placeholders::bytes_transferred));
+            //}
         }
         // still data left to receive
         else {
@@ -144,12 +146,6 @@ void asio_handler<T>::end(const boost::system::error_code & err)
     }
     http_response::end();
     close_cb_(err);
-}
-
-template <class T>
-void asio_handler<T>::set_keep_alive(bool keep_alive)
-{
-    keep_alive_ = keep_alive;
 }
 
 }

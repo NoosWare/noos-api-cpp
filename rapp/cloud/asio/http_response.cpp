@@ -105,6 +105,8 @@ bool http_response::check_http_header()
         error_cb_(err);
 		return false;
 	}
+    //TODO: check if we have to close connection
+    //
 	return true;
 }
   
