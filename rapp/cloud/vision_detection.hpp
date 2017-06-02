@@ -19,11 +19,8 @@
 #include <rapp/objects.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 #include <rapp/cloud.hpp>
-namespace rapp 
-{
-namespace cloud 
-{
-
+namespace rapp {
+namespace cloud {
 /**
  * \struct face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
@@ -33,32 +30,24 @@ namespace cloud
  */
 struct face_detection 
 : public http_request, 
-  public cloud_base<face_detection,std::vector<rapp::object::face>>
+  public cloud_base<std::vector<rapp::object::face>>
 {
-    // 
-    typedef std::function<void(std::vector<rapp::object::face>)> callback;
-    /**
-     * \brief constructor
-     * \param image is the input image \see rapp::object::picture
-     * \param fast defines if this will be a fast call or not.
-     * \param callback is the function that will receive a vector of detected face(s) 
-     */
-    face_detection(
-                    const rapp::object::picture & image,
-                    bool fast,
-                    callback delegate
-                  );
-    /**
-     * \brief construct without an image - part of a vision batch
-     * \param boost defines if this is an optimised fast call
-     * \param callback is the functor called when cloud replies
-     */
-    face_detection(
-                    bool fast,
-                    callback delegate
-                  );
+    using callback = std::function<void(data_type)>;
 
-    /// \return parameters of the struct in json format
+    /**
+     * @brief constructor
+     * @param image is the input image \see rapp::object::picture
+     * @param fast defines if this will be a fast call or not.
+     */
+    face_detection(const rapp::object::picture & image, bool fast);
+    
+    /**
+     * @brief construct without an image - part of a vision batch
+     * @param boost defines if this is an optimised fast call
+     */
+    face_detection(bool fast);
+
+    /// @return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service (header)
@@ -66,166 +55,108 @@ struct face_detection
 
     /// boolean for fast or slow processing
     bool fast = true;
-
-    /// The callback called upon completion of receiving the detected faces
-    const callback delegate;
 };
 
 /**
- * \struct door_angle_detection
- * \brief detect open doors
- * \version 0.7.3
- * \date February 2017
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- */
-struct door_angle_detection 
-: public http_request, 
-  public cloud_base<door_angle_detection,double>
-{
-    typedef std::function<void(double door_angle)> callback;
-
-    /**
-    * \brief Constructor
-    * \param image is a picture object pointer
-    * \param callback is the function that will receive a number with the angle of the door
-    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
-    */
-    door_angle_detection(
-                          const rapp::object::picture & image,
-                          callback delegate
-                        );
-    
-    /**
-     * \brief Constructor without image
-     * \param callback will receive the angle of the door
-     */
-    door_angle_detection(callback delegate);
-
-    /// \return parameters in json format
-    std::string make_parameters() const;
-
-    /// name of service
-    static const std::string uri;
-
-    /// The callback called upon completion of receiving the detected faces
-    const callback delegate;
-};
-/**
- * \struct light_detection 
- * \brief detect the level of light
- * \version 0.7.0
- * \date September 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ * @struct light_detection 
+ * @brief detect the level of light
+ * @version 0.7.3
+ * @date 02.06.2017
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 struct light_detection 
 : public http_request, 
-  public cloud_base<light_detection,int>
+  public cloud_base<int>
 {
-    typedef std::function<void(int light_level)> callback;
+    using callback = std::function<void(int)>;
 
     /**
-    * \brief Constructor
-    * \param image is a picture object pointer
-    * \param callback is the function that will receive the luminosity    
-    */
-    light_detection(
-                     const rapp::object::picture & image,
-                     callback delegate
-                   );
+     * @brief Construct using an image
+     * @param image is a picture object pointer
+     */
+    light_detection(const rapp::object::picture & image);
     
     /**
-     * \brief Constructor
-     * \param callback will receive the luminosity
-     */
-    light_detection(callback delegate);
+      * @brief Constructor
+      * @param callback will receive the luminosity
+      */
+    light_detection();
 
-    /// \return parameters of the struct in json format
+    /// @return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
-
-    /// The callback called upon completion of receiving the detected faces
-    const callback delegate;
 };
 
 /**
- * \struct human_detection
- * \brief detect humans in an image
- * \version 0.7.0
- * \date September 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * @struct human_detection
+ * @brief detect humans in an image
+ * @version 0.7.3
+ * @date 02.06.2017
+ * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 struct human_detection 
 : public http_request, 
-  public cloud_base<human_detection,std::vector<rapp::object::human>>
+  public cloud_base<std::vector<rapp::object::human>>
 {
-    typedef std::function<void(std::vector<rapp::object::human>)> callback;
-    /**
-    * \brief Constructor
-    * \param image is a picture object pointer
-    * \param callback is the function that will receive the coordinates of a square which contain a human
-    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
-    */
-    human_detection(
-                      const rapp::object::picture & image,
-                      callback delegate
-                    );
+    using callback = std::function<void(data_type)>;
 
     /**
-     * \brief Constructor without image
-     * \param callback will receive the coordinates of a square which contain a human
+     * @brief Constructor
+     * @param image is a picture object pointer
+     * @param callback is the function that will receive the coordinates of a square which contain a human
+     * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    human_detection(callback delegate);
+    human_detection(const rapp::object::picture & image);
+
+    /**
+     * @brief Constructor without image
+     */
+    human_detection();
 
     /// \return parameters of the struct in json format
     std::string make_parameters() const;
 
     /// name of service
     static const std::string uri;
-
-    /// The callback called upon completion of receiving the detected faces
-    const callback delegate;
 };
 
 /**
- * \struct object_detection_learn_object
- * \brief learn object gives by the user
- * \version 0.7.0
- * \date October 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ * @struct orb_learn_object
+ * @brief learn object gives by the user
+ * @version 0.7.3
+ * @date 02.06.2017
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-struct object_detection_learn_object 
+struct orb_learn_object 
 : public http_request, 
-  public cloud_base<object_detection_learn_object,int>
+  public cloud_base<int>
 {
-    typedef std::function<void(int)> callback;
-    /**
-    * \brief Constructor
-    * \param fname is the path (id) of model image
-    * \param user is the user name
-    * \param name is the name of the object
-    * \param callback is the function that will receive an int with the result 
-    */
-    object_detection_learn_object(
-                                   const rapp::object::picture & image,
-                                   const std::string name,
-                                   const std::string user,
-                                   callback delegate
-                                 );
-    /**
-     * \brief Constructor without image
-     * \param name is the name of the object
-     * \param user is the user name
-     * \param callback will receive an int with the result
-     */
-    object_detection_learn_object(
-                                   const std::string name,
-                                   const std::string user,
-                                   callback delegate
-                                 );
+    using callback = std::function<void(int)>;
 
-	/// \return paramenters in json format
+    /**
+     * @brief Constructor
+     * @param fname is the path (id) of model image
+     * @param user is the user name
+     * @param name is the name of the object
+     */
+    orb_learn_object(
+                       const rapp::object::picture & image,
+                       const std::string name,
+                       const std::string user,
+                     );
+    /**
+     * @brief Constructor without image
+     * @param name is the name of the object
+     * @param user is the user name
+     */
+    orb_learn_object(
+                       const std::string name,
+                       const std::string user
+                    );
+
+	/// @return paramenters in json format
     std::string make_parameters() const;
 
     /// name of service
@@ -235,107 +166,94 @@ struct object_detection_learn_object
     std::string name;
     /// parameter user
     std::string user;
-    /// callback
-    const callback delegate;
 };
 
 /**
- * \struct object_detection_clear_models
- * \brief Clears operational memory for selected user
- * \version 0.7.0
- * \date October 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ * @struct orb_clear_models
+ * @brief Clears operational memory for selected user
+ * @version 0.7.3
+ * @date October 2016
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-struct object_detection_clear_models 
+struct orb_clear_models 
 : public http_request, 
-  public cloud_base<object_detection_clear_models,int>
+  public cloud_base<int>
 {
-    typedef std::function<void(int)> callback;
-    /**
-    * \brief Constructor
-    * \param user is the user name
-    * \param callback is the function that will receive an int 
-    */
-    object_detection_clear_models(
-                                    const std::string user,
-                                    callback delegate
-                                 );
-    
-    /// name of service
-    static const std::string uri;
+    using callback = std::function<void(int)>;
 
-    /// callback
-    const callback delegate;
-};
-
-/**
- * \struct object_detection_load_models
- * \brief Load one or more models to operational memory
- * \version 0.7.0
- * \date October 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
- */
-struct object_detection_load_models 
-: public http_request, 
-  public cloud_base<object_detection_load_models,int>
-{
-    typedef std::function<void(int)> callback;
     /**
-    * \brief Constructor
-    * \param user is the user name
-    * \param names is the object names to load
-    * \param callback is the function that will receive a string
-    */
-    object_detection_load_models(
-                                  const std::string user,
-                                  const std::vector<std::string> names,
-                                  callback delegate
-                                );
-    
-    /// name of service
-    static const std::string uri;
-
-    /// callback
-    const callback delegate;
-};
-
-/**
- * \struct object_detection_find_objects
- * \brief user can provide query image to detect objects
- * \version 0.7.2
- * \date October 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
- */
-struct object_detection_find_objects 
-: public http_request, 
-  public cloud_base<object_detection_find_objects,rapp::object::orb_object>
-{
-    typedef std::function<void(rapp::object::orb_object)> callback;
-    /**
-    * \brief Constructor
-    * \param fname is the path (id) of query image
-    * \param user is the user name
-    * \param limit is the limit search to N best matches
-    * \param callback is the function that will receive the objects found
-    */
-    object_detection_find_objects(
-                                  const rapp::object::picture & image,
-                                  const std::string user,
-                                  const int limit,
-                                  callback delegate
-                                );
-    
-    /**
-     * \brief Constructor without image
-     * \param user is the user name
-     * \param limit is the limit search to N best matches
-     * \param callback will receive the object found
+     * @brief Constructor
+     * @param user is the user name
+     * @param callback is the function that will receive an int 
      */
-    object_detection_find_objects(
-                                   const std::string user,
-                                   const int limit,
-                                   callback delegate
-                                 );
+    orb_clear_models(const std::string user);
+    
+    /// name of service
+    static const std::string uri;
+};
+
+/**
+ * @struct object_detection_load_models
+ * @brief Load one or more models to operational memory
+ * @version 0.7.3
+ * @date October 2016
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+struct orb_load_models 
+: public http_request, 
+  public cloud_base<int>
+{
+    using callback = std::function<void(int)>;
+
+    /**
+    * @brief Constructor
+    * @param user is the user name
+    * @param names is the object names to load
+    */
+    orb_load_models(
+                      const std::string user,
+                      const std::vector<std::string> names
+                    );
+    
+    /// name of service
+    static const std::string uri;
+};
+
+/**
+ * @struct object_detection_find_objects
+ * @brief user can provide query image to detect objects
+ * @version 0.7.2
+ * @date October 2016
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+struct orb_find_objects 
+: public http_request, 
+  public cloud_base<rapp::object::orb_object>
+{
+    using callback = std::function<void(rapp::object::orb_object)>;
+
+    /**
+     * @brief Constructor
+     * @param fname is the path (id) of query image
+     * @param user is the user name
+     * @param limit is the limit search to N best matches
+     */
+    orb_find_objects(
+                      const rapp::object::picture & image,
+                      const std::string user,
+                      const int limit
+                    );
+    
+    /**
+     * @brief Constructor without image
+     * @param user is the user name
+     * @param limit is the limit search to N best matches
+     * @param callback will receive the object found
+     */
+    orb_find_objects(
+                       const std::string user,
+                       const int limit
+                     );
 
     /// \return parameters of the struct in json format
     std::string make_parameters() const;
@@ -347,8 +265,6 @@ struct object_detection_find_objects
     std::string user;
     ///parameters limit
     int limit;
-    /// delegate
-    const callback delegate;
 };
 
 }

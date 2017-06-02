@@ -2,24 +2,25 @@
 #define CLOUD_BASE_HPP
 #include "includes.ihh"
 #include "deserialize.hpp"
-namespace rapp
-{
-namespace cloud
-{
+namespace rapp {
+namespace cloud {
 /**
- * @brief cloud service base class - CRTP
+ * @brief cloud service base class
  * @note defines if it is a single callable service or part of a batch
+ * @note it also has the `data_class` object which is used in deserialisation
  * @version 0.7.3
- * @date 09.02.0217
- * @author Maria Ramos <m.ramos@ortelio.co.uk>
+ * @date 02.06.2017
+ * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-template <class impl_type, class return_type>
+template <class data_class>
 class cloud_base
 {
 public:
+    using data_type = data_class;
+
     /**
-     * \brief Constructor
-     * \param init_value defines if the service is single callable(true) or not
+     * @brief Constructor
+     * @param init_value defines if the service is single callable(true) or not
      */
     cloud_base(bool single);
     
@@ -30,22 +31,35 @@ public:
     bool is_single_callable() const;
 
     /**
-     *  \return std::string with URI for HTTP header
-     *  \param uri is the uri of the service
+     *  @return std::string with URI for HTTP header
+     *  @param uri is the uri of the service
      */
     std::string make_http_uri(std::string uri) const;
-
-    /**
-     * \brief process json and call delegate functor
-     * \return type specified by inheriting class
-     */
-    void process(std::string json);
 
 protected:
     bool single_callable;
 };
 
+/*
+ * Template implementation
+ */
+template <class return_type>
+cloud_base<return_type>::cloud_base(bool single)
+: single_callable(single)
+{}
+ 
+template <class return_type>
+bool cloud_base<return_type>::is_single_callable() const
+{
+    return single_callable;
+}
+
+template <class return_type>
+std::string cloud_base<return_type>::make_http_uri(std::string uri) const
+{
+    return "POST /" + uri + " HTTP/1.1\r\n";
+}
+
 }
 }
-#include "cloud_base.impl"
 #endif

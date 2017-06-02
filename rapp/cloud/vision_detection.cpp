@@ -17,13 +17,11 @@ const std::string object_detection_find_objects::uri= "object_detection_find_obj
 ///Class face_detection
 face_detection::face_detection(
                                 const rapp::object::picture & image,
-                                bool fast,
-                                callback delegate
+                                bool fast
                               )
 : http_request(make_http_uri(uri)),
   cloud_base(true),
-  fast(fast),
-  delegate(delegate)
+  fast(fast)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -33,14 +31,10 @@ face_detection::face_detection(
     http_request::close();
 }
 
-face_detection::face_detection(
-                                bool fast,
-                                callback delegate
-                              )
+face_detection::face_detection(bool fast)
 : http_request(make_http_uri(uri)),
   cloud_base(false),
-  fast(fast),
-  delegate(delegate)
+  fast(fast)
 {}
 
 std::string face_detection::make_parameters() const
@@ -49,41 +43,10 @@ std::string face_detection::make_parameters() const
     return json_doc.dump(-1);
 }
 
-///Class door_angle_detection
-door_angle_detection::door_angle_detection(
-                                            const rapp::object::picture & image,
-                                            callback delegate
-                                          )
-: http_request(make_http_uri(uri)), 
-  cloud_base(true),
-  delegate(delegate)
-{
-    http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
-    http_request::add_content("file", fname, image.bytearray());
-    http_request::close();
-}
-
-door_angle_detection::door_angle_detection(callback delegate)
-: http_request(make_http_uri(uri)), 
-  cloud_base(false),
-  delegate(delegate)
-{}
-
-std::string door_angle_detection::make_parameters() const
-{
-    nlohmann::json json_doc = {{"no_param", ""}};
-    return json_doc.dump(-1);
-}
-
 /// Class light_detection
-light_detection::light_detection(
-                                  const rapp::object::picture & image,
-                                  callback delegate
-                                )
+light_detection::light_detection(const rapp::object::picture & image)
 : http_request(make_http_uri(uri)), 
-  cloud_base(true),
-  delegate(delegate)
+  cloud_base(true)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -91,10 +54,9 @@ light_detection::light_detection(
     http_request::close();
 }
 
-light_detection::light_detection(callback delegate)
+light_detection::light_detection()
 : http_request(make_http_uri(uri)), 
-  cloud_base(false),
-  delegate(delegate)
+  cloud_base(false)
 {
     nlohmann::json json_doc;
     http_request::add_content("light_detection", json_doc.dump(-1), true);
@@ -107,13 +69,9 @@ std::string light_detection::make_parameters() const
 }
 
 /// Class human_detection
-human_detection::human_detection(
-                                  const rapp::object::picture & image,
-                                  callback delegate
-                                )
+human_detection::human_detection(const rapp::object::picture & image)
 : http_request(make_http_uri(uri)), 
-  cloud_base(true),
-  delegate(delegate)
+  cloud_base(true)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -121,10 +79,9 @@ human_detection::human_detection(
     http_request::close();
 }
 
-human_detection::human_detection(callback delegate)
+human_detection::human_detection()
 : http_request(make_http_uri(uri)), 
-  cloud_base(false),
-  delegate(delegate)
+  cloud_base(false)
 {}
 
 std::string human_detection::make_parameters() const

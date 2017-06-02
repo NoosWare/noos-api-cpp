@@ -22,10 +22,8 @@
 #include <rapp/cloud/asio/caller.hpp>
 #include <rapp/cloud/vision_batch.hpp>
 
-namespace rapp 
-{
-namespace cloud
-{
+namespace rapp {
+namespace cloud {
 /**
  * @class service_controller
  * @brief Main class that controllers RAPP Services
@@ -35,11 +33,18 @@ namespace cloud
  * TODO (0.7.3): enable choice of HTTP or TLS
  *				 enable choice of TLS CA.PEM file (pass to asio_https)
  *               enable choice of ignoring CA on TLS
+ *
+ *               RENAME CLASS
+ *               overload methods to re-use sockets
+ *               return sockets used
+ *               template error handler
+ *               template socket type
+ *               change call methods to use a callback (which is removed from data cloud classes)
+ *               GENERIC OVERHAUL
  */
 class service_controller
 {
 public:
-
     /** 
      * @brief construct a service controller using a rapp::cloud::platform object
      * @param info must contain all required fields

@@ -9,4 +9,3 @@
 #include <rapp/cloud/vision_batch.hpp>
 #include <rapp/cloud/cloud_base.hpp>
 #include <rapp/cloud/deserialize.hpp>
-
