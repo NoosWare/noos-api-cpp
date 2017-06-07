@@ -54,22 +54,13 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
-             #${INCLUDES}/cloud/available_services.cpp
-             #${INCLUDES}/cloud/ontology.cpp
+
+             ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
-             #${INCLUDES}/cloud/path_planning.cpp
-             #${INCLUDES}/cloud/speech_recognition.cpp
-             #${INCLUDES}/cloud/text_to_speech.cpp
              ${INCLUDES}/cloud/service_controller.cpp
-             ${INCLUDES}/config/config.cpp
-             ${INCLUDES}/objects/time.cpp
-             ${INCLUDES}/objects/quaternion.cpp
-             ${INCLUDES}/objects/pose.cpp
+
              ${INCLUDES}/objects/point.cpp
-             ${INCLUDES}/objects/msg_metadata.cpp
-             ${INCLUDES}/objects/pose_stamped.cpp
-             ${INCLUDES}/objects/planned_path.cpp
              ${INCLUDES}/objects/human.cpp
              ${INCLUDES}/objects/face.cpp
              ${INCLUDES}/objects/picture.cpp
@@ -240,14 +231,7 @@ if (${BUILD_EXAMPLES})
                   object_recognition.cpp
                   object_recognition_my_own_models.cpp
                   )
-                  #knowrob_ontology.cpp
                   #picture_handling.cpp
-                  #text_to_speech.cpp
-                  #config.cpp
-                  #path_planning.cpp
-                  #set_noise_profile.cpp
-                  #speech_recognition_google.cpp
-                  #speech_recognition_sphinx4.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
 

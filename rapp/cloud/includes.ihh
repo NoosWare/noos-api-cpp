@@ -20,7 +20,7 @@
 #include <boost/any.hpp>
 #include <boost/variant/static_visitor.hpp>
 
-#include <rapp/misc/json.hpp>
+#include <rapp/misc/json/src/json.hpp>
 #include <rapp/misc/misc.hpp>
 
 using json = nlohmann::json;

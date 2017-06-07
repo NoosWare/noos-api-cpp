@@ -9,7 +9,7 @@ namespace cloud {
  * @note defines if it is a single callable service or part of a batch
  * @note it also has the `data_class` object which is used in deserialisation
  * @version 0.7.3
- * @date 02.06.2017
+ * @date 2 June 2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 template <class data_class>
@@ -36,8 +36,14 @@ public:
      */
     std::string make_http_uri(std::string uri) const;
 
+    /**
+     * @brief get as json
+     */
+    std::string get_json() const;
+
 protected:
     bool single_callable;
+    std::string json;
 };
 
 /*
@@ -58,6 +64,12 @@ template <class return_type>
 std::string cloud_base<return_type>::make_http_uri(std::string uri) const
 {
     return "POST /" + uri + " HTTP/1.1\r\n";
+}
+
+template <class return_type>
+std::string cloud_base<return_type>::get_json() const
+{
+    return json;
 }
 
 }

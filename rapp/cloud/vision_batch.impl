@@ -7,8 +7,8 @@ vision_batch<services...>::vision_batch(
                                          const rapp::object::picture & image,
                                          services... args
                                        )
-: http_request(cloud_base<vision_batch<services...>,bool>::make_http_uri("vision_batch")), 
-  cloud_base<vision_batch<services...>,bool>(true),
+: http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
+  cloud_base<bool>(true),
   image__(image),
   batch__(std::make_tuple((args)...))
 {
@@ -17,7 +17,7 @@ vision_batch<services...>::vision_batch(
     http_request::add_content("file", fname, image.bytearray());
 
     misc::for_each_arg([&](const auto & obj) {
-            http_request::add_content(obj.uri, obj.make_parameters(), true); 
+        http_request::add_content(obj.uri, obj.get_json(), true);
     }, args...);
 
     http_request::close();
@@ -39,7 +39,6 @@ void vision_batch<services...>::process(std::string json)
 
     //needed for expand tuple
     constexpr auto tuple_size = std::tuple_size<decltype(batch__)>::value;
-
     //take json part
     for (auto json_object : nlohmann_json) {
 		for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {

@@ -1,12 +1,9 @@
 #include "vision_detection.hpp"
-namespace rapp 
-{
-namespace cloud 
-{
+namespace rapp {
+namespace cloud {
 
 //service names
 const std::string face_detection::uri = "face_detection";
-const std::string door_angle_detection::uri = "hazard_detection_door_check";
 const std::string light_detection::uri= "light_detection";
 const std::string human_detection::uri= "human_detection";
 const std::string object_detection_learn_object::uri= "object_detection_learn_object";
@@ -20,8 +17,7 @@ face_detection::face_detection(
                                 bool fast
                               )
 : http_request(make_http_uri(uri)),
-  cloud_base(true),
-  fast(fast)
+  cloud_base(true)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -31,16 +27,12 @@ face_detection::face_detection(
     http_request::close();
 }
 
-face_detection::face_detection(bool fast)
+face_detection::face_detection()
 : http_request(make_http_uri(uri)),
-  cloud_base(false),
-  fast(fast)
-{}
-
-std::string face_detection::make_parameters() const
+  cloud_base(false)
 {
-    nlohmann::json json_doc = {{"fast", fast}};
-    return json_doc.dump(-1);
+    nlohmann::json json_doc = {{"fast", true}};
+    cloud_base::json = json_doc.dump(-1);
 }
 
 /// Class light_detection
@@ -58,14 +50,8 @@ light_detection::light_detection()
 : http_request(make_http_uri(uri)), 
   cloud_base(false)
 {
-    nlohmann::json json_doc;
-    http_request::add_content("light_detection", json_doc.dump(-1), true);
-}
-
-std::string light_detection::make_parameters() const
-{
     nlohmann::json json_doc = {{"no_param", ""}};
-    return json_doc.dump(-1);
+    cloud_base::json = json_doc.dump(-1);
 }
 
 /// Class human_detection
@@ -82,60 +68,36 @@ human_detection::human_detection(const rapp::object::picture & image)
 human_detection::human_detection()
 : http_request(make_http_uri(uri)), 
   cloud_base(false)
-{}
-
-std::string human_detection::make_parameters() const
 {
     nlohmann::json json_doc = {{"no_param", ""}};
-    return json_doc.dump(-1);
+    cloud_base::json = json_doc.dump(-1);
 }
 
 /// Class object_detection_learn_object
 object_detection_learn_object::object_detection_learn_object(
                                                               const rapp::object::picture & image,
                                                               const std::string name,
-                                                              const std::string user,
-                                                              callback delegate
                                                             )
 : http_request(make_http_uri(uri)), 
-  cloud_base(true),
-  name(name),
-  user(user),
-  delegate(delegate)
+  cloud_base(true)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
-    nlohmann::json json_doc = {{"name", name},
-                               {"user", user}};
+    nlohmann::json json_doc = {{"name", name}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
     
-object_detection_learn_object::object_detection_learn_object(
-                                                              const std::string name,
-                                                              const std::string user,
-                                                              callback delegate
-                                                            )
+object_detection_learn_object::object_detection_learn_object(const std::string name)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  name(name),
-  user(user),
-  delegate(delegate)
-{}
-
-std::string object_detection_learn_object::make_parameters() const
 {
-    nlohmann::json json_doc = {{"name", name},
-                               {"user", user}};
-    return json_doc.dump(-1);
+    nlohmann::json json_doc = {{"name", name}};
+    cloud_base::json json_doc.dump(-1);
 }
 
-/// Class object_detection_clear_models
-object_detection_clear_models::object_detection_clear_models(
-                                                              const std::string user,
-                                                              callback delegate
-                                                            )
+object_detection_clear_models::object_detection_clear_models(const std::string user)
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
   delegate(delegate)
@@ -166,15 +128,11 @@ object_detection_load_models::object_detection_load_models(
 /// Class object_detection_find_objects
 object_detection_find_objects::object_detection_find_objects(
                                                               const rapp::object::picture & image,
-                                                              const std::string user,
-                                                              const int limit,
-                                                              callback delegate
+                                                              const int limit
                                                              )
 : http_request(make_http_uri(uri)), 
   cloud_base(true),
-  user(user),
-  limit(limit),
-  delegate(delegate)
+  limit(limit)
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -185,23 +143,14 @@ object_detection_find_objects::object_detection_find_objects(
     http_request::close();
 }
 
-object_detection_find_objects::object_detection_find_objects(
-                                                              const std::string user,
-                                                              const int limit,
-                                                              callback delegate
-                                                             )
+object_detection_find_objects::object_detection_find_objects(const int limit)
 : http_request(make_http_uri(uri)), 
   cloud_base(false),
-  user(user),
-  limit(limit),
-  delegate(delegate)
-{}
-
-std::string object_detection_find_objects::make_parameters() const
+  limit(limit)
 {
     nlohmann::json json_doc = {{"user", user},
                                {"limit", limit}};
-    return json_doc.dump(-1);
+    cloud_base::json = json_doc.dump(-1);
 }
 
 }

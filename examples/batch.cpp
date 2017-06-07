@@ -76,6 +76,5 @@ int main()
     ctrl.make_calls(rapp::cloud::face_detection(pic, false, face_cb),
                     rapp::cloud::human_detection(pic, human_cb),
                     rapp::cloud::door_angle_detection(pic, hazard_cb));
-
     return 0;
 }
