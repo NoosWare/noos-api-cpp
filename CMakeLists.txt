@@ -18,7 +18,7 @@
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
 set (RAPP_VERSION_MINOR 7)
-set (RAPP_VERSION_PATCH 2)
+set (RAPP_VERSION_PATCH 3)
 set (RAPP_VERSION_STRING ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 
@@ -58,7 +58,6 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
-             ${INCLUDES}/cloud/service_controller.cpp
 
              ${INCLUDES}/objects/point.cpp
              ${INCLUDES}/objects/human.cpp

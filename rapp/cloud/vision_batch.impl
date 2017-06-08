@@ -57,7 +57,7 @@ void vision_batch<services...>::find_process(
 {
     misc::for_each_arg([&](auto & obj){
         if (obj.uri == key) {        
-            obj.process(json);
+            obj.process(json); // TODO: FIX: DEPRECATED !!!
         }
     }, args...);
 }
