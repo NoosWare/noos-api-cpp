@@ -12,10 +12,11 @@ namespace cloud {
  * @date 2 June 2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-template <class data_class>
+template <class data_class> // class cloud_class = derived cloud class
 class cloud_base
 {
 public:
+    // using cloud_type = cloud_class;
     using data_type = data_class;
 
     /**
@@ -25,7 +26,7 @@ public:
     cloud_base(bool single);
     
     /**
-     *  \return boolean to know if it's the service is a 
+     *  @return boolean to know if it's the service is a 
      *  single call or part of a batch
      */
     bool is_single_callable() const;
@@ -36,9 +37,7 @@ public:
      */
     std::string make_http_uri(std::string uri) const;
 
-    /**
-     * @brief get as json
-     */
+    /// @brief get as json
     std::string get_json() const;
 
 protected:

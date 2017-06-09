@@ -9,11 +9,14 @@
 namespace rapp {
 namespace cloud {
 /// Generic template
-template <class service_type, class return_type>
+template <class service_type, 
+          class return_type>
 struct deserialize
 {
     return_type operator()(std::string json);
 };
+
+
 }
 }
 #endif

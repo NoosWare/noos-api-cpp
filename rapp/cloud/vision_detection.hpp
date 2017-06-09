@@ -1,15 +1,15 @@
 #ifndef CLOUD_VISION_DETECTION
 #define CLOUD_VISION_DETECTION
-#include "includes.ihh"
 /**
  * LICENSE HERE
  *
  * @version 0.7.3
  * @date 7 June 2017
  */
+#include "includes.ihh"
 #include <rapp/objects.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud.hpp>
+#include <rapp/cloud/cloud_base.hpp>
 namespace rapp {
 namespace cloud {
 /**
@@ -86,7 +86,7 @@ struct orb_learn_object
      */
     orb_learn_object(
                        const rapp::object::picture & image,
-                       const std::string name,
+                       const std::string name
                      );
 
     /// @param name is the name of the object

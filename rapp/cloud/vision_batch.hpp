@@ -6,10 +6,8 @@
 #include <rapp/objects.hpp>
 #include <rapp/cloud.hpp>
 
-namespace rapp
-{
-namespace cloud
-{
+namespace rapp {
+namespace cloud {
 
 /**
  * @brief vision_batch
@@ -18,22 +16,23 @@ namespace cloud
  * @date 09.02.0217
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-template <class... services> 
+template <class... cloud_pairs>
 class vision_batch 
 : public http_request, 
-  public cloud_base<vision_batch<services...>,bool>
+  public cloud_base<bool>,
+  public cloud_batch
 {
 public:
-    /**
-     * \brief Constructor
-     * \param image use for the batch
-     */
+
+    ///
     vision_batch(
                   const rapp::object::picture & image,
-                  services... args
+                  cloud_pairs... args,
                 );
    
     /// \brief process the JSON reply and delegate to services
+    // DEPRECATED
+    // This becomes the specialisation of deserialize<vision_batch, 
     void process(std::string json);
 
     /// \brief expand batch type
@@ -42,26 +41,20 @@ public:
                       std::string json, 
                       std::string key,
                       std::index_sequence<batch_size...>
-                     ) 
-    {
-        find_process(std::get<batch_size>(batch__)..., json, key);
-    }
+                     );
 
     /// \brief
-    void find_process(
-                       services... args, 
-                       std::string json,
-                       std::string key
-                     );
+    void find_cloud_type(
+                          services... args, 
+                          std::string json,
+                          std::string key
+                        );
    
 private:
-    /// \brief image use for all the vision services
     const rapp::object::picture & image__;
-    /// \brief batch services
-    std::tuple<services...> batch__;
+    std::tuple<cloud_pairs...> batch__;
 };
-
 }
 }
-#include "vision_batch.impl"
+//#include "vision_batch.impl"
 #endif

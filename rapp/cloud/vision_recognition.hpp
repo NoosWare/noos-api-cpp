@@ -10,8 +10,7 @@
 #include "includes.ihh"
 #include <rapp/objects.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud.hpp>
-
+#include <rapp/cloud/cloud_base.hpp>
 namespace rapp {
 namespace cloud {
 /**
@@ -44,13 +43,11 @@ struct qr_recognition
     static const std::string uri;
 
     /// @param image is a picture object pointer
-    qr_recognition(
-                    const rapp::object::picture & image,
-                    callback delegate
-                  );
-    
+    qr_recognition(const rapp::object::picture & image);
+
+private:
     /// @brief empty ctor used by vision batch
-    qr_recognition(callback delegate);
+    qr_recognition();
 };
 
 }

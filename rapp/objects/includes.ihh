@@ -11,6 +11,6 @@
 #include <boost/algorithm/string.hpp> 
 
 //#include <rapp/objects/globals.hpp>
-#include <rapp/misc/json.hpp>
+#include <rapp/misc/json/src/json.hpp>
 
 using json = nlohmann::json; 

@@ -54,10 +54,14 @@ int main()
 
     using face_d   = rapp::cloud::face_detection;
     using human_d  = rapp::cloud::human_detection;
-    using vision_b = rapp::cloud::vision_batch<face_d,human_d>;
 
-    ctrl.make_call<vision_b>(pic,
-                             face_d(false, face_cb),
-                             human_d(human_cb));
+    using face_pair = std::pair<face_detection, face_detection::callback>;
+
+    auto batch = vision_batch(std::make_pair(face_d(), face_cb), 
+                              std::make_pair(human_d(), human_cb));
+
+    auto call = ctrl.make_one(batch, 
+                              std::bind(vision_batch::process, &batch, std::placeholders::_1));
+
     return 0;
 }

@@ -64,6 +64,9 @@ public:
               typename... parameters>
     callable<cloud_type,callback,socket_type> make_one(parameters..., callback);
 
+    /// TODO: create a method `make_batch`
+    ///       either via cloud_type or via variadic template
+
     /** 
      * @brief create batch of cloud calls using a variadic template
      * @param `args` is a variadic template of cloud classes
@@ -80,6 +83,8 @@ public:
     template <class cloud_type,
               class callback>
     void call_one(callable<cloud_type,callback,socket_type> & arg);
+
+    /// TODO: create a method `call_batch`
 
     /**
      * @brief call many cloud services in parallel

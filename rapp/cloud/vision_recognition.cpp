@@ -20,7 +20,7 @@ object_recognition::object_recognition(const rapp::object::picture & image)
 
 object_recognition::object_recognition()
 : http_request(make_http_uri(uri)), 
-  cloud_base(false),
+  cloud_base(false)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
     cloud_base::json = json_doc.dump(-1);

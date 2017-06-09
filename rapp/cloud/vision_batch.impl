@@ -1,7 +1,6 @@
-namespace rapp
-{
-namespace cloud
-{
+namespace rapp {
+namespace cloud {
+
 template <class... services>
 vision_batch<services...>::vision_batch(
                                          const rapp::object::picture & image,
@@ -39,25 +38,46 @@ void vision_batch<services...>::process(std::string json)
 
     //needed for expand tuple
     constexpr auto tuple_size = std::tuple_size<decltype(batch__)>::value;
+
     //take json part
     for (auto json_object : nlohmann_json) {
 		for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
             std::string json = it.value().dump(-1);
-            expand_batch(json, it.key(), std::make_index_sequence<tuple_size>());
+            expand_batch(json, 
+                         it.key(), 
+                         std::make_index_sequence<tuple_size>()
+                         );
         }
     }
 }
 
-template <class... services>
-void vision_batch<services...>::find_process(
-                                              services... args, 
+template<std::size_t... batch_size>
+void vision_batch<services...>::expand_batch(
                                               std::string json, 
-                                              std::string key
-                                            )
+                                              std::string key,
+                                              std::index_sequence<batch_size...>
+                                            ) 
 {
-    misc::for_each_arg([&](auto & obj){
-        if (obj.uri == key) {        
-            obj.process(json); // TODO: FIX: DEPRECATED !!!
+    find_process(std::get<batch_size>(batch__)..., json, key);
+}
+
+template <class... services>
+void vision_batch<services...>::find_cloud_type(
+                                                  services... args, 
+                                                  std::string json, 
+                                                  std::string key
+                                               )
+{
+    misc::for_each_arg([&](auto & pair){
+        if (pair.first.uri == key) {
+            // TODO: find type of object and deserialize result,
+            //       then find the correct callback, and pass the data
+            //       call deserialize<cloud_type, data_type>(json)
+            //
+            // THEN: you need to find, the callback from the tuple callbacks__
+            //       and call it, using the return value from deserialize
+            //
+            // pair.second(result)
         }
     }, args...);
 }
