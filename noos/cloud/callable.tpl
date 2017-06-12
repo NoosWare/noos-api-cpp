@@ -21,7 +21,7 @@ callable<cloud_type,callback,socket_type>::callable(parameters... args,
 template <class cloud_type,
           class callback,
           class socket_type>
-void callbable<cloud_type,callback,socket_type>::set_socket(std::unique_ptr<socket_type> arg)
+void callable<cloud_type,callback,socket_type>::set_socket(std::unique_ptr<socket_type> arg)
 {
     socket_ = arg;
 }
@@ -29,7 +29,7 @@ void callbable<cloud_type,callback,socket_type>::set_socket(std::unique_ptr<sock
 template <class cloud_type,
           class callback,
           class socket_type>
-socket_type & callbable<cloud_type,callback,socket_type>::get_socket() const
+socket_type & callable<cloud_type,callback,socket_type>::get_socket() const
 {
     if (!socket_) {
         throw std::runtime_error("no socket for callable");

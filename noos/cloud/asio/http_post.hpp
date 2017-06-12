@@ -1,29 +1,12 @@
-#ifndef RAPP_ASIO_HTTP_POST
-#define RAPP_ASIO_HTTP_POST
+#ifndef NOOS_CLOUD_ASIO_HTTP_POST
+#define NOOS_CLOUD_ASIO_HTTP_POST
 /**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * LICENSE HERE
  */
 #include "includes.ihh"
-namespace rapp 
-{
-namespace types 
-{    
-typedef char byte;
-}
-namespace cloud
-{
+#include <noos/objects/globals.hpp>
+namespace noos {
+namespace cloud {
 /**
  * \class http_post 
  * \brief use to store and pass POST data and realted info  
@@ -63,7 +46,7 @@ public:
     void add_content(
                       const std::string name,
                       const std::string filename,
-                      const std::vector<rapp::types::byte> bytes
+                      const std::vector<noos::types::byte> bytes
                     );
        
     /// \brief call once, closes the POST boundary

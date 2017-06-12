@@ -1,18 +1,11 @@
-#ifndef RAPP_OBJECTS_GLOBALS
-#define RAPP_OBJECTS_GLOBALS
-namespace rapp {
-/// Common global types
+#ifndef NOOS_OBJECTS_GLOBALS
+#define NOOS_OBJECTS_GLOBALS
+namespace noos {
 namespace types {    
-
-/**
- * \brief clarification 
- * TODO: use unsigned char. 
- */
+/// @brief clarification 
 typedef char byte;
 
-/**
- * \brief audio sources allowed in speech classes
- */
+/// @brief audio sources allowed in speech classes
 enum audio_source 
 { 
     nao_ogg = 0, 

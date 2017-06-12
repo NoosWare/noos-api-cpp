@@ -1,10 +1,9 @@
-#ifndef CLOUD_BATCH_HPP
-#define CLOUD_BATCH_HPP
+#ifndef NOOS_CLOUD_BATCH_HPP
+#define NOOS_CLOUD_BATCH_HPP
 #include "includes.ihh"
-#include "deserialize.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
-
+/// TODO: implement a cloud_batch ???
 struct cloud_batch
 {
     unsigned int size;

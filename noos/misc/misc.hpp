@@ -1,16 +1,14 @@
-#ifndef RAPP_MISC
-#define RAPP_MISC
+#ifndef NOOS_MISC
+#define NOOS_MISC
 #include "includes.ihh"
 /**
- * \brief common misc helper functions
- * \version 0.6.0
- * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
- * \date July 2016
+ * @brief common misc helper functions
+ * @version 0.6.0
+ * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ * @date 10 June 2016
  */
-namespace rapp 
-{
-namespace misc 
-{
+namespace noos {
+namespace misc {
 
 /// \brief decode base64
 /// \param val must be encoded using base64

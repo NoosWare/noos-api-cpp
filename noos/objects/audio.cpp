@@ -1,5 +1,5 @@
 #include "audio.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 audio::audio(const std::string filepath)
@@ -18,11 +18,11 @@ audio::audio(std::ifstream & bytestream)
     read_bytes(bytestream);
 }
 
-audio::audio(std::vector<rapp::types::byte> bytearray)
+audio::audio(std::vector<noos::types::byte> bytearray)
 : bytearray_(bytearray)
 {}
 
-std::vector<rapp::types::byte> audio::bytearray() const
+std::vector<noos::types::byte> audio::bytearray() const
 {
     return bytearray_;
 }
@@ -45,7 +45,7 @@ bool audio::save(const std::string filepath)
     if (os.is_open())
     {
         std::copy(bytearray_.begin(), bytearray_.end(), 
-                  std::ostreambuf_iterator<rapp::types::byte>(os));
+                  std::ostreambuf_iterator<noos::types::byte>(os));
         os.close();
         return true;
     }

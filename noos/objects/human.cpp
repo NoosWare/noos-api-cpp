@@ -1,5 +1,5 @@
 #include "human.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 human::human( 

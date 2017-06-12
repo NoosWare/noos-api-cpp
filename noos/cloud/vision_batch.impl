@@ -1,9 +1,9 @@
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 template <class... services>
 vision_batch<services...>::vision_batch(
-                                         const rapp::object::picture & image,
+                                         const noos::object::picture & image,
                                          services... args
                                        )
 : http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
@@ -12,7 +12,7 @@ vision_batch<services...>::vision_batch(
   batch__(std::make_tuple((args)...))
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image__.type();
+    std::string fname = noos::misc::random_boundary() + "." + image__.type();
     http_request::add_content("file", fname, image.bytearray());
 
     misc::for_each_arg([&](const auto & obj) {

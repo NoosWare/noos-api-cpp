@@ -1,5 +1,5 @@
 #include "vision_detection.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 //service names
@@ -12,12 +12,12 @@ const std::string orb_load_models::uri= "orb_load_models";
 const std::string orb_find_objects::uri= "orb_find_objects";
 
 ///Class face_detection
-face_detection::face_detection(const rapp::object::picture & image)
+face_detection::face_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
     nlohmann::json json_doc = {{"fast", true}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
@@ -33,12 +33,12 @@ face_detection::face_detection()
 }
 
 /// Class light_detection
-light_detection::light_detection(const rapp::object::picture & image)
+light_detection::light_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
@@ -52,12 +52,12 @@ light_detection::light_detection()
 }
 
 /// Class human_detection
-human_detection::human_detection(const rapp::object::picture & image)
+human_detection::human_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
@@ -72,14 +72,14 @@ human_detection::human_detection()
 
 /// Class orb_learn_object
 orb_learn_object::orb_learn_object(
-                                    const rapp::object::picture & image,
+                                    const noos::object::picture & image,
                                     const std::string name
                                   )
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
     nlohmann::json json_doc = {{"name", name}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
@@ -117,14 +117,14 @@ orb_load_models::orb_load_models(const std::vector<std::string> names)
 
 /// Class orb_find_objects
 orb_find_objects::orb_find_objects(
-                                    const rapp::object::picture & image,
+                                    const noos::object::picture & image,
                                     const int limit
                                   )
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
     nlohmann::json json_doc = {{"limit", limit}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());

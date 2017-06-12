@@ -1,5 +1,5 @@
-#ifndef CLOUD_VISION_DETECTION
-#define CLOUD_VISION_DETECTION
+#ifndef NOOS_CLOUD_VISION_DETECTION
+#define NOOS_CLOUD_VISION_DETECTION
 /**
  * LICENSE HERE
  *
@@ -7,10 +7,11 @@
  * @date 7 June 2017
  */
 #include "includes.ihh"
-#include <rapp/objects.hpp>
-#include <rapp/cloud/asio/http_request.hpp>
-#include <rapp/cloud/cloud_base.hpp>
-namespace rapp {
+#include <noos/cloud/node.hpp>
+#include <noos/objects.hpp>
+#include <noos/cloud/asio/http_request.hpp>
+#include <noos/cloud/cloud_base.hpp>
+namespace noos {
 namespace cloud {
 /**
  * @struct face_detection
@@ -18,14 +19,14 @@ namespace cloud {
  */
 struct face_detection 
 : public http_request, 
-  public cloud_base<std::vector<rapp::object::face>>
+  public cloud_base<std::vector<noos::object::face>>
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
 
     /// @param image is the input image 
-    face_detection(const rapp::object::picture & image);
-    
+    face_detection(const noos::object::picture & image);
+
     /// @brief construct without an image - part of a vision batch
     face_detection();
 };
@@ -42,8 +43,8 @@ struct light_detection
     static const std::string uri;
 
     /// @param image is the picture used
-    light_detection(const rapp::object::picture & image);
-    
+    light_detection(const noos::object::picture & image);
+
     /// @brief Constructor
     light_detection();
 };
@@ -54,7 +55,7 @@ struct light_detection
  */
 struct human_detection 
 : public http_request, 
-  public cloud_base<std::vector<rapp::object::human>>
+  public cloud_base<std::vector<noos::object::human>>
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
@@ -63,7 +64,7 @@ struct human_detection
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    human_detection(const rapp::object::picture & image);
+    human_detection(const noos::object::picture & image);
 
     /// @brief Constructor without image
     human_detection();
@@ -85,7 +86,7 @@ struct orb_learn_object
      * @param name is the name of the object
      */
     orb_learn_object(
-                       const rapp::object::picture & image,
+                       const noos::object::picture & image,
                        const std::string name
                      );
 
@@ -129,9 +130,9 @@ struct orb_load_models
  */
 struct orb_find_objects 
 : public http_request, 
-  public cloud_base<rapp::object::orb_object>
+  public cloud_base<noos::object::orb_object>
 {
-    using callback = std::function<void(rapp::object::orb_object)>;
+    using callback = std::function<void(noos::object::orb_object)>;
     static const std::string uri;
 
     /**
@@ -139,10 +140,10 @@ struct orb_find_objects
      * @param limit is the limit search to N best matches
      */
     orb_find_objects(
-                      const rapp::object::picture & image,
+                      const noos::object::picture & image,
                       const int limit
                     );
-    
+
     /// @param limit is the limit search to N best matches
     orb_find_objects(const int limit);
 };

@@ -1,4 +1,4 @@
-namespace rapp {
+namespace noos {
 namespace cloud {
 ///
 /// asio_handler template implementation
@@ -7,15 +7,13 @@ template <class T>
 asio_handler<T>::asio_handler(
                                const std::function<void(std::string)> cloud_function,
                                const std::function<void(boost::system::error_code)> error_function,
-                               const std::function<void(boost::system::error_code)> shutdown_function,
-                               bool keep_alive
+                               const std::function<void(boost::system::error_code)> shutdown_function
 							 )
 : 
   http_response(error_function), 
   cloud_cb_(cloud_function), 
   error_cb_(error_function),
-  close_cb_(shutdown_function),
-  keep_alive_(keep_alive)
+  close_cb_(shutdown_function)
 {
     assert(cloud_cb_ && error_cb_);
 }

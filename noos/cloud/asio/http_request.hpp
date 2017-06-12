@@ -1,48 +1,33 @@
-#ifndef RAPP_HTTP_REQUEST
-#define RAPP_HTTP_REQUEST
+#ifndef NOOS_CLOUD_HTTP_REQUEST
+#define NOOS_CLOUD_HTTP_REQUEST
 /**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * LICENSE HERE
  */
 #include "includes.ihh"
 #include <boost/asio.hpp>
-#include "http_header.hpp"
-#include "http_post.hpp"
-#include "platform.hpp"
-
-namespace rapp 
-{
-namespace cloud 
-{
+#include <noos/cloud/asio/http_header.hpp>
+#include <noos/cloud/asio/http_post.hpp>
+#include <noos/cloud/asio/platform.hpp>
+namespace noos {
+namespace cloud {
 /**
- * \class http_request
- * \brief wrapper for the classes `http_header` &`http_post` used for cloud requests
- * \version 0.7.0
- * \date 12 August 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
- * \see rapp::cloud::http_header
- * \see rapp::cloud::http_post
+ * @class http_request
+ * @brief wnooser for the classes `http_header` &`http_post` used for cloud requests
+ * @version 0.7.0
+ * @date 12 August 2016
+ * @author Maria Ramos <m.ramos@ortelio.co.uk>
+ * @see noos::cloud::http_header
+ * @see noos::cloud::http_post
  */
 class http_request 
 {
 public:
     /**
-	 * \brief construct a cloud HTTP request (multipart/form-data)
-	 * \param header will contain the URI and setting the multipart boundary
-	 * \param post contains the actual POST data
-	 * \see rapp::cloud::http_header
-	 * \see rapp::cloud::http_post
+	 * @brief construct a cloud HTTP request (multipart/form-data)
+	 * @param header will contain the URI and setting the multipart boundary
+	 * @param post contains the actual POST data
+	 * @see noos::cloud::http_header
+	 * @see noos::cloud::http_post
 	 */
     http_request(const std::string uri);
 
@@ -55,7 +40,7 @@ public:
 	 */
     void fill_buffer(
                       boost::asio::streambuf & buffer,
-                      rapp::cloud::platform info
+                      noos::cloud::platform info
                     );
 
     /// \brief
@@ -69,7 +54,7 @@ public:
     void close();
 
     /// \brief
-    std::string to_string(rapp::cloud::platform info) const;
+    std::string to_string(noos::cloud::platform info) const;
 
     /// \brief
     std::string to_post() const;
@@ -81,8 +66,8 @@ public:
     void make_multipart_form();
 
 private:
-    std::shared_ptr<http_header> header_;
-    std::shared_ptr<http_post>   post_;
+    std::shared_ptr<noos::cloud::http_header> header_;
+    std::shared_ptr<noos::cloud::http_post>   post_;
 };
 }
 }

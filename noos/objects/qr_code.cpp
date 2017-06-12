@@ -1,5 +1,5 @@
 #include "qr_code.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 qr_code::qr_code( 
@@ -13,7 +13,7 @@ qr_code::qr_code(
 {}
 
 /*
- * current rapp-platform uses a malformed JSON with
+ * current noos-platform uses a malformed JSON with
  * objects broken into two arrays, thus we can't construct
  * from a single iterator
  *

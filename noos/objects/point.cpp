@@ -1,5 +1,5 @@
 #include "point.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 point::point(double x, double y, double z)
@@ -34,7 +34,7 @@ json::object_t point::to_json() const
     return values;
 }
 
-bool point::operator==(const rapp::object::point & rhs) const
+bool point::operator==(const noos::object::point & rhs) const
 {
     return (this->x == rhs.x) &&
            (this->y == rhs.y) &&

@@ -1,12 +1,10 @@
-#ifndef DESERIALIZE_HPP
-#define DESERIALIZE_HPP
+#ifndef NOOS_CLOUD_DESERIALIZE_HPP
+#define NOOS_CLOUD_DESERIALIZE_HPP
 /**
- *
  * LICENSE HERE
- *
  */
-#include <rapp/objects.hpp>
-namespace rapp {
+#include <noos/objects.hpp>
+namespace noos {
 namespace cloud {
 /// Generic template
 template <class service_type, 

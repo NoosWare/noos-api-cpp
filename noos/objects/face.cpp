@@ -1,5 +1,5 @@
 #include "face.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 face::face( 
@@ -16,37 +16,32 @@ face::face(
 
 face::face(const json::const_iterator & face_it)
 {
-   if (face_it->find("up_left_point") == face_it->end()){
-      throw std::runtime_error("no up left point param in face");
-   }
-   else {
-      // Look for params x and y in up_left_point method
-      auto coord_it = face_it->find("up_left_point");
-      up_left_point(coord_it); 
-   }
-
-  if (face_it->find("down_right_point") == face_it->end()){
-     throw std::runtime_error("no down right point param in face");
-  }
-  else {
-      // Look for params x and y in down_right_point method
-      auto coord_it = face_it->find("down_right_point");
-      down_right_point(coord_it); 
-  }
-
+    if (face_it->find("up_left_point") == face_it->end()){
+        throw std::runtime_error("no up left point param in face");
+    }
+    else {
+        // Look for params x and y in up_left_point method
+        auto coord_it = face_it->find("up_left_point");
+        up_left_point(coord_it); 
+    }
+    if (face_it->find("down_right_point") == face_it->end()){
+        throw std::runtime_error("no down right point param in face");
+    }
+    else {
+        // Look for params x and y in down_right_point method
+        auto coord_it = face_it->find("down_right_point");
+        down_right_point(coord_it); 
+    }
 }
 
 json::object_t face::to_json() const
 {
     json::object_t value_up = {{"x", top_left_x__}, 
                                {"y", top_left_y__}};
-
     json::object_t value_dowm = {{"x", bottom_right_x__}, 
                                  {"y", bottom_right_y__}};
-
     json::object_t both = {{"up_left_point", value_up}, 
                            {"down_right_point", value_dowm}};
-    
     return both;
 }
 

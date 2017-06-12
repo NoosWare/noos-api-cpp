@@ -1,5 +1,5 @@
-#ifndef RAPP_CLOUD_AVAILABLE_SERVICES
-#define RAPP_CLOUD_AVAILABLE_SERVICES
+#ifndef NOOS_CLOUD_AVAILABLE_SERVICES
+#define NOOS_CLOUD_AVAILABLE_SERVICES
 #include "includes.ihh"
 /**
  *
@@ -9,8 +9,8 @@
  * @date 6 June 2017
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-#include <rapp/cloud/asio/http_request.hpp>
-namespace rapp {
+#include <noos/cloud/asio/http_request.hpp>
+namespace noos {
 namespace cloud {
 /**
  * @class available_services

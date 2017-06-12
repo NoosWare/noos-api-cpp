@@ -1,5 +1,5 @@
 #include "picture.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 picture::picture(const std::string filepath)
@@ -13,7 +13,7 @@ picture::picture(const std::string filepath)
     }
 }
 
-picture::picture(std::vector<rapp::types::byte> data)
+picture::picture(const std::vector<noos::types::byte> data)
 : bytearray_(data)
 {
     if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
@@ -41,7 +41,7 @@ bool picture::operator!=(const picture & rhs) const
     return (this->bytearray_ != rhs.bytearray_);
 }
 
-std::vector<rapp::types::byte> picture::bytearray() const
+std::vector<noos::types::byte> picture::bytearray() const
 {
     return bytearray_;
 }
@@ -56,7 +56,7 @@ bool picture::save(const std::string filepath)
     std::ofstream os(filepath, std::ios::out | std::ofstream::binary);
     if (os.is_open()) {
         std::copy(bytearray_.begin(), bytearray_.end(), 
-                  std::ostreambuf_iterator<rapp::types::byte>(os));
+                  std::ostreambuf_iterator<noos::types::byte>(os));
         os.close();
         return true;
     }

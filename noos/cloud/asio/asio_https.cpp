@@ -1,5 +1,5 @@
 #include "asio_https.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 asio_https::asio_https(

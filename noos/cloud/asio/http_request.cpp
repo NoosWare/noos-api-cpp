@@ -1,5 +1,5 @@
 #include "http_request.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 http_request::http_request(const std::string uri)
@@ -7,14 +7,14 @@ http_request::http_request(const std::string uri)
     if (uri.empty()) {
         throw std::runtime_error("empty uri param");
     }
-    header_ = std::make_shared<rapp::cloud::http_header>(uri);
-    post_   = std::make_shared<rapp::cloud::http_post>(header_->get_boundary());
+    header_ = std::make_shared<noos::cloud::http_header>(uri);
+    post_   = std::make_shared<noos::cloud::http_post>(header_->get_boundary());
     assert(header_ && post_);
 }
 
 void http_request::fill_buffer(
                                 boost::asio::streambuf & buffer,
-                                rapp::cloud::platform info
+                                noos::cloud::platform info
                               ) 
 {
 	std::ostream http_request_stream(&buffer);
@@ -31,7 +31,7 @@ void http_request::close()
     post_->end();
 }
 
-std::string http_request::to_string(rapp::cloud::platform info) const
+std::string http_request::to_string(noos::cloud::platform info) const
 {
     if (post_->size() > 0) {
         return header_->to_string(info, post_->size()) + post_->to_string();

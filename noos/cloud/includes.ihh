@@ -11,6 +11,7 @@
 #include <cassert>
 #include <tuple>
 #include <atomic>
+#include <type_traits>
 
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -20,7 +21,7 @@
 #include <boost/any.hpp>
 #include <boost/variant/static_visitor.hpp>
 
-#include <rapp/misc/json/src/json.hpp>
-#include <rapp/misc/misc.hpp>
+#include <noos/misc/json/src/json.hpp>
+#include <noos/misc/misc.hpp>
 
 using json = nlohmann::json;

@@ -1,8 +1,6 @@
 #include "deserialize.hpp"
-
-namespace rapp {
+namespace noos {
 namespace cloud {
-
 /// Forward - Delcare all classes for which we create template specializations
 struct face_detection;
 struct light_detection;
@@ -16,20 +14,20 @@ struct qr_recognition;
 
 // face_detection and faces
 template <>
-inline std::vector<rapp::object::face> 
-    deserialize<face_detection,std::vector<rapp::object::face>>::operator()(std::string json)
+inline std::vector<noos::object::face> 
+    deserialize<face_detection,std::vector<noos::object::face>>::operator()(std::string json)
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }
-    std::vector<rapp::object::face> faces;
+    std::vector<noos::object::face> faces;
     nlohmann::json json_f;
 
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_faces = json_f.find("faces");
             for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
-                faces.push_back(rapp::object::face(it));
+                faces.push_back(noos::object::face(it));
             }
         }
     }
@@ -54,20 +52,20 @@ inline int
 }
 // human detection
 template <>
-inline std::vector<rapp::object::human> 
-    deserialize<human_detection,std::vector<rapp::object::human>>::operator()(std::string json)
+inline std::vector<noos::object::human> 
+    deserialize<human_detection,std::vector<noos::object::human>>::operator()(std::string json)
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }
-    std::vector<rapp::object::human> humans;
+    std::vector<noos::object::human> humans;
     nlohmann::json json_f; 
 
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_human = json_f.find("humans");
             for (auto it = it_human->begin(); it != it_human->end(); it++ ) {
-                humans.push_back(rapp::object::human(it));
+                humans.push_back(noos::object::human(it));
             }
         }
     }
@@ -127,22 +125,22 @@ inline int
 
 // ORB find objects
 template <>
-inline rapp::object::orb_object 
-    deserialize<object_detection_find_objects,rapp::object::orb_object>::operator()(std::string json) 
+inline noos::object::orb_object 
+    deserialize<object_detection_find_objects,noos::object::orb_object>::operator()(std::string json) 
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }
-    std::vector<rapp::object::point> points;
+    std::vector<noos::object::point> points;
     nlohmann::json json_f;
 
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_center = json_f.find("found_centers");
             for (auto it = it_center->begin(); it != it_center->end(); it++) {
-                points.push_back(rapp::object::point(it));
+                points.push_back(noos::object::point(it));
             }
-            return rapp::object::orb_object {
+            return noos::object::orb_object {
                                               json_f["found_names"],
                                               points, 
                                               json_f["found_scores"],
@@ -150,7 +148,7 @@ inline rapp::object::orb_object
                                             };
         }
     }
-    return rapp::object::orb_object{};
+    return noos::object::orb_object{};
 }
 
 // object recognition (Caffe2)
@@ -172,10 +170,10 @@ inline std::string
 
 // QR recongition
 template<>
-inline std::vector<rapp::object::qr_code> 
-    deserialize<qr_recognition,std::vector<rapp::object::qr_code>>::operator()(std::string json)
+inline std::vector<noos::object::qr_code> 
+    deserialize<qr_recognition,std::vector<noos::object::qr_code>>::operator()(std::string json)
 {
-    std::vector<rapp::object::qr_code> qr_codes;
+    std::vector<noos::object::qr_code> qr_codes;
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }
@@ -184,7 +182,7 @@ inline std::vector<rapp::object::qr_code>
         if (misc::check_error(json_f)) {
             unsigned int i = 0;
             for (auto & obj : json_f["qr_centers"]) {
-                qr_codes.push_back(rapp::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
+                qr_codes.push_back(noos::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
                 i++;
             }
             return qr_codes;

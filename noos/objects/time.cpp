@@ -1,5 +1,5 @@
 #include "time.hpp"
-namespace rapp {
+namespace noos {
 namespace object {
 
 time::time(std::chrono::nanoseconds timepoint)
@@ -32,7 +32,7 @@ json::object_t time::to_json() const
     return values;
 }
 
-bool time::operator==(const rapp::object::time & rhs) const
+bool time::operator==(const noos::object::time & rhs) const
 {
     return (this->seconds_ == rhs.seconds_)
             && (this->nanoseconds_ == rhs.nanoseconds_);

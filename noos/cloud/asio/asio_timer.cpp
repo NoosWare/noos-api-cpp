@@ -1,5 +1,5 @@
 #include "asio_timer.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 asio_timer::asio_timer(boost::asio::io_service & service) 
@@ -30,7 +30,6 @@ void asio_timer::reset()
 	timer_.expires_at(boost::posix_time::pos_infin);
 	//io_time_.stop();
 }
-
 
 }
 }

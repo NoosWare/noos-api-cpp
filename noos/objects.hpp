@@ -1,8 +1,8 @@
-#include <rapp/objects/audio.hpp>
-#include <rapp/objects/face.hpp>
-#include <rapp/objects/human.hpp>
-#include <rapp/objects/picture.hpp>
-#include <rapp/objects/point.hpp>
-#include <rapp/objects/time.hpp>
-#include <rapp/objects/qr_code.hpp>
-#include <rapp/objects/orb_object.hpp>
+#include <noos/objects/audio.hpp>
+#include <noos/objects/face.hpp>
+#include <noos/objects/human.hpp>
+#include <noos/objects/picture.hpp>
+#include <noos/objects/point.hpp>
+#include <noos/objects/time.hpp>
+#include <noos/objects/qr_code.hpp>
+#include <noos/objects/orb_object.hpp>

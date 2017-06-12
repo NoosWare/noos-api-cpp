@@ -1,6 +1,6 @@
 #include "http_response.hpp"
 
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 http_response::http_response(std::function<void(error_code error)> callback)
@@ -95,7 +95,7 @@ bool http_response::check_http_header()
     // HTTP 400: bad request (bad header)
     // HTTP 404: URL not found
     // HTTP 500: Internal Server Error
-    // HTTP 401: Unauthorized Acces (rapp token)
+    // HTTP 401: Unauthorized Acces (noos token)
 	// HTTP reply is not 200
 	else if (status_code != 200) {
 		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);

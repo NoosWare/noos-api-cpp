@@ -1,31 +1,18 @@
-#ifndef RAPP_OBJECT_PICTURE
-#define RAPP_OBJECT_PICTURE
+#ifndef NOOS_OBJECT_PICTURE
+#define NOOS_OBJECT_PICTURE
 #include "includes.ihh"
+#include <noos/objects/globals.hpp>
 /**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * LICENSE HERE
  */
-#include <rapp/objects/globals.hpp>
-
-namespace rapp {
+namespace noos {
 namespace object {
 /**
- * \class picture
- * \brief class which wraps around raw bytes of a picture
- * \version 0.7.0
- * \date August 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * @class picture
+ * @brief class which wraps around raw bytes of a picture
+ * @version 0.7.0
+ * @date August 2016
+ * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class picture
 {
@@ -37,7 +24,7 @@ public:
     picture(std::ifstream & bytestream);
 
     /// \brief Constructor using the raw bytes of a file
-    picture(std::vector<rapp::types::byte> data);
+    picture(const std::vector<noos::types::byte> data);
 
     /// \brief Copy constructor
     picture(const picture &) = default;
@@ -52,7 +39,7 @@ public:
     bool operator!=(const picture & rhs) const;
 
     /// \brief Get picture as array of bytes
-    std::vector<rapp::types::byte> bytearray() const;
+    std::vector<noos::types::byte> bytearray() const;
 
     /// \brief Get image type (JPG/PNG supported)
     std::string type() const;
@@ -70,7 +57,7 @@ private:
     void opencb_(std::ifstream & bytestream);
         
     /// Members
-    std::vector<rapp::types::byte> bytearray_;
+    std::vector<noos::types::byte> bytearray_;
     std::string imgtype_;
 };
 }

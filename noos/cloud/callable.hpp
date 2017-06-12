@@ -1,10 +1,10 @@
-#ifndef CLOUD_CALLABLE
-#define CLOUD_CALLABLE
+#ifndef NOOS_CLOUD_CALLABLE
+#define NOOS_CLOUD_CALLABLE
 /**
  * LICENSE HERE
  */
 #include "includes.ihh"
-namespace rapp {
+namespace noos {
 namespace cloud {
 /**
  * @class callable
@@ -15,7 +15,7 @@ namespace cloud {
  */
 template <class cloud_type,
           class callback,
-          class socket_type = rapp::cloud::asio_http>
+          class socket_type>
 struct callable
 {
     cloud_type object;

@@ -1,31 +1,18 @@
-#ifndef RAPP_OBJECT_AUDIO
-#define RAPP_OBJECT_AUDIO
+#ifndef NOOS_OBJECT_AUDIO
+#define NOOS_OBJECT_AUDIO
 #include "includes.ihh"
+#include <noos/objects/globals.hpp>
 /**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * LICENSE HERE
  */
-#include <rapp/objects/globals.hpp>
-
-namespace rapp {
+namespace noos {
 namespace object {
 /**
- * \class audio
- * \brief class which wraps around raw bytes of an audiofile
- * \version 0.7.0
- * \date 26 August 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * @class audio
+ * @brief class which wraps around raw bytes of an audiofile
+ * @version 0.7.3
+ * @date 10 June 2017
+ * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
   */
 class audio
 {
@@ -39,13 +26,13 @@ public:
 
     /// \brief Construct using an existing byte-array
     /// \param bytearray should contain the audio data
-    audio(std::vector<rapp::types::byte> bytearray);
+    audio(std::vector<noos::types::byte> bytearray);
 
     /// \brief Copy constructor
     audio(const audio &) = default;
 
     /// \brief Get audio as array of bytes
-    std::vector<rapp::types::byte> bytearray() const;
+    std::vector<noos::types::byte> bytearray() const;
 
     /// \brief Are audios same ?
     bool operator==(const audio & rhs) const;
@@ -68,7 +55,7 @@ private:
     void read_bytes(std::ifstream & bytestream);
 
     /// \brief Actual bytes of audio file
-    std::vector<rapp::types::byte> bytearray_;
+    std::vector<noos::types::byte> bytearray_;
 };
 
 }

@@ -1,59 +1,45 @@
-#ifndef RAPP_ASIO_HANDLER
-#define RAPP_ASIO_HANDLER
+#ifndef NOOS_ASIO_HANDLER
+#define NOOS_ASIO_HANDLER
 /**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * LICENSE HERE
  */
 #include "includes.ihh"
 #include <boost/asio/ssl.hpp>
-#include "http_response.hpp"
-#include "asio_timer.hpp"
-#include "keep_alive.hpp"
+#include <noos/cloud/asio/http_response.hpp>
+#include <noos/cloud/asio/asio_timer.hpp>
 
 typedef boost::asio::ip::tcp::socket http_socket;
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
 typedef boost::system::error_code error_code;
 typedef boost::asio::ip::tcp::resolver resolver;
 
-namespace rapp {
+namespace noos {
 namespace cloud {
 /**
- * \class asio_handler
- * \version 0.7.0
- * \date 12 August 2016 
- * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
- * \brief ASIO socket controller of boost asio socket type T
- * \note This class is used internally from `asio_http` and `asio_https`.
- * \see asio_http
- * \see asio_https
- * \see http_response
+ * @class asio_handler
+ * @version 0.7.0
+ * @date 12 August 2016 
+ * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ * @brief ASIO socket controller of boost asio socket type T
+ * @note This class is used internally from `asio_http` and `asio_https`.
+ * @see asio_http
+ * @see asio_https
+ * @see http_response
  */
 template <class T> 
 class asio_handler : protected http_response
 {
 public:
 	/**
-     * \brief construct by callbacks and socket T pointer 
-     * \param cloud_function will receive the platform JSON reply
-	 * \param error_function will receive any asio errors
-	 * \param socket is the actual type T socket pointer
+     * @brief construct by callbacks and socket T pointer 
+     * @param cloud_function will receive the platform JSON reply
+	 * @param error_function will receive any asio errors
+	 * @param socket is the actual type T socket pointer
 	 */
     asio_handler(
                   const std::function<void(std::string)> cloud_function,
                   const std::function<void(const boost::system::error_code)> error_function,
-                  const std::function<void(const boost::system::error_code)> shutdown_function,
-                  bool keep_alive = false
+                  const std::function<void(const boost::system::error_code)> shutdown_function
                 );
 
     /// \brief set socket pointer
@@ -94,10 +80,7 @@ protected:
     std::function<void(const boost::system::error_code)> error_cb_;
     /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
-    /// keep alive
-    keep_alive keep_alive_;  
 };
-
 }
 }
 #include "asio_handler.impl"

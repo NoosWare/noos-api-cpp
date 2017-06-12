@@ -1,5 +1,5 @@
 #include "asio_http.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 
 asio_http::asio_http(

@@ -1,8 +1,7 @@
-#ifndef CLOUD_BASE_HPP
-#define CLOUD_BASE_HPP
+#ifndef NOOS_CLOUD_BASE_HPP
+#define NOOS_CLOUD_BASE_HPP
 #include "includes.ihh"
-#include "deserialize.hpp"
-namespace rapp {
+namespace noos {
 namespace cloud {
 /**
  * @brief cloud service base class
@@ -12,7 +11,7 @@ namespace cloud {
  * @date 2 June 2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-template <class data_class> // class cloud_class = derived cloud class
+template <class data_class> // TODO? class cloud_class = derived cloud class
 class cloud_base
 {
 public:
@@ -44,33 +43,7 @@ protected:
     bool single_callable;
     std::string json;
 };
-
-/*
- * Template implementation
- */
-template <class return_type>
-cloud_base<return_type>::cloud_base(bool single)
-: single_callable(single)
-{}
- 
-template <class return_type>
-bool cloud_base<return_type>::is_single_callable() const
-{
-    return single_callable;
-}
-
-template <class return_type>
-std::string cloud_base<return_type>::make_http_uri(std::string uri) const
-{
-    return "POST /" + uri + " HTTP/1.1\r\n";
-}
-
-template <class return_type>
-std::string cloud_base<return_type>::get_json() const
-{
-    return json;
-}
-
+#include "cloud_base.tpl"
 }
 }
 #endif

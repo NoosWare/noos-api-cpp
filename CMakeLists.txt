@@ -1,9 +1,9 @@
-# @date January 2016
+# @date June 2017
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
 # 
 # Command line arguments you can use:
-#       -DRAPP_SHARED=ON		                    (Default: compile a shared librapp)
-#       -DRAPP_STATIC=ON		                    (Optional: compile a static librapp)
+#       -DBUILD_SHARED=ON		                        (Default: compile a shared libnoos)
+#       -DBUILD_STATIC=ON		                        (Optional: compile a static libnoos)
 #       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
@@ -15,11 +15,11 @@
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
-PROJECT(rapp)
-set (RAPP_VERSION_MAJOR 0)
-set (RAPP_VERSION_MINOR 7)
-set (RAPP_VERSION_PATCH 3)
-set (RAPP_VERSION_STRING ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
+PROJECT(noos)
+set (NOOS_VERSION_MAJOR 0)
+set (NOOS_VERSION_MINOR 7)
+set (NOOS_VERSION_PATCH 3)
+set (NOOS_VERSION_STRING ${NOOS_VERSION_MAJOR}.${NOOS_VERSION_MINOR}.${NOOS_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 
 # library paths
@@ -34,7 +34,7 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 # header paths
 set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
-set(INCLUDES ${INCLUDES} rapp)
+set(INCLUDES ${INCLUDES} noos)
 
 # set root at `/includes`
 add_subdirectory(${INCLUDES})
@@ -93,13 +93,13 @@ endif()
 ###
 # Set library sources
 #
-add_library(lrapp OBJECT ${SOURCES})
+add_library(lnoos OBJECT ${SOURCES})
 
 ###
 #   Static Library - only if asked 
 #	Use only if you want complete static linking
 ###
-if (${RAPP_STATIC})
+if (${BUILD_STATIC})
 	#
 	# RPATH
 	#
@@ -110,10 +110,10 @@ if (${RAPP_STATIC})
 	#
     # set target, add library - link with Boost and OpenSSL
 	#
-    set(LIBTARGET ${LIBTARGET} rapp)
-    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
-    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
+    set(LIBTARGET ${LIBTARGET} noos)
+    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${NOOS_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
@@ -130,9 +130,9 @@ elseif(${OPEN_NAO})
     # set target, add library - link with Boost and OpenSSL
     #
     set(LIBTARGET ${LIBTARGET} rapp)
-	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
-    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
+	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${NOOS_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
 	# No need to build static library, but the apps will have to statically link
@@ -158,9 +158,9 @@ else()
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
-    set(LIBTARGET ${LIBTARGET} rapp)
-    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING} SOVERSION ${RAPP_VERSION_STRING})
+    set(LIBTARGET ${LIBTARGET} noos)
+    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING} SOVERSION ${NOOS_VERSION_STRING})
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set_target_properties(${LIBTARGET} PROPERTIES INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib")
     message(STATUS "Building Shared library: lib${LIBTARGET}")
@@ -173,89 +173,89 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 ###
 #   build tests - run with `make test`
 ###
-if (${BUILD_TESTS})
-    if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
-        message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
-    else()
-        find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
-        enable_testing()
-        add_definitions(-DBOOST_TEST_DYN_LINK)
-        set(TESTS ${TESTS} tests)
-        set(TESTFILES ${TESTFILES} asio_classes.cpp 
-                                   json_classes.cpp 
-                                   object_classes.cpp
-                                   cloud_calls.cpp)
-        set(TEST_DIR ${TEST_DIR} tests)
-        message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
-        # create "/tests"
-        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                           COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR})
-        # symlink `/tests/data` instead of copying
-        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                           COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
-        # symlink `shared library`
-        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                           COMMAND ${CMAKE_COMMAND} -E create_symlink 
-                           ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-                           ${TEST_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
-        # iterate tests
-        foreach(ITEM ${TESTFILES})
-            string(REPLACE ".cpp" "" TARGET ${ITEM})
-            add_executable(${TARGET} ${TESTS}/${ITEM})
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT}) ######
-            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
-            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
-            add_test(${TARGET} ${TEST_DIR}/${TARGET})
-        endforeach(ITEM)
-    endif()
-else()
-    message(STATUS "Not Building tests. Enable them with `-DBUILD_TESTS=ON`")
-endif()
-
-###
-#   build examples
-###
-if (${BUILD_EXAMPLES})
-    set (EXAMPLES #available_services.cpp
-                  batch.cpp
-                  vision_batch.cpp
-                  #class_reactor.cpp
-                  loop.cpp
-                  face_detect.cpp
-                  human_detect.cpp
-                  hazard_detect.cpp
-                  qr_recognition.cpp
-                  light_detection.cpp
-                  object_recognition.cpp
-                  object_recognition_my_own_models.cpp
-                  )
-                  #picture_handling.cpp
-    set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
-    message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
-
-    # create "/examples"
-    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
-    # symlink `/tests/data` instead of copying
-    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
-    # symlink `shared library`
-    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E create_symlink 
-                       ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
-    # iterate tests
-    foreach(ITEM ${EXAMPLES})
-        string(REPLACE ".cpp" "" TARGET ${ITEM})
-        add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
-        target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
-        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
-        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
-    endforeach(ITEM)
-else()
-    message(STATUS "Not Building examples. Enable them with `-DBUILD_EXAMPLES=ON`")
-endif()
+#if (${BUILD_TESTS})
+#    if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+#        message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
+#    else()
+#        find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
+#        enable_testing()
+#        add_definitions(-DBOOST_TEST_DYN_LINK)
+#        set(TESTS ${TESTS} tests)
+#        set(TESTFILES ${TESTFILES} asio_classes.cpp 
+#                                   json_classes.cpp 
+#                                   object_classes.cpp
+#                                   cloud_calls.cpp)
+#        set(TEST_DIR ${TEST_DIR} tests)
+#        message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
+#        # create "/tests"
+#        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                           COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR})
+#        # symlink `/tests/data` instead of copying
+#        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                           COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
+#        # symlink `shared library`
+#        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                           COMMAND ${CMAKE_COMMAND} -E create_symlink 
+#                           ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
+#                           ${TEST_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+#        # iterate tests
+#        foreach(ITEM ${TESTFILES})
+#            string(REPLACE ".cpp" "" TARGET ${ITEM})
+#            add_executable(${TARGET} ${TESTS}/${ITEM})
+#            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+#            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT}) ######
+#            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
+#            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
+#            add_test(${TARGET} ${TEST_DIR}/${TARGET})
+#        endforeach(ITEM)
+#    endif()
+#else()
+#    message(STATUS "Not Building tests. Enable them with `-DBUILD_TESTS=ON`")
+#endif()
+#
+####
+##   build examples
+####
+#if (${BUILD_EXAMPLES})
+#    set (EXAMPLES #available_services.cpp
+#                  batch.cpp
+#                  vision_batch.cpp
+#                  #class_reactor.cpp
+#                  loop.cpp
+#                  face_detect.cpp
+#                  human_detect.cpp
+#                  hazard_detect.cpp
+#                  qr_recognition.cpp
+#                  light_detection.cpp
+#                  object_recognition.cpp
+#                  object_recognition_my_own_models.cpp
+#                  )
+#                  #picture_handling.cpp
+#    set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
+#    message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
+#
+#    # create "/examples"
+#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                       COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
+#    # symlink `/tests/data` instead of copying
+#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
+#    # symlink `shared library`
+#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+#                       COMMAND ${CMAKE_COMMAND} -E create_symlink 
+#                       ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
+#                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+#    # iterate tests
+#    foreach(ITEM ${EXAMPLES})
+#        string(REPLACE ".cpp" "" TARGET ${ITEM})
+#        add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
+#        target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
+#        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
+#        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
+#    endforeach(ITEM)
+#else()
+#    message(STATUS "Not Building examples. Enable them with `-DBUILD_EXAMPLES=ON`")
+#endif()
 
 ####
 set(CMAKE_COLOR_MAKEFILE on)
@@ -318,34 +318,34 @@ message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 ###
 # Install library 
 #
-set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
-#
-# symbolic link library version to the generic name
-#
-if((${RAPP_STATIC}) OR (${OPEN_NAO}))
-    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE 
-        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.a.${LIB_VERSION}
-                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
-else()
-    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE 
-        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.so.${LIB_VERSION} 
-                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
-endif()
-message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
-#
-# Headers go under /usr/loca/include
-#
-install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
-                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
-message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
-#
-# Install rapp-config.cmake
-#
-configure_file(cmake/rapp-config.cmake
-               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
-               COPYONLY
-              )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
+#set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
+##
+## symbolic link library version to the generic name
+##
+#if((${RAPP_STATIC}) OR (${OPEN_NAO}))
+#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+#	install(CODE 
+#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.a.${LIB_VERSION}
+#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
+#else()
+#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+#	install(CODE 
+#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.so.${LIB_VERSION} 
+#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
+#endif()
+#message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
+##
+## Headers go under /usr/loca/include
+##
+#install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
+#                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
+#message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
+##
+## Install rapp-config.cmake
+##
+#configure_file(cmake/rapp-config.cmake
+#               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
+#               COPYONLY
+#              )
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
+#        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
