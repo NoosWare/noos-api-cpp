@@ -20,7 +20,8 @@ namespace cloud {
  */
 struct object_recognition 
 : public http_request, 
-  public cloud_base<std::string>
+  public cloud_base<std::string>,
+  public vision_base
 {
     using callback = std::function<void(std::string)>; 
     static const std::string uri;
@@ -37,7 +38,8 @@ struct object_recognition
  */
 struct qr_recognition 
 : public http_request, 
-  public cloud_base<std::vector<noos::object::qr_code>>
+  public cloud_base<std::vector<noos::object::qr_code>>,
+  public vision_base
 {
     using callback = std::function<void(std::vector<noos::object::qr_code>)>;
     static const std::string uri;
@@ -45,7 +47,6 @@ struct qr_recognition
     /// @param image is a picture object pointer
     qr_recognition(const noos::object::picture & image);
 
-private:
     /// @brief empty ctor used by vision batch
     qr_recognition();
 };

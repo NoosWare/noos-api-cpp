@@ -4,6 +4,7 @@
  * LICENSE HERE
  */
 #include <noos/objects.hpp>
+#include <noos/misc/misc.hpp>
 namespace noos {
 namespace cloud {
 /// Generic template
@@ -13,7 +14,6 @@ struct deserialize
 {
     return_type operator()(std::string json);
 };
-
 
 }
 }

@@ -25,9 +25,11 @@ class vision_batch
   public cloud_batch
 {
 public:
-    using callback = std::function<void(std::string)>;
-
-    ///
+    /**
+     * @brief construct a vision_batch using a list of std::pair<cloud_type,callback>
+     * @...
+     * TODO: MARIA
+     */
     vision_batch(
                   const noos::object::picture & image,
                   cloud_pairs... args
@@ -38,7 +40,7 @@ public:
     // NOTE: this is the callback for `callable` and calls the cloud_pairs
     void process(std::string json);
 
-    /// \brief expand batch type
+private:
     template<std::size_t... batch_size>
     void expand_batch(
                       std::string json, 
@@ -46,14 +48,12 @@ public:
                       std::index_sequence<batch_size...>
                      );
 
-    /// \brief
     void find_cloud_type(
                           cloud_pairs... args, 
                           std::string json,
                           std::string key
                         );
    
-private:
     const noos::object::picture & image__;
     std::tuple<cloud_pairs...> batch__;
 };

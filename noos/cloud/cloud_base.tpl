@@ -1,25 +1,21 @@
 /*
  * Template implementation
  */
-template <class return_type>
-cloud_base<return_type>::cloud_base(bool single)
-: single_callable(single)
+
+template <class data_class> 
+cloud_base<data_class>::cloud_base(bool single_call)
+: single_callable(single_call)
 {}
- 
-template <class return_type>
-bool cloud_base<return_type>::is_single_callable() const
+
+template <class data_class>
+inline bool cloud_base<data_class>::is_single_callable() const
 {
     return single_callable;
 }
 
-template <class return_type>
-std::string cloud_base<return_type>::make_http_uri(std::string uri) const
+template <class data_class> 
+std::string cloud_base<data_class>::make_http_uri(std::string uri) const
 {
     return "POST /" + uri + " HTTP/1.1\r\n";
 }
 
-template <class return_type>
-std::string cloud_base<return_type>::get_json() const
-{
-    return json;
-}

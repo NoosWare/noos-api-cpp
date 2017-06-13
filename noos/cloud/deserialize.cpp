@@ -1,28 +1,28 @@
 #include "deserialize.hpp"
+
 namespace noos {
 namespace cloud {
 /// Forward - Delcare all classes for which we create template specializations
+struct available_services;
 struct face_detection;
 struct light_detection;
 struct human_detection;
-struct object_detection_learn_object;
-struct object_detection_clear_models;
-struct object_detection_load_models;
-struct object_detection_find_objects;
+struct orb_learn_object;
+struct orb_clear_models;
+struct orb_load_models;
+struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
 
 // face_detection and faces
 template <>
-inline std::vector<noos::object::face> 
-    deserialize<face_detection,std::vector<noos::object::face>>::operator()(std::string json)
+std::vector<noos::object::face> 
+    deserialize<face_detection,
+                std::vector<noos::object::face>
+               >::operator()(std::string json)
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     std::vector<noos::object::face> faces;
     nlohmann::json json_f;
-
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_faces = json_f.find("faces");
@@ -36,12 +36,10 @@ inline std::vector<noos::object::face>
 
 // light detection
 template <>
-inline int 
-    deserialize<light_detection,int>::operator()(std::string json)
+int deserialize<light_detection,
+                int
+                >::operator()(std::string json)
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
@@ -52,15 +50,13 @@ inline int
 }
 // human detection
 template <>
-inline std::vector<noos::object::human> 
-    deserialize<human_detection,std::vector<noos::object::human>>::operator()(std::string json)
+std::vector<noos::object::human> 
+    deserialize<human_detection,
+                std::vector<noos::object::human>
+                >::operator()(std::string json)
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     std::vector<noos::object::human> humans;
     nlohmann::json json_f; 
-
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_human = json_f.find("humans");
@@ -74,12 +70,10 @@ inline std::vector<noos::object::human>
 
 // ORB learn models
 template <>
-inline int 
-    deserialize<orb_learn_object,int>::operator()(std::string json) 
+int deserialize<orb_learn_object,
+                int
+                >::operator()(std::string json) 
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
@@ -91,12 +85,10 @@ inline int
 
 // ORB clear models
 template <>
-inline int 
-    deserialize<orb_clear_models,int>::operator()(std::string json) 
+int deserialize<orb_clear_models,
+                int
+                >::operator()(std::string json) 
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
@@ -108,12 +100,10 @@ inline int
 
 // ORB load models
 template <>
-inline int 
-    deserialize<orb_load_models,int>::operator()(std::string json) 
+int deserialize<orb_load_models,
+                int
+                >::operator()(std::string json) 
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
@@ -125,20 +115,18 @@ inline int
 
 // ORB find objects
 template <>
-inline noos::object::orb_object 
-    deserialize<object_detection_find_objects,noos::object::orb_object>::operator()(std::string json) 
+noos::object::orb_object 
+    deserialize<orb_find_objects,
+                noos::object::orb_object
+               >::operator()(std::string json) 
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
-    std::vector<noos::object::point> points;
+    std::vector<noos::object::point<double>> points;
     nlohmann::json json_f;
-
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_center = json_f.find("found_centers");
             for (auto it = it_center->begin(); it != it_center->end(); it++) {
-                points.push_back(noos::object::point(it));
+                points.push_back(noos::object::point<double>(it));
             }
             return noos::object::orb_object {
                                               json_f["found_names"],
@@ -153,12 +141,11 @@ inline noos::object::orb_object
 
 // object recognition (Caffe2)
 template <>
-inline std::string 
-    deserialize<object_recognition,std::string>::operator()(std::string json) 
+std::string 
+    deserialize<object_recognition,
+                std::string
+                >::operator()(std::string json) 
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
@@ -170,20 +157,21 @@ inline std::string
 
 // QR recongition
 template<>
-inline std::vector<noos::object::qr_code> 
-    deserialize<qr_recognition,std::vector<noos::object::qr_code>>::operator()(std::string json)
+std::vector<noos::object::qr_code> 
+    deserialize<qr_recognition,
+                std::vector<noos::object::qr_code>
+                >::operator()(std::string json)
 {
     std::vector<noos::object::qr_code> qr_codes;
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             unsigned int i = 0;
             for (auto & obj : json_f["qr_centers"]) {
+                /* TODO: MARIA FIX
                 qr_codes.push_back(noos::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
                 i++;
+                */
             }
             return qr_codes;
         }
@@ -193,14 +181,14 @@ inline std::vector<noos::object::qr_code>
 
 // available services
 template<>
-inline std::vector<std::pair<std::string,std::string>>
-    deserialize<available_services,std::vector<std::pair<std::string,std::string>>>::operator()(std::string json)
+std::vector<std::pair<std::string,std::string>>
+    deserialize<available_services,
+                std::vector<std::pair<std::string,
+                                      std::string>
+                >>::operator()(std::string json)
 {
-    if (json.empty()) {
-        throw std::runtime_error("empty json reply");
-    }
     nlohmann::json json_f;
-    std::vector<service> services;
+    std::vector<std::pair<std::string,std::string>> services;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             for (auto it_s : json_f["services"]) {

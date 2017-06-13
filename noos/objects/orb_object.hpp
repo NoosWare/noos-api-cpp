@@ -18,7 +18,7 @@ namespace object {
 struct orb_object
 {
     std::vector<std::string> names;
-    std::vector<noos::object::point> points; 
+    std::vector<noos::object::point<double>> points; 
     std::vector<double> scores;
     int result;
 };

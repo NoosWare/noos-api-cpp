@@ -20,7 +20,6 @@ struct callable
 {
     cloud_type object;
     callback functor;
-    boost::asio::streambuf buffer;
     using cloud_class = cloud_type;
     
     /**
@@ -46,8 +45,12 @@ struct callable
     /// @return socket reference
     socket_type & get_socket() const;
 
+    /// @return buffer reference
+    boost::asio::streambuf & get_buffer() const;
+
 private:
     std::unique_ptr<socket_type> socket_;
+    std::unique_ptr<boost::asio::streambuf> buffer_;
 };
 #include "callable.tpl"
 }

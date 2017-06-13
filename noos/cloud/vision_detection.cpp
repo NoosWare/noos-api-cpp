@@ -29,7 +29,7 @@ face_detection::face_detection()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"fast", true}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 /// Class light_detection
@@ -48,7 +48,7 @@ light_detection::light_detection()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 /// Class human_detection
@@ -67,7 +67,7 @@ human_detection::human_detection()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 /// Class orb_learn_object
@@ -91,7 +91,7 @@ orb_learn_object::orb_learn_object(const std::string name)
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"name", name}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 orb_clear_models::orb_clear_models(const std::string user)
@@ -136,7 +136,7 @@ orb_find_objects::orb_find_objects(const int limit)
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"limit", limit}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 }

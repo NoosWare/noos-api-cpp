@@ -6,7 +6,9 @@ template <class cloud_type,
           class socket_type>
 callable<cloud_type,callback,socket_type>::callable(cloud_type object,
                                                     callback functor)
-: object(object), functor(functor), buffer()
+: object(object), 
+  functor(functor), 
+  buffer_(std::make_unique<boost::asio::streambuf>())
 { }
 
 template <class cloud_type,
@@ -15,15 +17,17 @@ template <class cloud_type,
 template <typename... parameters>
 callable<cloud_type,callback,socket_type>::callable(parameters... args,
                                                     callback functor)
-: object(args...), functor(functor), buffer()
-{ }
+: object(args...), 
+  functor(functor),
+  buffer_(std::make_unique<boost::asio::streambuf>())
+{}
 
 template <class cloud_type,
           class callback,
           class socket_type>
 void callable<cloud_type,callback,socket_type>::set_socket(std::unique_ptr<socket_type> arg)
 {
-    socket_ = arg;
+    socket_ = std::move(arg);
 }
 
 template <class cloud_type,
@@ -36,3 +40,12 @@ socket_type & callable<cloud_type,callback,socket_type>::get_socket() const
     }
     return *socket_;
 }
+
+template <class cloud_type,
+          class callback,
+          class socket_type>
+boost::asio::streambuf & callable<cloud_type,callback,socket_type>::get_buffer() const
+{
+    return *buffer_;
+}
+

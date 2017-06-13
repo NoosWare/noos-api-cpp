@@ -10,8 +10,8 @@
 namespace noos {
 namespace misc {
 
-/// \brief decode base64
-/// \param val must be encoded using base64
+/// @brief decode base64
+/// @param val must be encoded using base64
 inline std::string decode64(const std::string &val)
 {
 	if (val.empty()) {
@@ -24,9 +24,9 @@ inline std::string decode64(const std::string &val)
                                                             [](char c) {return c == '\0';});
 }
 
-/// \brief encode base64
-/// \param val must be plain-text string
-/// \return a base64 encoded string
+/// @brief encode base64
+/// @param val must be plain-text string
+/// @return a base64 encoded string
 inline std::string encode64(const std::string &val)
 {
 	if (val.empty()) {
@@ -38,7 +38,7 @@ inline std::string encode64(const std::string &val)
     return tmp.append((3 - val.size() % 3) % 3, '=');
 }
 
-/// \brief Create a random boundary for the multipart/form in HTTP
+/// @brief Create a random boundary for the multipart/form in HTTP
 inline std::string random_boundary()
 {
     std::string chars("abcdefghijklmnopqrstuvwxyz"
@@ -56,8 +56,8 @@ inline std::string random_boundary()
     return uid;
 }
 
-/// \brief escape JSON strings when sending them over the socket
-/// \param str will be escaped and returned
+/// @brief escape JSON strings when sending them over the socket
+/// @param str will be escaped and returned
 inline std::string escape_string(const std::string & str)
 {
 	if (str.empty()) {
@@ -80,34 +80,11 @@ inline std::string escape_string(const std::string & str)
     return ss.str();
 } 
 
-/// \brief unquote JSON PDT values (int, float, double, uint32_t, etc)
-/// \warning no NULL specialisation, we can't unquote `null` - treat it as an std::string
-template <typename T>
-struct json_unquote_pdt_value
-{
-	std::string operator()(std::string str, T arg)
-	{
-		std::string key = boost::lexical_cast<std::string>(arg);
-		std::string hay = "\"" + key + "\"";
-		boost::replace_all(str, hay, key);
-		return str;
-	}
-};
-
-/// \brief specialisation of `json_unquote_pdt_value` for bool
-/// \note in C++ bool is translated to 0 or 1 (not `true` or `false`)
-template <>
-struct json_unquote_pdt_value<bool>
-{
-	std::string operator()(std::string str, bool arg)
-	{
-		std::string key = (arg == true? "true" : "false");
-		std::string hay = "\"" + key + "\"";
-		boost::replace_all(str, hay, key);
-		return str;
-	}
-};
-
+/**
+ * @brief expand variadic arguments using a fold expression
+ * @param f of template parameter F is the function (a lambda) receiving the expanded object
+ * @param args is the variadic list of args
+ */
 template <class F, class... Args>
 void for_each_arg(F&& f, Args&&... args) 
 {
@@ -115,6 +92,9 @@ void for_each_arg(F&& f, Args&&... args)
     (void)swallow{0, (void(f(std::forward<Args>(args))), 0)...};
 }
 
+/**
+ * @brief TODO: MARIA
+ */
 template<typename T>
 T get_json_value(const std::string key, const nlohmann::json & json_f)
 {
@@ -169,8 +149,6 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 }
 #endif
-
-
 
 //
 #endif

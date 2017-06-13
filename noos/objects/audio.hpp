@@ -17,44 +17,41 @@ namespace object {
 class audio
 {
 public:
-    /// \brief Construct from a file on disk
+    /// @brief Construct from a file on disk
     audio(const std::string filepath);
 
-    /// \brief Construct using an open file stream
-    /// \param bytestream will be **consumed** by the object
+    /// @brief Construct using an open file stream
+    /// @param bytestream will be **consumed** by the object
     audio(std::ifstream & bytestream);
 
-    /// \brief Construct using an existing byte-array
-    /// \param bytearray should contain the audio data
+    /// @brief Construct using an existing byte-array
+    /// @param bytearray should contain the audio data
     audio(std::vector<noos::types::byte> bytearray);
 
-    /// \brief Copy constructor
+    /// @brief copy constructor
     audio(const audio &) = default;
 
-    /// \brief Get audio as array of bytes
+    /// @brief get audio as array of bytes
     std::vector<noos::types::byte> bytearray() const;
 
-    /// \brief Are audios same ?
+    /// @brief equality operator
     bool operator==(const audio & rhs) const;
 
-    /// \brief Audios are not the same
+    /// @brief inequality operator
     bool operator!=(const audio & rhs) const;
 
-    /// \brief Assignment operator
+    /// @brief assignment operator
     audio & operator=(const audio &) = default;
 
-    /// \brief Save audio to filepath
+    /// @brief Save audio to filepath
     bool save(const std::string filepath);
     
 private:
-
-    /// \brief Delete empty constructor    
+    // Delete empty constructor    
     audio() = delete;
-
-    /// \brief Copy the bytestream into the bytearray
+    // Copy the bytestream into the bytearray
     void read_bytes(std::ifstream & bytestream);
-
-    /// \brief Actual bytes of audio file
+    // Actual bytes of audio file
     std::vector<noos::types::byte> bytearray_;
 };
 

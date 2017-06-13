@@ -13,47 +13,24 @@ namespace object {
  * @date 19 August 2016
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class point
+template <class value_type>
+struct point
 {
-public:
-    /**
-     * @brief Construct using code coordinates (x,y,z)
-     * @param x is x coordinate
-     * @param y is y coordinate
-     * @param z is z coordinate
-     */
-    point(double x, double y, double z);
-    
-    /// \brief Allow Empty Constructor
-    point() = default;
-    
-    /// \brief Copy Constructor
-    point(const noos::object::point &) = default;
+    /// coordinates
+	value_type x = 0;
+    value_type y = 0;
+    value_type z = 0;
 
-    /// \brief Construct using library "json for modern c++"
+    /// @brief Construct using library "json for modern c++"
     point(const json::const_iterator & position);
    
-    /// \return a JSON object
+    /// @return a JSON object
     json::object_t to_json() const;
    
-    /// \brief Equality operator
-    bool operator==(const noos::object::point & rhs) const;
-
-    /// \return parameter x
-    double get_x() const;
-
-    /// \return parameter y
-    double get_y() const;
-
-    /// \return parameter z
-    double get_z() const;
-
-private:
-    /// members
-	double x = 0;
-    double y = 0;
-    double z = 0;
+    /// @brief Equality operator
+    bool operator==(const noos::object::point<value_type> & rhs) const;
 };
+#include "point.tpl"
 }
 }
 #endif

@@ -1,14 +1,13 @@
 # @date June 2017
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
-# 
-# Command line arguments you can use:
+# CMake flags in use:
 #       -DBUILD_SHARED=ON		                        (Default: compile a shared libnoos)
 #       -DBUILD_STATIC=ON		                        (Optional: compile a static libnoos)
 #       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
 #       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
-#       -DOPEN_NAO=ON                                   (Optional: compiling on OpenNAO requires additional CXX flags)
+#       -DOPEN_NAO=ON                                   (Optional: compiling for NAO requires additional CXX flags)
 #		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
 #       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
 #       -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/ (Optional: specify OpenSSL library directory)
@@ -58,8 +57,8 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
+             ${INCLUDES}/cloud/deserialize.cpp
 
-             ${INCLUDES}/objects/point.cpp
              ${INCLUDES}/objects/human.cpp
              ${INCLUDES}/objects/face.cpp
              ${INCLUDES}/objects/picture.cpp
@@ -216,46 +215,45 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 ####
 ##   build examples
 ####
-#if (${BUILD_EXAMPLES})
-#    set (EXAMPLES #available_services.cpp
-#                  batch.cpp
-#                  vision_batch.cpp
-#                  #class_reactor.cpp
-#                  loop.cpp
-#                  face_detect.cpp
-#                  human_detect.cpp
-#                  hazard_detect.cpp
-#                  qr_recognition.cpp
-#                  light_detection.cpp
-#                  object_recognition.cpp
-#                  object_recognition_my_own_models.cpp
-#                  )
-#                  #picture_handling.cpp
-#    set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
-#    message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
-#
-#    # create "/examples"
-#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-#                       COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
-#    # symlink `/tests/data` instead of copying
-#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-#                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
-#    # symlink `shared library`
-#    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-#                       COMMAND ${CMAKE_COMMAND} -E create_symlink 
-#                       ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-#                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
-#    # iterate tests
-#    foreach(ITEM ${EXAMPLES})
-#        string(REPLACE ".cpp" "" TARGET ${ITEM})
-#        add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
-#        target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
-#        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
-#        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
-#    endforeach(ITEM)
-#else()
-#    message(STATUS "Not Building examples. Enable them with `-DBUILD_EXAMPLES=ON`")
-#endif()
+if (${BUILD_EXAMPLES})
+    set (EXAMPLES available_services.cpp
+                 #batch.cpp
+                 #vision_batch.cpp
+                 #class_reactor.cpp
+                 #loop.cpp
+                 #face_detect.cpp
+                 #human_detect.cpp
+                 #hazard_detect.cpp
+                 #qr_recognition.cpp
+                 #light_detection.cpp
+                 #object_recognition.cpp
+                 #object_recognition_my_own_models.cpp
+                 #picture_handling.cpp
+                  )
+    set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
+    message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
+    # create "/examples"
+    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
+    # symlink `/tests/data` instead of copying
+    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
+    # symlink `shared library`
+    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E create_symlink 
+                       ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
+                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+    # iterate tests
+    foreach(ITEM ${EXAMPLES})
+        string(REPLACE ".cpp" "" TARGET ${ITEM})
+        add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
+        target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
+        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
+        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
+    endforeach(ITEM)
+else()
+    message(STATUS "Not Building examples. Enable them with `-DBUILD_EXAMPLES=ON`")
+endif()
 
 ####
 set(CMAKE_COLOR_MAKEFILE on)

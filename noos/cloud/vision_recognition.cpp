@@ -23,7 +23,7 @@ object_recognition::object_recognition()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"no_param", ""}};
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 /// CLass qr_recognition
@@ -42,7 +42,7 @@ qr_recognition::qr_recognition()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"no_param", ""}}; 
-    cloud_base::json = json_doc.dump(-1);
+    vision_base::json = json_doc.dump(-1);
 }
 
 }

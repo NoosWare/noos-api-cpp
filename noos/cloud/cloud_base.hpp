@@ -11,7 +11,7 @@ namespace cloud {
  * @date 2 June 2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-template <class data_class> // TODO? class cloud_class = derived cloud class
+template <class data_class>
 class cloud_base
 {
 public:
@@ -22,7 +22,7 @@ public:
      * @brief Constructor
      * @param init_value defines if the service is single callable(true) or not
      */
-    cloud_base(bool single);
+    cloud_base(bool single_call);
     
     /**
      *  @return boolean to know if it's the service is a 
@@ -36,13 +36,21 @@ public:
      */
     std::string make_http_uri(std::string uri) const;
 
-    /// @brief get as json
-    std::string get_json() const;
-
 protected:
     bool single_callable;
+};
+
+/**
+ * @brief base class for vision cloud classes - used mostly for static assertions
+ * @version 0.7.3
+ * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ * @date 11 June 2017
+ */
+struct vision_base 
+{ 
     std::string json;
 };
+
 #include "cloud_base.tpl"
 }
 }

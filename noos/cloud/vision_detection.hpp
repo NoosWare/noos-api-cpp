@@ -19,7 +19,8 @@ namespace cloud {
  */
 struct face_detection 
 : public http_request, 
-  public cloud_base<std::vector<noos::object::face>>
+  public cloud_base<std::vector<noos::object::face>>,
+  public vision_base
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
@@ -37,7 +38,8 @@ struct face_detection
  */
 struct light_detection 
 : public http_request, 
-  public cloud_base<int>
+  public cloud_base<int>,
+  public vision_base
 {
     using callback = std::function<void(int)>;
     static const std::string uri;
@@ -55,7 +57,8 @@ struct light_detection
  */
 struct human_detection 
 : public http_request, 
-  public cloud_base<std::vector<noos::object::human>>
+  public cloud_base<std::vector<noos::object::human>>,
+  public vision_base
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
@@ -76,7 +79,8 @@ struct human_detection
  */
 struct orb_learn_object 
 : public http_request, 
-  public cloud_base<int>
+  public cloud_base<int>,
+  public vision_base
 {
     using callback = std::function<void(int)>;
     static const std::string uri;
@@ -130,7 +134,8 @@ struct orb_load_models
  */
 struct orb_find_objects 
 : public http_request, 
-  public cloud_base<noos::object::orb_object>
+  public cloud_base<noos::object::orb_object>,
+  public vision_base
 {
     using callback = std::function<void(noos::object::orb_object)>;
     static const std::string uri;
