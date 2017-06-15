@@ -27,6 +27,10 @@ struct qr_code
 
     /// @brief Equality operator
     bool operator==(const qr_code & rhs) const;
+
+    ///@brief check if a component of json exist
+    bool check_component(const json::const_iterator & it,
+                         std::string);
 };
 }
 }

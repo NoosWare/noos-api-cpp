@@ -4,20 +4,37 @@ namespace object {
 
 qr_code::qr_code(const json::const_iterator & qr_it)
 {
-    // TODO: MARIA
+    if (check_component(qr_it, "x")) {
+      center_x = qr_it->find("x")->get<float>();
+    }
+    if (check_component(qr_it, "y")) {
+      center_y = qr_it->find("y")->get<float>();
+    }
+    if (check_component(qr_it, "message")) {
+      message = qr_it->find("message")->get<float>();
+    }
 }
 
 json::object_t qr_code::to_json() const
 {
-    json::object_t qr {{"x", centre_x}, 
-                       {"y", centre_y},
-                       {"message", message}};
+    json::object_t qr { "qrs", {{"x", centre_x}, 
+                               {"y", centre_y},
+                               {"message", message}}};
     return qr;
 }
 
 bool qr_code::operator==(const qr_code & rhs) const
 {
     return boost::iequals(this->message, rhs.message);
+}
+
+bool qr_code::check_component(const json::const_iterator & it,
+                              std::string component)
+{
+    if (it->find(component) == qr_it->end()) {
+        throw std::runtime_error("no " + component + "param in up left point");  
+    }
+    return true;
 }
 
 }

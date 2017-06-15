@@ -47,7 +47,7 @@ int main()
     auto callback = [&](std::vector<rapp::object::qr_code> codes) {
         std::cout << "Found " << codes.size() << " QR codes" << std::endl;
         for (const auto code : codes) {
-            std::cout << code.label() << std::endl;
+            std::cout << code.message << std::endl;
         }
     };
 

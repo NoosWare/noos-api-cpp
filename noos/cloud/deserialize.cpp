@@ -166,14 +166,10 @@ std::vector<noos::object::qr_code>
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
-            unsigned int i = 0;
-            for (auto & obj : json_f["qr_centers"]) {
-                /* TODO: MARIA FIX
-                qr_codes.push_back(noos::object::qr_code(obj["x"], obj["y"], json_f["qr_messages"].at(i)));
-                i++;
-                */
+            auto it_qrs = json_f.find("qrs");
+            for (auto it = it_qrs->begin(); it != it_qrs->end(); it++ ) {
+                qr_codes.push_back(noos::object::qr_code(it));
             }
-            return qr_codes;
         }
     }
     return qr_codes;
