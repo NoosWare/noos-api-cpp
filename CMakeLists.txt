@@ -224,7 +224,7 @@ if (${BUILD_EXAMPLES})
                  #face_detect.cpp
                  #human_detect.cpp
                  #hazard_detect.cpp
-                 #qr_recognition.cpp
+                 qr_recognition.cpp
                  #light_detection.cpp
                  #object_recognition.cpp
                  #object_recognition_my_own_models.cpp

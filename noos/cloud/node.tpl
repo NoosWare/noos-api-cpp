@@ -78,7 +78,10 @@ callable<vision_batch<cloud_pairs...>,
          socket_type>
     node<socket_type,error_handle>::make(const noos::object::picture & image, cloud_pairs... args)
 {
-    auto result = callable<vision_batch<cloud_pairs...>, 
+	callable<vision_batch<cloud_pairs...>, 
+                           typename vision_batch<cloud_pairs...>::callback,
+                           socket_type> result;
+    result = callable<vision_batch<cloud_pairs...>, 
                            typename vision_batch<cloud_pairs...>::callback,
                            socket_type>( 
                                    vision_batch<cloud_pairs...>(image, std::forward<cloud_pairs>(args)...),
@@ -124,7 +127,7 @@ void node<socket_type,error_handle>::call(callable<cloud_type,callback,socket_ty
 {
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
-    assert(!arg.object.is_single_callable());
+    assert(arg.object.is_single_callable());
     if (!arg.object.is_single_callable()) {
         throw std::runtime_error("cannot call a non-single-callable");
     }

@@ -19,7 +19,7 @@ struct qr_code
     float centre_y;
     std::string message;
 
-    /// TODO: MARIA
+    /// @brief construct a qr object from a json iterator
     qr_code(const json::const_iterator & qr_it);
 
     /// @brief method to pass the information to json
