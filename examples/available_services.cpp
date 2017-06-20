@@ -45,7 +45,7 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    //ctrl.test_call(request, callback);
+    ctrl.make_call(request, callback);
     
     return 0;
 }
