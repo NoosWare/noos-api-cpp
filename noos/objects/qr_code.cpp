@@ -11,7 +11,7 @@ qr_code::qr_code(const json::const_iterator & qr_it)
       centre_y = qr_it->find("y")->get<float>();
     }
     if (check_component(qr_it, "message")) {
-      message = qr_it->find("message")->get<float>();
+      message = qr_it->find("message")->get<std::string>();
     }
 }
 

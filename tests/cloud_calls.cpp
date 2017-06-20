@@ -1,13 +1,13 @@
 #define BOOST_TEST_MODULE ServiceTest
 #include <boost/test/unit_test.hpp>
 #include <fstream>
-#include <rapp/misc/json.hpp>
-#include <rapp/cloud.hpp>
+#include <noos/misc/json.hpp>
+#include <noos/cloud.hpp>
 
 BOOST_AUTO_TEST_SUITE (cloud_calls)
 
 /**
- * \brief check rapp::cloud::available_services
+ * \brief check noos::cloud::available_services
  * A callback function is done to check that the 
  * desearialization is correct.
  * A json is done manually to be sure about results.
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(available_services_cloud_test)
         BOOST_CHECK_EQUAL(service.at(0).first, "name");
         BOOST_CHECK_EQUAL(service.at(0).second, "url");
     };
-    rapp::cloud::available_services as1(callback);
+    noos::cloud::available_services as1(callback);
     auto j1 = R"(
               {
                 "services" : [{
@@ -44,15 +44,15 @@ BOOST_AUTO_TEST_CASE(available_services_cloud_test)
 BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 {
     //Class face_detection
-    auto face_call = [] (std::vector<rapp::object::face> faces) {
+    auto face_call = [] (std::vector<noos::object::face> faces) {
         BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
         BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
         BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
         BOOST_CHECK_EQUAL(faces.at(0).get_right_y(), 4);
 
     };
-    auto pic = rapp::object::picture("tests/data/object_classes_picture_1.png");
-    auto fd = std::make_shared<rapp::cloud::face_detection>(pic, false, face_call); 
+    auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+    auto fd = std::make_shared<noos::cloud::face_detection>(pic, false, face_call); 
     auto j1 = R"(
               {
                 "faces":[{ 
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     auto door_call = [] (double angle) {
         BOOST_CHECK_EQUAL(angle, 5);
     };
-    auto dad = std::make_shared<rapp::cloud::door_angle_detection>(pic, door_call);
+    auto dad = std::make_shared<noos::cloud::door_angle_detection>(pic, door_call);
     auto j2 = R"(
               {
                 "door_angle" : 5,
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     auto light_call = [] (int level) {
        BOOST_CHECK_EQUAL(level, 500);
     };
-    auto ld = std::make_shared<rapp::cloud::light_detection>(pic, light_call);
+    auto ld = std::make_shared<noos::cloud::light_detection>(pic, light_call);
     auto j3 = R"(
               {
                 "light_level" : 500,
@@ -94,14 +94,14 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     std::string j3_string = j3.dump(-1);
     ld->process(j3_string); 
     //Class human_detection
-    auto human_call = [] (std::vector<rapp::object::human> humans) {
+    auto human_call = [] (std::vector<noos::object::human> humans) {
         BOOST_CHECK_EQUAL(humans.at(0).get_left_x(), 1);
         BOOST_CHECK_EQUAL(humans.at(0).get_left_y(), 2);   
         BOOST_CHECK_EQUAL(humans.at(0).get_right_x(), 3);
         BOOST_CHECK_EQUAL(humans.at(0).get_right_y(), 4);
 
     };
-    auto hd = std::make_shared<rapp::cloud::human_detection>(pic, human_call);
+    auto hd = std::make_shared<noos::cloud::human_detection>(pic, human_call);
     auto j4 = R"(
               {
                   "humans":[{ 
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     {
         BOOST_CHECK_EQUAL(result, 0);
     };
-    auto odlo = std::make_shared<rapp::cloud::object_detection_learn_object>(pic, "cat", "user", learn_call);
+    auto odlo = std::make_shared<noos::cloud::object_detection_learn_object>(pic, "cat", "user", learn_call);
     auto j5 = R"(
               {
                   "result" : 0,
@@ -138,7 +138,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     {
         BOOST_CHECK_EQUAL(result, 0);
     };
-    rapp::cloud::object_detection_clear_models odcm("user", clear_call);
+    noos::cloud::object_detection_clear_models odcm("user", clear_call);
     auto j6 = R"(
               {
                   "result" : 0,
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     };
 
     std::vector<std::string> names = {"cat"};
-    rapp::cloud::object_detection_load_models odlm("user", names, load_call);
+    noos::cloud::object_detection_load_models odlm("user", names, load_call);
     auto j7 = R"(
               {
                   "result" : 0,
@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
     odlm.process(j7_string);
 
     //Class object_detection_find_objects 
-    auto find_call = [] (rapp::object::orb_object orb)
+    auto find_call = [] (noos::object::orb_object orb)
     {
         BOOST_CHECK_EQUAL(orb.names.at(0), "cat");
         BOOST_CHECK_EQUAL(orb.points.at(0).get_x(), 0.999);      
@@ -171,7 +171,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
         BOOST_CHECK_EQUAL(orb.scores.at(0), 0.9);
         BOOST_CHECK_EQUAL(orb.result, 0);
     };
-    auto odfo = std::make_shared<rapp::cloud::object_detection_find_objects>(pic, "user", 1, find_call);
+    auto odfo = std::make_shared<noos::cloud::object_detection_find_objects>(pic, "user", 1, find_call);
     auto j8 = R"(
               {
                 "found_names": ["cat"],
@@ -203,20 +203,20 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
 {
     //Class qr_recognition
-    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
-        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
-        rapp::object::qr_code qr2(1 ,2, "label");
+    auto qr_call = [] (std::vector<noos::object::qr_code> qrs) {
+        BOOST_CHECK_EQUAL(qrs.label(), "label");
+        noos::object::qr_code qr2(1 ,2, "label");
         BOOST_CHECK(qrs.at(0) == qr2);
     };
-    auto pic_qr = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
-    auto qd = std::make_shared<rapp::cloud::qr_recognition>(pic_qr, qr_call);
+    auto pic_qr = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
+    auto qd = std::make_shared<noos::cloud::qr_recognition>(pic_qr, qr_call);
     auto j1 = R"(
               {
-                "qr_centers":[{ 
+                "qrs":[{ 
                                 "x": 1, 
-                                "y": 2
+                                "y": 2.
+                                "message": "label"
                               }], 
-                "qr_messages":["label"],
                 "error" : ""
               })"_json;
     std::string j1_string = j1.dump(-1);
@@ -226,8 +226,8 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
     auto object_call = [] (std::string object) {
         BOOST_CHECK_EQUAL(object, "something");
     };
-    auto pic = rapp::object::picture("tests/data/object_classes_picture_2.jpg");
-    auto objr = std::make_shared<rapp::cloud::object_recognition>(pic, object_call);
+    auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
+    auto objr = std::make_shared<noos::cloud::object_recognition>(pic, object_call);
     auto j2 = R"(
               {
                 "object_class" : "something",
@@ -247,17 +247,17 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
 BOOST_AUTO_TEST_CASE(vision_batch_test)
 {
     //Vision batch
-    auto pic = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
+    auto pic = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
 
     //Class qr_recognition
-    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
+    auto qr_call = [] (std::vector<noos::object::qr_code> qrs) {
         BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
-        rapp::object::qr_code qr2(1 ,2, "label");
+        noos::object::qr_code qr2(1 ,2, "label");
         BOOST_CHECK(qrs.at(0) == qr2);
     };
 
     //Class face_detection
-    auto face_call = [] (std::vector<rapp::object::face> faces) {
+    auto face_call = [] (std::vector<noos::object::face> faces) {
         BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
         BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
         BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
@@ -265,10 +265,10 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
 
     };
 
-    rapp::cloud::vision_batch<rapp::cloud::face_detection,
-                              rapp::cloud::qr_recognition> vb( pic,
-                                                               rapp::cloud::face_detection(false, face_call),
-                                                               rapp::cloud::qr_recognition(qr_call)
+    noos::cloud::vision_batch<noos::cloud::face_detection,
+                              noos::cloud::qr_recognition> vb( pic,
+                                                               noos::cloud::face_detection(false, face_call),
+                                                               noos::cloud::qr_recognition(qr_call)
                                                               );    
 
 

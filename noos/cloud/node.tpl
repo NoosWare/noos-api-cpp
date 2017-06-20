@@ -41,7 +41,7 @@ callable<cloud_type,callback,socket_type>
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
     auto result = callable<cloud_type,callback,socket_type>(object, functor);
-    result.init_socket(
+    result.socket(
         [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>()(reply)); }, 
         [&](auto e){ error_handle()(e); }, 
         io_);
@@ -59,7 +59,7 @@ callable<cloud_type,callback,socket_type>
     auto result = callable<cloud_type,callback,socket_type>(std::forward<parameters...>(args)..., functor);
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
-    result.init_socket(
+    result.socket(
         [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>(reply)); }, 
         [&](auto e){ error_handle()(e); }, 
         io_);
