@@ -6,7 +6,7 @@ template <class socket_type,
 node<socket_type,error_handle>::node(noos::cloud::platform info)
 : error_(),
   info_(info), query_(info.address, info.port), 
-  io_(), resol_(io_), timeout_(1)
+  io_(), resol_(io_), timeout_(2)
 {}
 
 template <class socket_type,
@@ -41,13 +41,11 @@ callable<cloud_type,callback,socket_type>
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
     auto result = callable<cloud_type,callback,socket_type>(object, functor);
-    result.set_socket(
-        std::move(std::make_unique<socket_type>(
-            [&](auto reply) { functor(deserialize<cloud_type, typename cloud_type::data_type>()(reply)); }, 
-            [&](auto e){ error_handle()(e); }, 
-            io_, result.get_buffer()
-    )));
-    return std::move(result);
+    result.init_socket(
+        [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>()(reply)); }, 
+        [&](auto e){ error_handle()(e); }, 
+        io_);
+    return result;
 }
 
 template <class socket_type,
@@ -61,13 +59,11 @@ callable<cloud_type,callback,socket_type>
     auto result = callable<cloud_type,callback,socket_type>(std::forward<parameters...>(args)..., functor);
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
-    result.set_socket(
-        std::move(std::make_unique<socket_type>(
-            [&](auto reply) { functor(deserialize<cloud_type, typename cloud_type::data_type>(reply)); }, 
-            [&](auto e){ error_handle()(e); }, 
-            io_, result.get_buffer()
-    )));
-    return std::move(result);
+    result.init_socket(
+        [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>(reply)); }, 
+        [&](auto e){ error_handle()(e); }, 
+        io_);
+    return result;
 }
 
 template <class socket_type,
@@ -90,12 +86,10 @@ callable<vision_batch<cloud_pairs...>,
     using actual_class = typename decltype(result.object)::value_type;
     static_assert(std::is_base_of<cloud_batch, actual_class>::value,
                   "`cloud_type` must be a `cloud_batch` derived class");
-    result.set_socket(
-        std::move(std::make_unique<socket_type>(
-            [&](auto reply){ result.functor(reply); }, 
-            [&](auto e){ error_handle()(e);}, 
-            io_, result.get_buffer()
-    )));
+    result.init_socket(
+        [&](auto reply){ result.functor(reply); }, 
+        [&](auto e){ error_handle()(e);}, 
+        io_);
     return std::move(result);
 }
 
@@ -108,13 +102,11 @@ std::tuple<callables...> node<socket_type,error_handle>::pack(callables... args)
         using cloud_type = typename decltype(callbl.object)::value_type;
         static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                       "`cloud_type` cannot be a `cloud_batch` derived class");
-        callbl.set_socket(std::move(
-           std::make_unique<socket_type>(
-               [&](auto reply) { callbl.functor(deserialize<cloud_type, 
+        callbl.init_socket(
+               [&](auto reply){ callbl.functor(deserialize<cloud_type, 
                                                 typename cloud_type::data_type>(reply)); },
                [&](auto e){ error_handle()(e);}, 
-               io_, *callbl.buffer
-        )));
+               io_);
     }, args...);
     return std::make_tuple((args)...);
 }
@@ -131,8 +123,7 @@ void node<socket_type,error_handle>::call(callable<cloud_type,callback,socket_ty
     if (!arg.object.is_single_callable()) {
         throw std::runtime_error("cannot call a non-single-callable");
     }
-    arg.get_buffer().consume(arg.get_buffer().size() + 1);
-    arg.get_socket().begin(query_, resol_, timeout_);
+    arg.send(query_, resol_, timeout_, info_);
     run_reset();
 }
 
@@ -149,8 +140,7 @@ void node<socket_type,error_handle>::call(callables & ...args)
         if (!arg.object.is_single_callable()) {
             throw std::runtime_error("cannot call a non-single-callable");
         }
-        arg.get_buffer().consume(arg.get_buffer().size() + 1);
-        arg.get_socket().begin(query_, resol_, timeout_);
+        arg.send(query_, resol_, timeout_, info_);
     }, args...);
     run_reset();
 }
@@ -164,7 +154,7 @@ callable<cloud_type,callback,socket_type>
 {
     auto result = make(object, functor);
     call(result);
-    return std::move(result);
+    return result;
 }
 
 template <class socket_type,

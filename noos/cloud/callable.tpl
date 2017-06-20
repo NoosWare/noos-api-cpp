@@ -25,27 +25,29 @@ callable<cloud_type,callback,socket_type>::callable(parameters... args,
 template <class cloud_type,
           class callback,
           class socket_type>
-void callable<cloud_type,callback,socket_type>::set_socket(std::unique_ptr<socket_type> arg)
+void callable<cloud_type,callback,socket_type>::socket(
+                                            std::function<void(std::string)> cloud_function,
+                                            std::function<void(boost::system::error_code error)> error_function,
+                                            boost::asio::io_service & io_service)
 {
-    socket_ = std::move(arg);
+    socket_ = std::make_unique<socket_type>(cloud_function,
+                                            error_function,
+                                            io_service,
+                                            *buffer_.get());
+    assert(socket_);
 }
 
 template <class cloud_type,
           class callback,
           class socket_type>
-socket_type & callable<cloud_type,callback,socket_type>::get_socket() const
+void callable<cloud_type,callback,socket_type>::send(
+                                            boost::asio::ip::tcp::resolver::query & query,
+                                            boost::asio::ip::tcp::resolver & resolver,
+                                            unsigned int timeout,
+                                            noos::cloud::platform endpoint)
 {
-    if (!socket_) {
-        throw std::runtime_error("no socket for callable");
-    }
-    return *socket_;
+    assert(socket_);
+    //buffer_->consume(buffer_->size() + 1); // TODO: we might need to "clear" the buffer first
+    object.fill_buffer(boost::ref(*buffer_.get()), endpoint);
+    socket_->begin(query, resolver, timeout);
 }
-
-template <class cloud_type,
-          class callback,
-          class socket_type>
-boost::asio::streambuf & callable<cloud_type,callback,socket_type>::get_buffer() const
-{
-    return *buffer_;
-}
-

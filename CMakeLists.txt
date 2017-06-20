@@ -242,7 +242,7 @@ if (${BUILD_EXAMPLES})
     add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E create_symlink 
                        ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${NOOS_VERSION_STRING})
     # iterate tests
     foreach(ITEM ${EXAMPLES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})

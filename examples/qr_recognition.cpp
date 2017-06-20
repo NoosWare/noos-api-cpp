@@ -6,12 +6,13 @@
 int main()
 {
     using namespace noos::cloud;
+    
     /*
     * Construct the platform info setting the hostname/IP, port and authentication token
     * Then proceed to create a cloud controller.
     * We'll use this object to create cloud calls to the platform.
     */
-    platform info = {"localhost", "8080", "mysecret", "alex"}; 
+    platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
     node<> ctrl(info);
 
     /*
@@ -40,6 +41,7 @@ int main()
      * We make a call to qr_code_detection class to detect qr_codes in the file
      * For more information \see noos::cloud::qr_detection
      */
+    //ctrl.test_call(qr_request, callback);
     ctrl.make_call(qr_request, callback);
     return 0;
 } 

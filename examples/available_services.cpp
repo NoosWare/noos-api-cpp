@@ -12,7 +12,7 @@ int main()
      * Construct the platform info setting the hostname/IP, port and authentication token.
      * Then proceed to create a cloud node, we'll use it to create and call the cloud services.
      */
-	platform info = {"10.130.3.24", "8080", "mysecret", "alex"}; 
+	platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
 	node<> ctrl(info);
 
     /*
@@ -45,8 +45,7 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    auto caller = ctrl.make_call(request, callback);
-
+    //ctrl.test_call(request, callback);
     
     return 0;
 }

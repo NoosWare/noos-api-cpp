@@ -72,13 +72,9 @@ public:
     void end(const boost::system::error_code & err);
 
 protected:
-    /// our socket T pointer
     std::shared_ptr<T> socket_;
-    /// json_callback
     std::function<void(std::string)> cloud_cb_;
-    /// error handler callback
     std::function<void(const boost::system::error_code)> error_cb_;
-    /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
 };
 }

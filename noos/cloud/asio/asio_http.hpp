@@ -70,13 +70,9 @@ private:
     void time_check();
 
 private:
-    /// error callback
     std::function<void(boost::system::error_code)> error_cb_;
-    /// boost asio socket 
     std::shared_ptr<http_socket> socket_;
-    /// request object
     boost::asio::streambuf & request_;
-    /// deadline timer for timeouts
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
 };
 }

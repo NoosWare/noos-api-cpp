@@ -84,6 +84,8 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err,
         // we may have received all the data at once
         // in which case simply close and quit 
         // we add zero bytes, since we called `strip_http_header`
+        //
+        // We have consumed ALL data, read the buffer and are closing the connection
         else {
             http_response::consume_buffer(cloud_cb_, bytes);
             close_cb_(boost::system::errc::make_error_code(
@@ -104,19 +106,8 @@ void asio_handler<T>::read_content(
     if (!err) {
         // received all data 
         if (http_response::consume_buffer(cloud_cb_, bytes)) {
-           ///TODO: Solve SIGSEGV ->deadline_timer (asio_http) 
-           //if (!keep_alive_.get_value()) {
-                close_cb_(boost::system::errc::make_error_code(
+            close_cb_(boost::system::errc::make_error_code(
                                                boost::system::errc::success));
-           //}
-           //else {
-                //boost::asio::async_write(*socket_.get(),
-                //                         buffer_,
-                //                         boost::bind(&asio_handler::write_request, 
-                //                                     this,
-                //                                     boost::asio::placeholders::error,
-                //                                     boost::asio::placeholders::bytes_transferred));
-            //}
         }
         // still data left to receive
         else {

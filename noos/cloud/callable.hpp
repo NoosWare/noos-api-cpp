@@ -4,6 +4,7 @@
  * LICENSE HERE
  */
 #include "includes.ihh"
+#include <noos/cloud/asio/platform.hpp>
 namespace noos {
 namespace cloud {
 /**
@@ -40,14 +41,15 @@ struct callable
     callable(parameters... args, callback functor);
 
     /// @brief set the @param socket - used by `rapp::cloud::node`
-    void set_socket(std::unique_ptr<socket_type> socket);
+    void socket(std::function<void(std::string)> cloud_function,
+                std::function<void(boost::system::error_code)> error_function,
+                boost::asio::io_service & io_service);
 
-    /// @return socket reference
-    socket_type & get_socket() const;
-
-    /// @return buffer reference
-    boost::asio::streambuf & get_buffer() const;
-
+    /// @brief send the cloud_type data once to the cloud endpoint
+    void send(boost::asio::ip::tcp::resolver::query & query,
+			  boost::asio::ip::tcp::resolver & resolver,
+              unsigned int timeout,
+              noos::cloud::platform endpoint);
 private:
     std::unique_ptr<socket_type> socket_;
     std::unique_ptr<boost::asio::streambuf> buffer_;

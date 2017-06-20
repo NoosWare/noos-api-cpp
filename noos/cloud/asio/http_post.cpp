@@ -34,7 +34,6 @@ void http_post::add_content(
 	}
 	data_ += "--" + boundary_ + "\r\n";
 	data_ += "Content-Disposition: form-data; name=\"" + name + "\"\r\n";
-	//data_ += " filename=\"" + filename + "\"\r\n\r\n";
 	data_ += "Content-Type: application/octet-stream\r\n\r\n";
 	data_.insert(data_.end(), bytes.begin(), bytes.end());
 	data_ += "\r\n";

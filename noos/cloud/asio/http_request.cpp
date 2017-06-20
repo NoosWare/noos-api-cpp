@@ -12,6 +12,12 @@ http_request::http_request(const std::string uri)
     assert(header_ && post_);
 }
 
+http_request::http_request(const http_request & arg)
+{
+    this->header_ = arg.header_;
+    this->post_   = arg.post_;
+}
+
 void http_request::fill_buffer(
                                 boost::asio::streambuf & buffer,
                                 noos::cloud::platform info
@@ -32,6 +38,7 @@ void http_request::close()
 
 std::string http_request::to_string(noos::cloud::platform info) const
 {
+    assert(header_ && post_);
     if (post_->size() > 0) {
         return header_->to_string(info, post_->size()) + post_->to_string();
     }
@@ -42,16 +49,19 @@ std::string http_request::to_string(noos::cloud::platform info) const
 
 std::string http_request::to_post() const
 {
+    assert(post_);
     return post_->to_string();
 }
 
 bool http_request::operator==(const http_request & rhs) const
 {
+    assert(header_ && post_);
     return (this->header_ == rhs.header_) && (this->post_ == rhs.post_);
 }
 
 void http_request::make_multipart_form()
 {
+    assert(header_);
     this->header_->make_multipart_form();
 }
 

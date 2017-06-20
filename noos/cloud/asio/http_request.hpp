@@ -31,6 +31,9 @@ public:
 	 */
     http_request(const std::string uri);
 
+    /// copy constructor
+    http_request(const http_request & arg);
+
 	/**
      * \brief fill the socket streambuf with the request header and post data
      * \param request is a reference to the socket streambuf being modified

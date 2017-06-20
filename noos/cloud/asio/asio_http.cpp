@@ -22,10 +22,6 @@ asio_http::asio_http(
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
 	assert(cloud_function && error_function && socket_ && deadline_);
     asio_handler::set_socket(socket_);
-    // PROBLEM: the async_wait callback will be bound to *this* 
-    //          so even when the class has finished, we still have a queued
-    //          operation in the io_service waiting for time_check
-    deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
 }
 
 void asio_http::begin( 
@@ -34,6 +30,10 @@ void asio_http::begin(
                         unsigned int timeout
 					 )
 {
+    // PROBLEM: the async_wait callback will be bound to *this* 
+    //          so even when the class has finished, we still have a queued
+    //          operation in the io_service waiting for time_check
+    deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
     deadline_->expires_from_now(boost::posix_time::seconds(timeout));
     resolver.async_resolve(query,
                             boost::bind(&asio_http::resolve,
@@ -45,7 +45,7 @@ void asio_http::begin(
 void asio_http::resolve(
                            boost::system::error_code  err,
                            boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                        )
+                       )
 {
     if (!err) {
         auto endpoint = * endpoint_iterator;
@@ -100,10 +100,14 @@ void asio_http::shutdown(const boost::system::error_code err)
 
 void asio_http::time_check()
 {
+    // BUG: this is a bad way of handling deadline expiration
     if (!deadline_) {
         return;
     }
     if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+        #if (!NDEBUG)
+        std::cerr << "[time-out]: closing socket" << std::endl;
+        #endif
         socket_->close();
         deadline_->cancel();
     }
