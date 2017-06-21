@@ -12,6 +12,7 @@ int main()
      * Construct the platform info setting the hostname/IP, port and authentication token.
      * Then proceed to create a cloud node, we'll use it to create and call the cloud services.
      */
+	
 	platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
 	node<> ctrl(info);
 

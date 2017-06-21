@@ -11,6 +11,24 @@ node<socket_type,error_handle>::node(noos::cloud::platform info)
 
 template <class socket_type,
           class error_handle>
+node<socket_type,error_handle>::node(json json_object)
+: error_(),
+  info_(platform()(json_object)), 
+  query_(info_.address, info_.port), 
+  io_(), resol_(io_), timeout_(2)
+{}
+
+template <class socket_type,
+          class error_handle>
+node<socket_type,error_handle>::node(std::string filename)
+: error_(),
+  info_(platform()(filename)), 
+  query_(info_.address, info_.port), 
+  io_(), resol_(io_), timeout_(2)
+{}
+
+template <class socket_type,
+          class error_handle>
 void node<socket_type,error_handle>::set_timeout(unsigned long int timeout)
 {
     timeout_ = timeout;

@@ -53,6 +53,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
+             ${INCLUDES}/cloud/asio/platform.cpp
 
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp

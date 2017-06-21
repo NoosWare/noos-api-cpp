@@ -1,0 +1,7 @@
+{
+    "platform" : { "address" : "10.130.3.17",
+                   "port" : "8080",
+                   "token" : "mysecret",
+                   "user" : "alex"
+                 }
+}

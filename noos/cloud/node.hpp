@@ -45,10 +45,17 @@ public:
      */
 	node(noos::cloud::platform);
 
-    /// TODO: MARIA
+    /** 
+     * @brief construct a service controller using a nlohmann::json object
+     * @param json must contain all required fields of noos::cloud::platform object
+     */    
     node(json);
 
-    /// TODO: MARIA
+    /** 
+     * @brief construct a service controller using a ini file
+     * @param filename must contain a JSON with all required
+     *        fields of noos::cloud::platform object
+     */
     node(std::string filename);
 
     /// @brief set a time-out different than the default of 1 second
