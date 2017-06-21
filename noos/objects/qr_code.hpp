@@ -1,6 +1,6 @@
 #ifndef NOOS_OBJECT_QRCODE
 #define NOOS_OBJECT_QRCODE
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"

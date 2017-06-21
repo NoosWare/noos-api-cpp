@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_ASIO_HTTP
 #define NOOS_CLOUD_ASIO_HTTP
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"
@@ -33,24 +33,40 @@ public:
                 std::function<void(std::string)> cloud_function,
                 std::function<void(error_code error)> error_function,
                 boost::asio::io_service & io_service,
-                boost::asio::streambuf & request
+                const bool keep_alive
              );
 
 	/**
-	 * \brief begin connection
-	 * \param query defines the URL/URI
-	 * \param resolver resolves the URL/URI address
-     * \param io_service is the queue on which jobs are scheduled
-     * \warning disable ssl v2 and ssl v3 (allow only tls)
+	 * @brief begin connection
+	 * @param query defines the URL/URI
+	 * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
 	 */
 	void begin(
 			    boost::asio::ip::tcp::resolver::query & query,
 			    boost::asio::ip::tcp::resolver & resolver,
+                boost::asio::streambuf & request,
                 unsigned int timeout
               );
 
+	/**
+	 * @brief send data in an existing connection
+	 * @param query defines the URL/URI
+	 * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
+	 */
+    void send(
+			    boost::asio::ip::tcp::resolver::query & query,
+			    boost::asio::ip::tcp::resolver & resolver,
+                unsigned int timeout,
+                boost::asio::streambuf & request
+             );
+
     /// \brief shutdown connection
     void shutdown(const boost::system::error_code);
+
+    /// @TODO: Alex, stop timeout
+    void stop_timeout(unsigned int timeout);
 
 private:
 
@@ -74,6 +90,7 @@ private:
     std::shared_ptr<http_socket> socket_;
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
+    std::atomic<bool> connected_ = false;
 };
 }
 }

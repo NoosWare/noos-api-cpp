@@ -1,6 +1,6 @@
 #ifndef NOOS_OBJECT_HUMAN
 #define NOOS_OBJECT_HUMAN
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"

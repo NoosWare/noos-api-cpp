@@ -3,13 +3,8 @@
 #include "includes.ihh"
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>
-/**
- *
+/*
  * LICENSE HERE
- *
- * @version 0.7.3
- * @date 6 June 2017
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 namespace noos {
 namespace cloud {

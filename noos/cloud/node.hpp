@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_NODE
 #define NOOS_CLOUD_NODE
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"
@@ -11,7 +11,9 @@
 #include <noos/cloud/cloud_batch.hpp>
 #include <noos/cloud/deserialize.hpp>
 #include <noos/cloud/vision_batch.hpp>
+/// @brief noos API namespace
 namespace noos {
+/// @brief cloud service namespace
 namespace cloud {
 /**
  * @class node
@@ -27,9 +29,9 @@ namespace cloud {
  * @note when using a template parameter `callback` check the class's `callback` for the correct signature.
  * @warningi when using a variadic argument list, only non-batched classes can be used!
  *
- * TODO (0.7.3): enable choice of HTTP or TLS
- *				 enable choice of TLS CA.PEM file (pass to asio_https)
- *               enable choice of ignoring CA on TLS
+ * @todo (0.7.3): implement partial specialisations for `asio_https` (TLS certificate)
+ *				  TLS CA.PEM file (pass to asio_https)
+ *                choice of ignoring CA on TLS (bad option!)
  */
 template <class socket_type = noos::cloud::asio_http,
           class error_handle = noos::cloud::default_error_handler>
@@ -45,10 +47,10 @@ public:
      */
 	node(noos::cloud::platform);
 
-    /// TODO: MARIA
+    /// @todo Maria Ramos
     node(json);
 
-    /// TODO: MARIA
+    /// @todo Maria Ramos
     node(std::string filename);
 
     /// @brief set a time-out different than the default of 1 second
@@ -68,6 +70,7 @@ public:
     /**
      * @brief same as `make_one` only this one constructs the `cloud_type` object using variadic args
      * @return a `callable` object of same template parameter types
+     * \test Alex Giokas
      */
     template <class cloud_type, 
               class callback,
@@ -79,6 +82,7 @@ public:
      * @note variadic template `cloud_pairs` are `std::pair` of `cloud_type` and `callback`
      * @see `noos::cloud::vision_batch` for more information
      * @return a callable which wraps around a `vision_batch` object
+     * \test Alex Giokas
      */
     template <class... cloud_pairs>
     callable<vision_batch<cloud_pairs...>,
@@ -89,9 +93,17 @@ public:
      * @brief create batch of cloud calls using a variadic template
      * @param `args` is a variadic template of cloud classes
      * @return a tuple of various `noos::cloud::callable` objects (same order as the @parameter `args`)
+     * \test Alex Giokas
      */
     template <class... callables> 
     std::tuple<callables...> pack(callables ...);
+
+    /**
+     * TODO: Alex, run once/ call once, don't keep alive, dont keep the socket - close connection
+     */
+    template <class cloud_type,
+              class callback>
+    void call(cloud_type, callback);
     
     /**
      * @brief call a cloud service once
@@ -106,6 +118,7 @@ public:
      * @brief call many cloud services in parallel
      * @warning assumes that callables are of class `callable` already constructed,
      *          and that they have properly constructed sockets
+     * \test Alex Giokas
      */
     template <class... callables>
     void call(callables & ...args);
@@ -114,6 +127,7 @@ public:
      * @brief call multiple cloud services in parallel
      * @note you must have created a callable tuple using `pack`
      * @note variadic `callables` is a list of various callable wrappers
+     * \test Alex Giokas
      */
     template <class... callables>
     void call(std::tuple<callables...> &);
@@ -126,6 +140,7 @@ public:
     /** 
      * @brief construct and execute a cloud callable object - used for convenience mostly
      * @note template variadic `parameters` are the `cloud_type` construction parameters
+     * \test Alex Giokas
      */
     template <class cloud_type, 
               class callback,
@@ -134,14 +149,16 @@ public:
 
     /**
      * @brief pack a list of callable cloud services and call them - used for convenience mostly
-     * @return a tuple of callables
+     * @return a tuple of callables, which have been called together in a batch
+     * \test Alex Giokas
      */
     template <class... callables>
     std::tuple<callables...> pack_call(callables ...);
      
-private:
+protected:
     void run_reset();
 
+private:
     error_handle error_;
     noos::cloud::platform info_;
     boost::asio::ip::tcp::resolver::query query_;

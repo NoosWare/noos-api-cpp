@@ -6,17 +6,17 @@ asio_http::asio_http(
 						std::function<void(std::string)> cloud_function,
 						std::function<void(error_code error)> error_function,
 						boost::asio::io_service & io_service,
-						boost::asio::streambuf & request
+                        const bool keep_alive
 					)
 : asio_handler<http_socket>(
                             cloud_function, 
                             error_function,
                             boost::bind(&asio_http::shutdown,
                                         this,
-                                        boost::asio::placeholders::error)
+                                        boost::asio::placeholders::error),
+                            keep_alive
                            ),
-  error_cb_(error_function),
-  request_(request)
+  error_cb_(error_function)
 {
     socket_ = std::make_shared<http_socket>(io_service);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
@@ -27,6 +27,7 @@ asio_http::asio_http(
 void asio_http::begin( 
 						boost::asio::ip::tcp::resolver::query & query,
 						boost::asio::ip::tcp::resolver & resolver,
+						boost::asio::streambuf & request,
                         unsigned int timeout
 					 )
 {
@@ -35,6 +36,7 @@ void asio_http::begin(
     //          operation in the io_service waiting for time_check
     deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
     deadline_->expires_from_now(boost::posix_time::seconds(timeout));
+    request_(request);
     resolver.async_resolve(query,
                             boost::bind(&asio_http::resolve,
                                         this,
@@ -67,6 +69,7 @@ void asio_http::connect(
                        )
 {
 	if (!err) {
+        connected_ = true;
         // write the request to the socket
         boost::asio::async_write(*socket_.get(),
                                  request_,
@@ -91,8 +94,31 @@ void asio_http::connect(
     }
 }
 
+void asio_http::send(
+                        boost::asio::ip::tcp::resolver::query & query,
+                        boost::asio::ip::tcp::resolver & resolver,
+                        unsigned int timeout,
+                        boost::asio::streambuf & request
+                    )
+{
+    if (connected_) {
+        // TODO: set_timer again to `timeout`
+        boost::asio::async_write(*socket_.get(),
+                                 request_,
+                                 boost::bind(&asio_handler<http_socket>::write_request, 
+                                             this,
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred));
+    }
+    else {
+        // error = iboost::asio::error::eof
+        shutdown(...);
+    }
+}
+
 void asio_http::shutdown(const boost::system::error_code err)
 {
+    connected_ = false;
     socket_->close();
     deadline_->cancel();
     deadline_.reset(); 
@@ -101,6 +127,7 @@ void asio_http::shutdown(const boost::system::error_code err)
 void asio_http::time_check()
 {
     // BUG: this is a bad way of handling deadline expiration
+    // deadline pointer has expired?!
     if (!deadline_) {
         return;
     }
@@ -110,6 +137,7 @@ void asio_http::time_check()
         #endif
         socket_->close();
         deadline_->cancel();
+        connected_ = false;
     }
     else {
         deadline_->async_wait(boost::bind(&asio_http::time_check, this));

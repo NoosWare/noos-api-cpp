@@ -1,10 +1,10 @@
 #ifndef NOOS_OBJECT_PICTURE
 #define NOOS_OBJECT_PICTURE
-#include "includes.ihh"
-#include <noos/objects/globals.hpp>
-/**
+/*
  * LICENSE HERE
  */
+#include "includes.ihh"
+#include <noos/objects/globals.hpp>
 namespace noos {
 namespace object {
 /**

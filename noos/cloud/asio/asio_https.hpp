@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_ASIO_HTTPS
 #define NOOS_CLOUD_ASIO_HTTPS
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"

@@ -2,10 +2,11 @@
 #define NOOS_OBJECT_AUDIO
 #include "includes.ihh"
 #include <noos/objects/globals.hpp>
-/**
+/*
  * LICENSE HERE
  */
 namespace noos {
+/// @brief common object namespace
 namespace object {
 /**
  * @class audio

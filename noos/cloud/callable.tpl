@@ -26,14 +26,12 @@ template <class cloud_type,
           class callback,
           class socket_type>
 void callable<cloud_type,callback,socket_type>::socket(
-                                            std::function<void(std::string)> cloud_function,
-                                            std::function<void(boost::system::error_code error)> error_function,
-                                            boost::asio::io_service & io_service)
+                                        std::function<void(std::string)> cloud_function,
+                                        std::function<void(boost::system::error_code)> error_function,
+                                        boost::asio::io_service & io_service,
+                                        bool keep_alive)
 {
-    socket_ = std::make_unique<socket_type>(cloud_function,
-                                            error_function,
-                                            io_service,
-                                            *buffer_.get());
+    socket_ = std::make_unique<socket_type>(cloud_function, error_function, io_service, keep_alive);
     assert(socket_);
 }
 
@@ -49,5 +47,7 @@ void callable<cloud_type,callback,socket_type>::send(
     assert(socket_);
     //buffer_->consume(buffer_->size() + 1); // TODO: we might need to "clear" the buffer first
     object.fill_buffer(boost::ref(*buffer_.get()), endpoint);
-    socket_->begin(query, resolver, timeout);
+    socket_->is_connected() ? 
+        socket_->send(query, resolver, timeout, *buffer_.get()) :
+        socket_->begin(query, resolver, timeout, *buffer_.get());
 }

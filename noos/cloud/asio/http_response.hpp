@@ -1,11 +1,10 @@
 #ifndef NOOS_CLOUD_HTTP_RESPONSE
 #define NOOS_CLOUD_HTTP_RESPONSE
-/**
+/*
  * LICENSE HERE
  */
 #include <noos/cloud/asio/includes.ihh>
 #include <boost/asio.hpp>
-
 namespace noos {
 namespace cloud {
 typedef boost::system::error_code error_code;
@@ -65,7 +64,6 @@ public:
 protected:
     boost::asio::streambuf buffer_;
     std::string reply_string;
-
 private:
     std::function<void(error_code error)> error_cb_;
     unsigned int bytes_transferred_ = 0;
