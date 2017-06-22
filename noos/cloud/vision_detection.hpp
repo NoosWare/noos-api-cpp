@@ -1,10 +1,7 @@
 #ifndef NOOS_CLOUD_VISION_DETECTION
 #define NOOS_CLOUD_VISION_DETECTION
-/**
+/*
  * LICENSE HERE
- *
- * @version 0.7.3
- * @date 7 June 2017
  */
 #include "includes.ihh"
 #include <noos/cloud/node.hpp>

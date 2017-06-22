@@ -1,10 +1,11 @@
 #ifndef NOOS_OBJECT_FACE
 #define NOOS_OBJECT_FACE
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"
 namespace noos {
+/// @brief common object namespace
 namespace object {
 /**
  * @class face

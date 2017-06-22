@@ -1,6 +1,7 @@
 #ifndef NOOS_OBJECTS_GLOBALS
 #define NOOS_OBJECTS_GLOBALS
 namespace noos {
+/// @brief type-defined namespace
 namespace types {    
 /// @brief clarification 
 typedef char byte;

@@ -1,6 +1,6 @@
 #ifndef NOOS_OBJECT_ORB_OBJECT
 #define NOOS_OBJECT_ORB_OBJECT
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"

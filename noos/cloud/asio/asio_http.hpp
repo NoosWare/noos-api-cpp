@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_ASIO_HTTP
 #define NOOS_CLOUD_ASIO_HTTP
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"
@@ -19,7 +19,7 @@ namespace cloud {
  * @see response
  */
 class asio_http 
-: public asio_handler<http_socket>
+: public asio_handler<http_socket, asio_http>
 {
 public:
     /**
@@ -30,18 +30,18 @@ public:
 	 * @brief `request` is a stream buffer containing the request
 	 */
     asio_http(
-                std::function<void(std::string)> cloud_function,
-                std::function<void(error_code error)> error_function,
+                std::function<void(std::string)> cloud_callback,
+                std::function<void(error_code)> error_callback,
                 boost::asio::io_service & io_service,
+                const bool keep_alive,
                 boost::asio::streambuf & request
              );
 
 	/**
-	 * \brief begin connection
-	 * \param query defines the URL/URI
-	 * \param resolver resolves the URL/URI address
-     * \param io_service is the queue on which jobs are scheduled
-     * \warning disable ssl v2 and ssl v3 (allow only tls)
+	 * @brief begin connection
+	 * @param query defines the URL/URI
+	 * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
 	 */
 	void begin(
 			    boost::asio::ip::tcp::resolver::query & query,
@@ -49,31 +49,53 @@ public:
                 unsigned int timeout
               );
 
-    /// \brief shutdown connection
+	/**
+	 * @brief send data in an existing connection
+	 * @param query defines the URL/URI
+	 * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
+	 */
+    void send(
+			    boost::asio::ip::tcp::resolver::query & query,
+			    boost::asio::ip::tcp::resolver & resolver,
+                unsigned int timeout,
+                boost::asio::streambuf & request
+             );
+
+    /// @brief shutdown connection
     void shutdown(const boost::system::error_code);
 
-private:
+    /// @brie stop timeout timer
+    void stop_timeout();
 
-    /// \brief resolve
+    /// @return if socket is connected
+    bool is_connected() const;
+
+private:
+    friend asio_handler<http_socket,asio_http>;
+
+    // resolve endpoint/hostname
     void resolve(
                    boost::system::error_code  err,
                    boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                 );
 
-    /// \brief begin connection
+    // begin connection
 	void connect(
                    const boost::system::error_code err,
                    boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                 );
 
-    /// \brief check if we have timed out
+    // check if we have timed out
     void time_check();
 
-private:
-    std::function<void(boost::system::error_code)> error_cb_;
+    // members
+    std::function<void(boost::system::error_code)> error_;
+    std::function<void(std::string)> callback_;
     std::shared_ptr<http_socket> socket_;
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
+    std::atomic<bool> connected_ = { false };
 };
 }
 }

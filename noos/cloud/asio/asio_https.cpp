@@ -3,23 +3,21 @@ namespace noos {
 namespace cloud {
 
 asio_https::asio_https(
-						std::function<void(std::string)> cloud_function,
-						std::function<void(error_code error)> error_function,
+						std::function<void(std::string)> cloud_callback,
+						std::function<void(error_code error)> error_callback,
 						boost::asio::io_service & io_service,
-						boost::asio::streambuf & request
+						boost::asio::streambuf & request,
+                        bool keep_alive
 					  )
-:  asio_handler<tls_socket>(cloud_function, 
-                            error_function,
-                            boost::bind(&asio_https::shutdown,
-                                        this,
-                                        boost::asio::placeholders::error)),  
-    error_cb_(error_function), 
+:  asio_handler<tls_socket,asio_https>(keep_alive, error_callback),
+    error_(error_callback), 
+    callback_(cloud_callback),
     ctx_(boost::asio::ssl::context::tlsv12_client),
     request_(request)
 {
 	socket_ = std::make_shared<tls_socket>(io_service, ctx_);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
-	assert(cloud_function && error_function && socket_);
+	assert(callback_ && error_ && socket_);
 	asio_handler::set_socket(socket_);
     deadline_->async_wait(boost::bind(&asio_https::time_check, this)); 
 	// set context option for TLS - allow only TLS v1.2 and later
@@ -86,9 +84,9 @@ void asio_https::handshake(const boost::system::error_code err)
 {
 	if (err) {
         asio_handler::end(err);
-#if (!NDEBUG)
-		std::cerr << "Handshake failed: " << err.message() << "\n";
-#endif
+        #if (!NDEBUG)
+		std::cerr << "[Handshake failed]: " << err.message() << "\n";
+        #endif
 		return;
 	}
 	boost::asio::async_write(*socket_,
@@ -104,6 +102,11 @@ void asio_https::shutdown(const boost::system::error_code err)
     socket_->lowest_layer().close();
     deadline_->cancel();
     deadline_.reset();
+}
+
+void asio_https::stop_timeout()
+{
+    deadline_->cancel();
 }
 
 void asio_https::time_check()

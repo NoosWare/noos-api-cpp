@@ -4,8 +4,7 @@
 template <class socket_type,
           class error_handle>
 node<socket_type,error_handle>::node(noos::cloud::platform info)
-: error_(),
-  info_(info), query_(info.address, info.port), 
+: info_(info), query_(info.address, info.port), 
   io_(), resol_(io_), timeout_(2)
 {}
 
@@ -62,7 +61,8 @@ callable<cloud_type,callback,socket_type>
     result.socket(
         [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>()(reply)); }, 
         [&](auto e){ error_handle()(e); }, 
-        io_);
+        io_,
+        true);
     return result;
 }
 
@@ -80,7 +80,8 @@ callable<cloud_type,callback,socket_type>
     result.socket(
         [&](auto reply){ functor(deserialize<cloud_type, typename cloud_type::data_type>(reply)); }, 
         [&](auto e){ error_handle()(e); }, 
-        io_);
+        io_,
+        true);
     return result;
 }
 
@@ -122,10 +123,9 @@ std::tuple<callables...> node<socket_type,error_handle>::pack(callables... args)
         static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                       "`cloud_type` cannot be a `cloud_batch` derived class");
         callbl.socket(
-               [&](auto reply){ callbl.functor(deserialize<cloud_type, 
-                                                           typename cloud_type::data_type>(reply)); },
-               [&](auto e){ error_handle()(e);}, 
-               io_);
+           [&](auto reply){ callbl.functor(deserialize<cloud_type, typename cloud_type::data_type>(reply)); },
+           [&](auto e){ error_handle()(e); }, 
+           io_);
     }, args...);
     return std::make_tuple((args)...);
 }

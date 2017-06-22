@@ -1,4 +1,4 @@
 build/
-doc/
 *.swp
 *.swo
+docs/

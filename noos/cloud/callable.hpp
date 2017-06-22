@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_CALLABLE
 #define NOOS_CLOUD_CALLABLE
-/**
+/*
  * LICENSE HERE
  */
 #include "includes.ihh"
@@ -43,7 +43,8 @@ struct callable
     /// @brief set the @param socket - used by `rapp::cloud::node`
     void socket(std::function<void(std::string)> cloud_function,
                 std::function<void(boost::system::error_code)> error_function,
-                boost::asio::io_service & io_service);
+                boost::asio::io_service & io_service,
+                bool keep_alive);
 
     /// @brief send the cloud_type data once to the cloud endpoint
     void send(boost::asio::ip::tcp::resolver::query & query,

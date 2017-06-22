@@ -113,21 +113,22 @@ unsigned int http_response::bytes_received() const
     return bytes_transferred_;
 }
 
-bool http_response::consume_buffer(std::function<void(std::string)> callback, unsigned int bytes)
+bool http_response::consume_buffer(std::function<void(std::string)> callback, 
+                                   unsigned int bytes)
 {
 	assert(callback);
     reply_string += to_string();
 	bytes_transferred_ = reply_string.size()*sizeof(std::string::value_type);
-
 	// have received the data correctly
 	if (bytes_transferred_ >= content_length_) {
 		callback(reply_string); 
 		return true;
 	}
+    // else what???
 	return false;
 }
 
-void http_response::end()
+void http_response::flush_data()
 {
 	reply_string.clear();
 	bytes_transferred_ = 0;

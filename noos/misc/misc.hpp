@@ -1,13 +1,13 @@
 #ifndef NOOS_MISC
 #define NOOS_MISC
 #include "includes.ihh"
+namespace noos {
 /**
  * @brief common misc helper functions
- * @version 0.6.0
+ * @version 0.7.3
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
- * @date 10 June 2016
+ * @date 10 June 2017
  */
-namespace noos {
 namespace misc {
 
 /// @brief decode base64

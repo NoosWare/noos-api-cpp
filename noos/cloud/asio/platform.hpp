@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_PLATFORM
 #define NOOS_CLOUD_PLATFORM
-/**
+/*
  * LICENSE HERE
  */
 #include <string>
@@ -14,7 +14,7 @@ namespace cloud {
  * @author Alex Giokas <a.giokas@ortelio.co.uk>
  * @brief use to construct a service controller with correct params
  *
- * TODO: add better documentation
+ * @TODO: add better documentation
   */
 struct platform
 {

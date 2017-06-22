@@ -1,6 +1,6 @@
 #ifndef NOOS_CLOUD_ASIO_HTTP_HEADER
 #define NOOS_CLOUD_ASIO_HTTP_HEADER
-/**
+/*
  * LICENSE HERE
  */
 #include <noos/cloud/asio/includes.ihh>

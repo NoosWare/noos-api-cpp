@@ -1,7 +1,7 @@
 #ifndef NOOS_OBJECT_POINT
 #define NOOS_OBJECT_POINT
 #include "includes.ihh"
-/**
+/*
  * LICENSE HERE
  */
 namespace noos {

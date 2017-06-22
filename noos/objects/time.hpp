@@ -1,12 +1,11 @@
 #ifndef NOOS_OBJECT_TIME
 #define NOOS_OBJECT_TIME
 #include "includes.ihh"
-/**
+/*
  * LICENSE HERE
  */
 namespace noos {
 namespace object {
-
 /**
  * @struct time
  * @brief wraps around a time-stamp (UNIX Epoch)
