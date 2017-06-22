@@ -92,19 +92,20 @@ callable<vision_batch<cloud_pairs...>,
          socket_type>
     node<socket_type,error_handle>::make(const noos::object::picture & image, cloud_pairs... args)
 {
-	callable<vision_batch<cloud_pairs...>, 
-                           typename vision_batch<cloud_pairs...>::callback,
-                           socket_type> result;
-    result = callable<vision_batch<cloud_pairs...>, 
+	callable<
+             vision_batch<cloud_pairs...>, 
+             typename vision_batch<cloud_pairs...>::callback, 
+             socket_type
+            > result = callable<vision_batch<cloud_pairs...>, 
                            typename vision_batch<cloud_pairs...>::callback,
                            socket_type>( 
-                                   vision_batch<cloud_pairs...>(image, std::forward<cloud_pairs>(args)...),
+                                   vision_batch<cloud_pairs...>(image, (args)...),
                                    [&](auto reply){ result.object.process(reply); });
     assert(result.functor);
-    using actual_class = typename decltype(result.object)::value_type;
-    static_assert(std::is_base_of<cloud_batch, actual_class>::value,
-                  "`cloud_type` must be a `cloud_batch` derived class");
-    result.init_socket(
+    // @inline this probably doesn't protect since we specialise explicitly for vision_batch
+    //static_assert(!std::is_base_of<cloud_batch, typename visi>::value,
+    //              "`cloud_type` must be a `cloud_batch` derived class");
+    result.socket(
         [&](auto reply){ result.functor(reply); }, 
         [&](auto e){ error_handle()(e);}, 
         io_);
@@ -120,9 +121,9 @@ std::tuple<callables...> node<socket_type,error_handle>::pack(callables... args)
         using cloud_type = typename decltype(callbl.object)::value_type;
         static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                       "`cloud_type` cannot be a `cloud_batch` derived class");
-        callbl.init_socket(
+        callbl.socket(
                [&](auto reply){ callbl.functor(deserialize<cloud_type, 
-                                                typename cloud_type::data_type>(reply)); },
+                                                           typename cloud_type::data_type>(reply)); },
                [&](auto e){ error_handle()(e);}, 
                io_);
     }, args...);

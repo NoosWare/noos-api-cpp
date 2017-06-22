@@ -7,6 +7,7 @@
 #include <noos/objects.hpp>
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>
+#include <noos/cloud/vision_base.hpp>
 namespace noos {
 namespace cloud {
 /**

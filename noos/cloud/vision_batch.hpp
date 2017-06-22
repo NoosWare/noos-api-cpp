@@ -4,6 +4,8 @@
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>
 #include <noos/cloud/cloud_batch.hpp>
+#include <noos/cloud/deserialize.hpp>
+#include <noos/cloud/vision_base.hpp>
 #include <noos/objects.hpp>
 namespace noos {
 namespace cloud {
@@ -25,17 +27,19 @@ class vision_batch
   public cloud_batch
 {
 public:
+    using callback = std::function<void(std::string)>;
     /**
      * @brief construct a vision_batch using a list of std::pair<cloud_type,callback>
-     * @...
-     * TODO: MARIA
+     * @param image is a noos::object::picture 
+     * @param args are the std::pair<cloud_type, callback> services which are
+     *        going to be called
      */
     vision_batch(
                   const noos::object::picture & image,
                   cloud_pairs... args
                 );
    
-    /// \brief process the JSON reply and delegate to services
+    /// @brief process the JSON reply and delegate to services
     // This becomes the specialisation of deserialize<vision_batch, 
     // NOTE: this is the callback for `callable` and calls the cloud_pairs
     void process(std::string json);
@@ -59,5 +63,5 @@ private:
 };
 }
 }
-//#include "vision_batch.impl"
+#include "vision_batch.impl"
 #endif

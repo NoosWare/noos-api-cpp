@@ -90,7 +90,7 @@ public:
     template <class... cloud_pairs>
     callable<vision_batch<cloud_pairs...>,
              typename vision_batch<cloud_pairs...>::callback,
-             socket_type> make(const noos::object::picture &, cloud_pairs ...);
+             socket_type> make(const noos::object::picture &, cloud_pairs...);
 
     /** 
      * @brief create batch of cloud calls using a variadic template
