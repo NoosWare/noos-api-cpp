@@ -20,7 +20,7 @@ namespace cloud {
  * @see response
  */
 class asio_https 
-: public asio_handler<tls_socket>
+: public asio_handler<tls_socket, asio_https>
 {
 public:
 	/**
@@ -32,10 +32,11 @@ public:
 	 * @TODO (0.7.3) take as param a PEM filename to evaluate CA - currently the server CE is not evaluated!!!
 	 */
     asio_https(
-                std::function<void(std::string)> cloud_function,
-                std::function<void(error_code error)> error_function,
+                std::function<void(std::string)> cloud_callback,
+                std::function<void(error_code error)> error_callback,
                 boost::asio::io_service & io_service,
-                boost::asio::streambuf & request
+                boost::asio::streambuf & request,
+                bool keep_alive
              );
 
 	/**
@@ -54,7 +55,12 @@ public:
     /// \brief shutdown handler
     void shutdown(const boost::system::error_code);
 
+    /// @brie stop timeout timer
+    void stop_timeout();
+
 private:
+    friend asio_handler<tls_socket,asio_https>;
+
 	/// \brief verify TLS certificate
 	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
 
@@ -67,16 +73,11 @@ private:
     /// \brief check if we have timed out
     void time_check();
 
-private: 
-    /// error callback
-    std::function<void(boost::system::error_code err)> error_cb_;
-	/// tls context
+    std::function<void(boost::system::error_code err)> error_;
+    std::function<void(std::string)> callback_;
 	boost::asio::ssl::context ctx_;
-    /// boost asio socket 
     std::shared_ptr<tls_socket> socket_;
-    /// request object
     boost::asio::streambuf & request_;
-    /// deadline timer for timeouts
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
 };
 }

@@ -3,15 +3,15 @@ namespace cloud {
 
 template <class socket_type,
           class child_class> 
-asio_handler<T>::asio_handler(const bool keep_alive,
-                              std::function<void(error_code)> error_callback)
+asio_handler<socket_type,child_class>::asio_handler(const bool keep_alive,
+                                                    std::function<void(error_code)> error_callback)
 : http_response(error_callback), 
   keep_alive_(keep_alive)
 {}
 
 template <class socket_type,
           class child_class> 
-void asio_handler<T>::set_socket(const std::shared_ptr<T> socket)
+void asio_handler<socket_type,child_class>::set_socket(const std::shared_ptr<socket_type> socket)
 {
     assert(socket);
     socket_ = socket;
@@ -19,8 +19,8 @@ void asio_handler<T>::set_socket(const std::shared_ptr<T> socket)
 
 template <class socket_type,
           class child_class> 
-void asio_handler<T>::write_request(const boost::system::error_code & err,
-                                    const std::size_t bytes)
+void asio_handler<socket_type,child_class>::write_request(const boost::system::error_code & err,
+                                                          const std::size_t bytes)
 {
     if (err){ 
         end(err);
@@ -37,12 +37,12 @@ void asio_handler<T>::write_request(const boost::system::error_code & err,
 
 template <class socket_type,
           class child_class> 
-void asio_handler<T>::read_status_line(const boost::system::error_code & err,
-                                       const std::size_t bytes)
+void asio_handler<socket_type,child_class>::read_status_line(const boost::system::error_code & err,
+                                                             const std::size_t bytes)
 {
     if (!err) {
        if (http_response::check_http_header()) {
-        // read entire header (double newlines denote end of HTTP header) - callback `read_headers`
+        // read entire header (double newlines denote end of Hsocket_typesocket_typeP header) - callback `read_headers`
         boost::asio::async_read_until(*socket_,
                                       buffer_, 
                                       "\r\n\r\n",
@@ -59,12 +59,12 @@ void asio_handler<T>::read_status_line(const boost::system::error_code & err,
 
 template <class socket_type,
           class child_class> 
-void asio_handler<T>::read_headers(const boost::system::error_code & err,
-                                   const std::size_t bytes)
+void asio_handler<socket_type,child_class>::read_headers(const boost::system::error_code & err,
+                                                         const std::size_t bytes)
 {
     if (!err) {
-        // strip HTTP Header, calculate actual POST bytes received,
-        // and if needed ask for more POST data.
+        // strip Hsocket_typesocket_typeP Header, calculate actual POSsocket_type bytes received,
+        // and if needed ask for more POSsocket_type data.
         unsigned int remaining = http_response::strip_http_header(bytes);
         if (remaining > 0) {
             boost::asio::async_read(*socket_.get(),
@@ -96,15 +96,17 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err,
 	}
 }
 
-template <class socket_type>
-void asio_handler<T>::read_content(
-                                    const boost::system::error_code & err,
-                                    const std::size_t bytes
-                                  )
+template <class socket_type,
+          class child_class> 
+void asio_handler<socket_type,child_class>::read_content(
+                                                          const boost::system::error_code & err,
+                                                          const std::size_t bytes
+                                                        )
 {
     if (!err) {
         // received all data 
-        if (http_response::consume_buffer(cloud_cb_, bytes)) {
+        if (http_response::consume_buffer(static_cast<child_class*>(this)->callback_, bytes)) 
+        {
             if (!keep_alive_) {
                 static_cast<child_class*>(this)->shutdown(
                     boost::system::errc::make_error_code(boost::system::errc::success));
@@ -132,8 +134,9 @@ void asio_handler<T>::read_content(
 	}
 }
 
-template <class socket_type>
-void asio_handler<T>::end(const boost::system::error_code & err)
+template <class socket_type,
+          class child_class> 
+void asio_handler<socket_type,child_class>::end(const boost::system::error_code & err)
 {
     if (err) {
         static_cast<child_class*>(this)->error_(err);

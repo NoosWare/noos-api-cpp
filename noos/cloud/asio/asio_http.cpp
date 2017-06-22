@@ -6,11 +6,13 @@ asio_http::asio_http(
 						std::function<void(std::string)> cloud_callback,
 						std::function<void(error_code)> error_callback,
 						boost::asio::io_service & io_service,
-                        const bool keep_alive
+                        const bool keep_alive,
+                        boost::asio::streambuf & request
 					)
-: asio_handler<http_socket>(keep_alive, error_callback),
+: asio_handler<http_socket,asio_http>(keep_alive, error_callback),
   error_(error_callback),
-  callback_(cloud_callback)
+  callback_(cloud_callback),
+  request_(request)
 {
     socket_ = std::make_shared<http_socket>(io_service);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
@@ -21,7 +23,6 @@ asio_http::asio_http(
 void asio_http::begin( 
 						boost::asio::ip::tcp::resolver::query & query,
 						boost::asio::ip::tcp::resolver & resolver,
-						boost::asio::streambuf & request,
                         unsigned int timeout
 					 )
 {
@@ -30,7 +31,6 @@ void asio_http::begin(
     //          operation in the io_service waiting for time_check
     deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
     deadline_->expires_from_now(boost::posix_time::seconds(timeout));
-    request_(request);
     resolver.async_resolve(query,
                             boost::bind(&asio_http::resolve,
                                         this,
@@ -67,7 +67,7 @@ void asio_http::connect(
         // write the request to the socket
         boost::asio::async_write(*socket_.get(),
                                  request_,
-                                 boost::bind(&asio_handler<http_socket>::write_request, 
+                                 boost::bind(&asio_handler<http_socket,asio_http>::write_request, 
                                              this,
                                              boost::asio::placeholders::error,
                                              boost::asio::placeholders::bytes_transferred));
@@ -98,14 +98,14 @@ void asio_http::send(
     if (connected_) {
         deadline_->expires_from_now(boost::posix_time::seconds(timeout));
         boost::asio::async_write(*socket_.get(),
-                                 request_,
-                                 boost::bind(&asio_handler<http_socket>::write_request, 
+                                 request,
+                                 boost::bind(&asio_handler<http_socket,asio_http>::write_request, 
                                              this,
                                              boost::asio::placeholders::error,
                                              boost::asio::placeholders::bytes_transferred));
     }
     else {
-        auto error = boost::asio::error::eof
+        auto error = boost::asio::error::eof;
         shutdown(error);
     }
 }
@@ -141,6 +141,11 @@ void asio_http::time_check()
     else {
         deadline_->async_wait(boost::bind(&asio_http::time_check, this));
     }
+}
+
+bool asio_http::is_connected() const
+{
+    return connected_;
 }
 
 }

@@ -36,7 +36,7 @@ public:
                  std::function<void(error_code)> error_callback);
 
     /// @brief set socket pointer
-    void set_socket(const std::shared_ptr<T> socket);
+    void set_socket(const std::shared_ptr<socket_type> socket);
 	    
     /** 
      * @brief write the cloud request to the socket

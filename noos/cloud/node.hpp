@@ -159,7 +159,6 @@ protected:
     void run_reset();
 
 private:
-    error_handle error_;
     noos::cloud::platform info_;
     boost::asio::ip::tcp::resolver::query query_;
     boost::asio::io_service io_;
