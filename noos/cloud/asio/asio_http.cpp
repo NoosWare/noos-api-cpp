@@ -3,24 +3,18 @@ namespace noos {
 namespace cloud {
 
 asio_http::asio_http(
-						std::function<void(std::string)> cloud_function,
-						std::function<void(error_code error)> error_function,
+						std::function<void(std::string)> cloud_callback,
+						std::function<void(error_code)> error_callback,
 						boost::asio::io_service & io_service,
                         const bool keep_alive
 					)
-: asio_handler<http_socket>(
-                            cloud_function, 
-                            error_function,
-                            boost::bind(&asio_http::shutdown,
-                                        this,
-                                        boost::asio::placeholders::error),
-                            keep_alive
-                           ),
-  error_cb_(error_function)
+: asio_handler<http_socket>(keep_alive, error_callback),
+  error_(error_callback),
+  callback_(cloud_callback)
 {
     socket_ = std::make_shared<http_socket>(io_service);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
-	assert(cloud_function && error_function && socket_ && deadline_);
+	assert(callback_ && error_ && socket_ && deadline_);
     asio_handler::set_socket(socket_);
 }
 
@@ -58,7 +52,7 @@ void asio_http::resolve(
                                            ++endpoint_iterator));
     }
     else {
-        error_cb_(err);
+        error_(err);
         shutdown(err);
     }
 }
@@ -89,7 +83,7 @@ void asio_http::connect(
                                            ++endpoint_iterator));
     }
     else {
-        error_cb_(err); 
+        error_(err); 
         shutdown(err);
     }
 }
@@ -102,7 +96,7 @@ void asio_http::send(
                     )
 {
     if (connected_) {
-        // TODO: set_timer again to `timeout`
+        deadline_->expires_from_now(boost::posix_time::seconds(timeout));
         boost::asio::async_write(*socket_.get(),
                                  request_,
                                  boost::bind(&asio_handler<http_socket>::write_request, 
@@ -111,8 +105,8 @@ void asio_http::send(
                                              boost::asio::placeholders::bytes_transferred));
     }
     else {
-        // error = iboost::asio::error::eof
-        shutdown(...);
+        auto error = boost::asio::error::eof
+        shutdown(error);
     }
 }
 
@@ -122,6 +116,11 @@ void asio_http::shutdown(const boost::system::error_code err)
     socket_->close();
     deadline_->cancel();
     deadline_.reset(); 
+}
+
+void asio_http::stop_timeout()
+{
+    deadline_->cancel();
 }
 
 void asio_http::time_check()

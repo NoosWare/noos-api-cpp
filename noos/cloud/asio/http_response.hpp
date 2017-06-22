@@ -59,7 +59,7 @@ public:
                         unsigned int bytes);
 	
 	/// @brief clean the variables
-	void end();
+	void flush_data();
     	
 protected:
     boost::asio::streambuf buffer_;

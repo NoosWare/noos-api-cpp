@@ -19,7 +19,7 @@ namespace cloud {
  * @see response
  */
 class asio_http 
-: public asio_handler<http_socket>
+: public asio_handler<http_socket, asio_http>
 {
 public:
     /**
@@ -30,8 +30,8 @@ public:
 	 * @brief `request` is a stream buffer containing the request
 	 */
     asio_http(
-                std::function<void(std::string)> cloud_function,
-                std::function<void(error_code error)> error_function,
+                std::function<void(std::string)> cloud_callback,
+                std::function<void(error_code)> error_callback,
                 boost::asio::io_service & io_service,
                 const bool keep_alive
              );
@@ -62,13 +62,14 @@ public:
                 boost::asio::streambuf & request
              );
 
-    /// \brief shutdown connection
+    /// @brief shutdown connection
     void shutdown(const boost::system::error_code);
 
-    /// @TODO: Alex, stop timeout
-    void stop_timeout(unsigned int timeout);
+    /// @brie stop timeout timer
+    void stop_timeout();
 
 private:
+    friend asio_handler<http_socket, asio_http>;
 
     /// \brief resolve
     void resolve(
@@ -85,8 +86,9 @@ private:
     /// \brief check if we have timed out
     void time_check();
 
-private:
-    std::function<void(boost::system::error_code)> error_cb_;
+
+    std::function<void(boost::system::error_code)> error_;
+    std::function<void(std::string)> callback_;
     std::shared_ptr<http_socket> socket_;
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;

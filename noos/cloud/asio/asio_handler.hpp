@@ -20,10 +20,9 @@ namespace cloud {
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * @brief ASIO socket controller of boost asio socket type T
  * @note This class is used internally from `asio_http` and `asio_https`.
- *
- * @TODO: make a CRPT using <class derived>
  */
-template <class T> 
+template <class socket_type,
+          class child_class> 
 class asio_handler : protected http_response
 {
 public:
@@ -33,50 +32,53 @@ public:
 	 * @param error_function will receive any asio errors
 	 * @param socket is the actual type T socket pointer
 	 */
-    asio_handler(
-                  const std::function<void(std::string)> cloud_function,
-                  const std::function<void(const boost::system::error_code)> error_function,
-                  const std::function<void(const boost::system::error_code)> shutdown_function,
-                  const bool keep_alive
-                );
+    asio_handler(const bool keep_alive,
+                 std::function<void(error_code)> error_callback);
 
     /// @brief set socket pointer
     void set_socket(const std::shared_ptr<T> socket);
 	    
-    /// @brief write the cloud request to the socket
-	/// @param err is propagated from boost asio
+    /** 
+     * @brief write the cloud request to the socket
+	 * @param err is propagated from boost asio
+     */
     void write_request(const boost::system::error_code & err,
                        const std::size_t bytes);
 
-    /// @brief read first HTTP line and check for a 200 response
-	/// @param err is propagated from boost asio
+    /** 
+     * @brief read first HTTP line and check for a 200 response
+	 * @param err is propagated from boost asio
+     */
     void read_status_line(const boost::system::error_code & err,
                           const std::size_t bytes);
     
-    /// @brief read HTTP headers and validate
-	/// @param err is propagated from boost asio
+    /** 
+     * @brief read HTTP headers and validate
+	 * @param err is propagated from boost asio
+     */
     void read_headers(const boost::system::error_code & err,
                       const std::size_t bytes);
 
-    /// @brief strip the header and read the POST data
-	/// @param err is propagated from boost asio
+    /** 
+     * @brief strip the header and read the POST data
+	 * @param err is propagated from boost asio
+     */
     void read_content(
                       const boost::system::error_code & err,
                       const std::size_t bytes
                      );
 
-    /// @brief close socket and cleanup members
-	/// @param err is propagated from boost asio
+    /**
+     * @brief close socket and cleanup members
+	 * @param err is propagated from boost asio
+     */
     void end(const boost::system::error_code & err);
 
 protected:
-    std::shared_ptr<T> socket_;
-    std::function<void(std::string)> cloud_cb_;
-    std::function<void(const boost::system::error_code)> error_cb_;
-    std::function<void(const boost::system::error_code)> close_cb_;
+    std::shared_ptr<socket_type> socket_;
     bool keep_alive_ = false;
 };
 }
 }
-#include "asio_handler.impl"
+#include "asio_handler.tpl"
 #endif
