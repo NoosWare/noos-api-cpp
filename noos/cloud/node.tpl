@@ -11,8 +11,7 @@ node<socket_type,error_handle>::node(noos::cloud::platform info)
 template <class socket_type,
           class error_handle>
 node<socket_type,error_handle>::node(json json_object)
-: error_(),
-  info_(platform()(json_object)), 
+: info_(platform()(json_object)), 
   query_(info_.address, info_.port), 
   io_(), resol_(io_), timeout_(2)
 {}
@@ -20,8 +19,7 @@ node<socket_type,error_handle>::node(json json_object)
 template <class socket_type,
           class error_handle>
 node<socket_type,error_handle>::node(std::string filename)
-: error_(),
-  info_(platform()(filename)), 
+: info_(platform()(filename)), 
   query_(info_.address, info_.port), 
   io_(), resol_(io_), timeout_(2)
 {}
@@ -109,7 +107,8 @@ callable<vision_batch<cloud_pairs...>,
     result.socket(
         [&](auto reply){ result.functor(reply); }, 
         [&](auto e){ error_handle()(e);}, 
-        io_);
+        io_,
+        false);
     return result;
 }
 
