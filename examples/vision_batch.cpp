@@ -44,8 +44,9 @@ int main()
     //auto call = ctrl.make_one(batch, 
     //                          std::bind(vision_batch::process, &batch, std::placeholders::_1));
 
-    auto call = ctrl.make(pic, 
-                          std::make_pair(face_detection(), face_cb), 
-                          std::make_pair(human_detection(), human_cb));
+    auto call_obj = ctrl.make(pic, 
+                              std::make_pair(face_detection(), face_cb), 
+                              std::make_pair(human_detection(), human_cb));
+    ctrl.call(call_obj);
     return 0;
 }

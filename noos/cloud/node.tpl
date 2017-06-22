@@ -109,7 +109,7 @@ callable<vision_batch<cloud_pairs...>,
         [&](auto reply){ result.functor(reply); }, 
         [&](auto e){ error_handle()(e);}, 
         io_);
-    return std::move(result);
+    return result;
 }
 
 template <class socket_type,
@@ -136,8 +136,8 @@ template <class cloud_type,
           class callback>
 void node<socket_type,error_handle>::call(callable<cloud_type,callback,socket_type> & arg)
 {
-    static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
-                  "`cloud_type` cannot be a `cloud_batch` derived class");
+    //static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
+    //              "`cloud_type` cannot be a `cloud_batch` derived class");
     assert(arg.object.is_single_callable());
     if (!arg.object.is_single_callable()) {
         throw std::runtime_error("cannot call a non-single-callable");
