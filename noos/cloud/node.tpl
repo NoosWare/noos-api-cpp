@@ -10,6 +10,22 @@ node<socket_type,error_handle>::node(noos::cloud::platform info)
 
 template <class socket_type,
           class error_handle>
+node<socket_type,error_handle>::node(json json_object)
+: info_(platform()(json_object)), 
+  query_(info_.address, info_.port), 
+  io_(), resol_(io_), timeout_(2)
+{}
+
+template <class socket_type,
+          class error_handle>
+node<socket_type,error_handle>::node(std::string filename)
+: info_(platform()(filename)), 
+  query_(info_.address, info_.port), 
+  io_(), resol_(io_), timeout_(2)
+{}
+
+template <class socket_type,
+          class error_handle>
 void node<socket_type,error_handle>::set_timeout(unsigned long int timeout)
 {
     timeout_ = timeout;
@@ -76,24 +92,25 @@ callable<vision_batch<cloud_pairs...>,
          socket_type>
     node<socket_type,error_handle>::make(const noos::object::picture & image, cloud_pairs... args)
 {
-	callable<vision_batch<cloud_pairs...>, 
-                           typename vision_batch<cloud_pairs...>::callback,
-                           socket_type> result;
-    result = callable<vision_batch<cloud_pairs...>, 
+	callable<
+             vision_batch<cloud_pairs...>, 
+             typename vision_batch<cloud_pairs...>::callback, 
+             socket_type
+            > result = callable<vision_batch<cloud_pairs...>, 
                            typename vision_batch<cloud_pairs...>::callback,
                            socket_type>( 
-                                   vision_batch<cloud_pairs...>(image, std::forward<cloud_pairs>(args)...),
+                                   vision_batch<cloud_pairs...>(image, (args)...),
                                    [&](auto reply){ result.object.process(reply); });
     assert(result.functor);
-    using actual_class = typename decltype(result.object)::value_type;
-    static_assert(std::is_base_of<cloud_batch, actual_class>::value,
-                  "`cloud_type` must be a `cloud_batch` derived class");
+    // @inline this probably doesn't protect since we specialise explicitly for vision_batch
+    //static_assert(!std::is_base_of<cloud_batch, typename visi>::value,
+    //              "`cloud_type` must be a `cloud_batch` derived class");
     result.socket(
         [&](auto reply){ result.functor(reply); }, 
-        [&](auto e){ error_handle()(e); }, 
+        [&](auto e){ error_handle()(e);}, 
         io_,
-        true);
-    return std::move(result);
+        false);
+    return result;
 }
 
 template <class socket_type,
@@ -119,8 +136,8 @@ template <class cloud_type,
           class callback>
 void node<socket_type,error_handle>::call(callable<cloud_type,callback,socket_type> & arg)
 {
-    static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
-                  "`cloud_type` cannot be a `cloud_batch` derived class");
+    //static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
+    //              "`cloud_type` cannot be a `cloud_batch` derived class");
     assert(arg.object.is_single_callable());
     if (!arg.object.is_single_callable()) {
         throw std::runtime_error("cannot call a non-single-callable");

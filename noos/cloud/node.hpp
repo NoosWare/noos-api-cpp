@@ -47,10 +47,17 @@ public:
      */
 	node(noos::cloud::platform);
 
-    /// @todo Maria Ramos
+    /** 
+     * @brief construct a service controller using a nlohmann::json object
+     * @param json must contain all required fields of noos::cloud::platform object
+     */    
     node(json);
 
-    /// @todo Maria Ramos
+    /** 
+     * @brief construct a service controller using a ini file
+     * @param filename must contain a JSON with all required
+     *        fields of noos::cloud::platform object
+     */
     node(std::string filename);
 
     /// @brief set a time-out different than the default of 1 second
@@ -87,7 +94,7 @@ public:
     template <class... cloud_pairs>
     callable<vision_batch<cloud_pairs...>,
              typename vision_batch<cloud_pairs...>::callback,
-             socket_type> make(const noos::object::picture &, cloud_pairs ...);
+             socket_type> make(const noos::object::picture &, cloud_pairs...);
 
     /** 
      * @brief create batch of cloud calls using a variadic template

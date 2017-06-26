@@ -40,17 +40,6 @@ protected:
     bool single_callable;
 };
 
-/**
- * @brief base class for vision cloud classes - used mostly for static assertions
- * @version 0.7.3
- * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
- * @date 11 June 2017
- */
-struct vision_base 
-{ 
-    std::string json;
-};
-
 #include "cloud_base.tpl"
 }
 }

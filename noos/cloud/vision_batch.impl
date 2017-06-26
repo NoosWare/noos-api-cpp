@@ -1,10 +1,10 @@
 namespace noos {
 namespace cloud {
 
-template <class... services>
-vision_batch<services...>::vision_batch(
+template <class... cloud_pairs>
+vision_batch<cloud_pairs...>::vision_batch(
                                          const noos::object::picture & image,
-                                         services... args
+                                         cloud_pairs... args
                                        )
 : http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
   cloud_base<bool>(true),
@@ -15,18 +15,22 @@ vision_batch<services...>::vision_batch(
     std::string fname = noos::misc::random_boundary() + "." + image__.type();
     http_request::add_content("file", fname, image.bytearray());
     misc::for_each_arg([&](const auto & pair) {
-        static_assert(pair.first.is_single_callable(),
-                      "you can't use single callable objects in a vision batch");
-        using cloud_type = typename decltype(obj)::value_type;
-        static_assert(!std::is_base_of<vision_base, cloud_type>::value,
+        assert(!pair.first.is_single_callable());
+        if (pair.first.is_single_callable()) {
+            throw std::runtime_error("you can't use single callable objects in a vision batch");
+        }
+        /*
+        auto first = std::get<0>(pair);
+        static_assert(!std::is_base_of<vision_base, decltype(first)>::value,
                   "cloud class must be a vision class for vision_batch");
+         */
         http_request::add_content(pair.first.uri, pair.first.json, true);
     }, args...);
     http_request::close();
 }
 
-template <class... services>
-void vision_batch<services...>::process(std::string json)
+template <class... cloud_pairs>
+void vision_batch<cloud_pairs...>::process(std::string json)
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -49,8 +53,9 @@ void vision_batch<services...>::process(std::string json)
     }
 }
 
+template<class... cloud_pairs>
 template<std::size_t... batch_size>
-void vision_batch<services...>::expand_batch(
+void vision_batch<cloud_pairs...>::expand_batch(
                                               std::string json, 
                                               std::string key,
                                               std::index_sequence<batch_size...>
@@ -59,21 +64,18 @@ void vision_batch<services...>::expand_batch(
     find_cloud_type(std::get<batch_size>(batch__)..., json, key);
 }
 
-template <class... services>
-void vision_batch<services...>::find_cloud_type(
-                                                  services... args, 
+template <class... cloud_pairs>
+void vision_batch<cloud_pairs...>::find_cloud_type(
+                                                  cloud_pairs... args, 
                                                   std::string json, 
                                                   std::string key
                                                )
 {
-    misc::for_each_arg([&](auto & pair){
-        if (pair.first.uri == key) {
-            // TODO: find type of object and deserialize result,
-            //
-            //       using cloud_type = typename decltype(pair.first)::value_type;
-            //       using data_type  = typename cloud_type::data_type;
-            //
-            //       pair.second(deserialize<cloud_type, data_type>(json))
+    misc::for_each_arg([&](const auto & pair){
+        auto first = std::get<0>(pair);
+        if (first.uri == key) {
+            auto second = std::get<1>(pair);
+            second(deserialize<decltype(first), typename decltype(first)::data_type>()(json));
         }
     }, args...);
 }

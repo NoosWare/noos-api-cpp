@@ -53,6 +53,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
+             ${INCLUDES}/cloud/asio/platform.cpp
 
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
@@ -218,7 +219,7 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
                  #batch.cpp
-                 #vision_batch.cpp
+                 vision_batch.cpp
                  #class_reactor.cpp
                  #loop.cpp
                  #face_detect.cpp

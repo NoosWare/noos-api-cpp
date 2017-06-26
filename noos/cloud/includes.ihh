@@ -17,10 +17,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/variant.hpp>
-#include <boost/any.hpp>
-#include <boost/variant/static_visitor.hpp>
-
+#
 #include <noos/misc/json/src/json.hpp>
 #include <noos/misc/misc.hpp>
 

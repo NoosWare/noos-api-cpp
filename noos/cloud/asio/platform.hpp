@@ -4,6 +4,7 @@
  * LICENSE HERE
  */
 #include <string>
+#include "includes.ihh"
 namespace noos {
 namespace cloud {
 /**
@@ -22,6 +23,12 @@ struct platform
    std::string token;
    std::string user;
    std::string protocol;
+
+   /// @brief deserialise a json to build the platform
+   platform operator()(json);
+
+   /// @brief read a file with a json to build the platform
+   platform operator()(std::string filename);
 };
 }
 }
