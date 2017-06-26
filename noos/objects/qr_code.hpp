@@ -7,7 +7,7 @@
 namespace noos {
 namespace object {
 /**
- * @class qrCode
+ * @class qr_code
  * @brief class which should encapsulate a QR code
  * @version 0.7.0
  * @date 25 August 2016

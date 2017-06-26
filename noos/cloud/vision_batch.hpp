@@ -18,7 +18,9 @@ namespace cloud {
  *
  * @note the variadic template parameter `cloud_pairs` expects
  *       a sequence of `std::pair<cloud_class, callback>`.
- *       anything else won't compile or worse...
+ *       anything else won't compile
+ *
+ * @note you can only using this class with `vision_base` derived classes
  */
 template <class... cloud_pairs>
 class vision_batch 
@@ -32,19 +34,24 @@ public:
      * @brief construct a vision_batch using a list of std::pair<cloud_type,callback>
      * @param image is a noos::object::picture 
      * @param args are the std::pair<cloud_type, callback> services which are
-     *        going to be called
+     *        going to be called in a sequential manner (in the order of variadic arguments)
      */
     vision_batch(
                   const noos::object::picture & image,
                   cloud_pairs... args
                 );
    
-    /// @brief process the JSON reply and delegate to services
-    // This becomes the specialisation of deserialize<vision_batch, 
-    // NOTE: this is the callback for `callable` and calls the cloud_pairs
+    /** 
+     * @brief process the JSON reply and delegate to services
+     * This method becomes the specialisation of deserialize<vision_batch, 
+     * @note this is the callback for `callable` and calls the cloud_pairs functors
+     * using a fold expression and tuple unpacking
+     */
     void process(std::string json);
 
 private:
+
+    // expand the tuple of cloud_pairs
     template<std::size_t... batch_size>
     void expand_batch(
                       std::string json, 
@@ -52,6 +59,7 @@ private:
                       std::index_sequence<batch_size...>
                      );
 
+    // find the cloud_pair (cloud_class and callack and pass the data)
     void find_cloud_type(
                           cloud_pairs... args, 
                           std::string json,
@@ -63,5 +71,5 @@ private:
 };
 }
 }
-#include "vision_batch.impl"
+#include "vision_batch.tpl"
 #endif

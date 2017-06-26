@@ -25,9 +25,8 @@ namespace cloud {
  * @note template parameter `error_handle` is the callback which receives the errors,
  *       and it defaults to `default_error_handler`
  *
- * @note wherever a template parameter `cloud_type` is used, assume it is a cloud class.
- * @note when using a template parameter `callback` check the class's `callback` for the correct signature.
- * @warningi when using a variadic argument list, only non-batched classes can be used!
+ * @note wherever a template parameter `cloud_type` is used, it must be an existing cloud class.
+ * @note when using a template parameter `callback` check the class's alias `callback` for the correct function signature.
  *
  * @todo (0.7.3): implement partial specialisations for `asio_https` (TLS certificate)
  *				  TLS CA.PEM file (pass to asio_https)
@@ -72,7 +71,10 @@ public:
      */
     template <class cloud_type,
               class callback>
-    callable<cloud_type,callback,socket_type> make(cloud_type, callback);
+    callable<cloud_type,
+             callback,
+             socket_type,
+             error_handle> make(cloud_type, callback);
 
     /**
      * @brief same as `make_one` only this one constructs the `cloud_type` object using variadic args
@@ -82,19 +84,22 @@ public:
     template <class cloud_type, 
               class callback,
               class... parameters>
-    callable<cloud_type,callback,socket_type> make(parameters..., callback);
+    callable<cloud_type,
+             callback,
+             socket_type,
+             error_handle> make(parameters..., callback);
 
     /**       
      * @brief a template specialisation of `make` for `vision_batch` only
      * @note variadic template `cloud_pairs` are `std::pair` of `cloud_type` and `callback`
      * @see `noos::cloud::vision_batch` for more information
      * @return a callable which wraps around a `vision_batch` object
-     * \test Alex Giokas
      */
     template <class... cloud_pairs>
     callable<vision_batch<cloud_pairs...>,
              typename vision_batch<cloud_pairs...>::callback,
-             socket_type> make(const noos::object::picture &, cloud_pairs...);
+             socket_type,
+             error_handle> make(const noos::object::picture &, cloud_pairs...);
 
     /** 
      * @brief create batch of cloud calls using a variadic template
@@ -106,20 +111,34 @@ public:
     std::tuple<callables...> pack(callables ...);
 
     /**
-     * TODO: Alex, run once/ call once, don't keep alive, dont keep the socket - close connection
+     * @brief call once a noos service and then close the connection
+     * @param object of `cloud_type` can be any kind of cloud class
+     * @param functor is the callback that will receive the reply
+     * @note you don't need to invoke `make` for this type of call
      */
     template <class cloud_type,
               class callback>
-    void call(cloud_type, callback);
+    void call_once(cloud_type object, callback functor);
+
+    /**
+     * @brief call once a noos service and then close the connection
+     * @param args (varadic arguments) are the ones used to construct the `cloud_type` object
+     * @param functor is the callback that will receive the reply
+     * @note you don't need to invoke `make` for this type of call
+     */
+    template <class cloud_type,
+              class... parameters,
+              class callback>
+    void call_once(parameters... args, callback functor);
     
     /**
      * @brief call a cloud service once
-     * @param arg assumes a properly constructed callable with a socket assigned
+     * @param arg assumes a properly constructed callable using `make`
      * @throws exception if socket is not set
      */
     template <class cloud_type,
               class callback>
-    void call(callable<cloud_type, callback, socket_type> &);
+    void call(callable<cloud_type,callback,socket_type,error_handle> & arg);
     
     /**
      * @brief call many cloud services in parallel
@@ -142,7 +161,10 @@ public:
     /// @brief create and execute a cloud callable object - used for convenience mostly
     template <class cloud_type,
               class callback>
-    callable<cloud_type,callback,socket_type> make_call(cloud_type obj, callback functor);
+    callable<cloud_type,
+             callback,
+             socket_type,
+             error_handle> make_call(cloud_type obj, callback functor);
 
     /** 
      * @brief construct and execute a cloud callable object - used for convenience mostly
@@ -152,7 +174,10 @@ public:
     template <class cloud_type, 
               class callback,
               class... parameters>
-    callable<cloud_type,callback,socket_type> make_call(parameters... args, callback functor);
+    callable<cloud_type,
+             callback,
+             socket_type,
+             error_handle> make_call(parameters... args, callback functor);
 
     /**
      * @brief pack a list of callable cloud services and call them - used for convenience mostly

@@ -33,20 +33,22 @@ int main()
     auto face_cb = [&](std::vector<noos::object::face> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
     };
-
     auto human_cb = [&](std::vector<noos::object::human> humans) { 
         std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
 
-    //auto batch = noos::cloud::vision_batch<face_pair, human_pair>(std::make_pair(face_d(), face_cb), 
-    //                                                              std::make_pair(human_d(), human_cb));
+    /**
+     * Now lets create the callable object which will be used for subsequent calls.
+     * This object wraps around the vision_batch data and image, as well as the socket
+     * used to connect.
+     * For more information @see vision_batch.hpp
+     */
+    auto query = ctrl.make(pic, 
+                           std::make_pair(face_detection(), face_cb), 
+                           std::make_pair(human_detection(), human_cb));
 
-    //auto call = ctrl.make_one(batch, 
-    //                          std::bind(vision_batch::process, &batch, std::placeholders::_1));
-
-    auto call_obj = ctrl.make(pic, 
-                              std::make_pair(face_detection(), face_cb), 
-                              std::make_pair(human_detection(), human_cb));
-    ctrl.call(call_obj);
+    // Last but not least, we'll call the noos service for 
+    // a vision batch of face and human detection
+    ctrl.call(query);
     return 0;
 }

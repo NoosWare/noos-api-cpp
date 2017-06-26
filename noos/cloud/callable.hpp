@@ -5,8 +5,16 @@
  */
 #include "includes.ihh"
 #include <noos/cloud/asio/platform.hpp>
+#include <noos/cloud/default_error_handler.hpp>
 namespace noos {
 namespace cloud {
+//
+// @inline forward declaration of class `node` used to befriend callable
+// ignore this and @see node.hpp for full definition
+template <class socket_type,
+          class error_handle>
+class node;
+
 /**
  * @class callable
  * @brief a class which wraps around a cloud call, its socket, buffer and callback
@@ -16,13 +24,17 @@ namespace cloud {
  */
 template <class cloud_type,
           class callback,
-          class socket_type>
+          class socket_type,
+          class error_handle>
 struct callable
 {
     cloud_type object;
     callback functor;
     using cloud_class = cloud_type;
     
+protected:
+    friend class node<socket_type,error_handle>;
+
     /**
      * @brief construct a callbable object wrapper
      * @param `functor` is the callback receiving the reply
@@ -42,7 +54,6 @@ struct callable
 
     /// @brief set the @param socket - used by `rapp::cloud::node`
     void socket(std::function<void(std::string)> cloud_function,
-                std::function<void(boost::system::error_code)> error_function,
                 boost::asio::io_service & io_service,
                 bool keep_alive);
 

@@ -8,7 +8,7 @@
 namespace noos {
 namespace cloud {
 /**
- * @class asio_response
+ * @class asio_timer
  * @version 0.7.0
  * @date 12 August 2016 
  * @author Maria Ramos <m.ramos@ortelio.co.uk>

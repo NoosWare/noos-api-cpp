@@ -19,12 +19,9 @@ vision_batch<cloud_pairs...>::vision_batch(
         if (pair.first.is_single_callable()) {
             throw std::runtime_error("you can't use single callable objects in a vision batch");
         }
-        /*
-        auto first = std::get<0>(pair);
-        static_assert(!std::is_base_of<vision_base, decltype(first)>::value,
-                  "cloud class must be a vision class for vision_batch");
-         */
-        http_request::add_content(pair.first.uri, pair.first.json, true);
+        static_assert(std::is_base_of<vision_base, decltype(pair.first)>::value,
+                      "objects used in `vision_batch` must be derived from `vision_class`");
+        this->add_content(pair.first.uri, pair.first.json, true);
     }, args...);
     http_request::close();
 }
@@ -56,20 +53,20 @@ void vision_batch<cloud_pairs...>::process(std::string json)
 template<class... cloud_pairs>
 template<std::size_t... batch_size>
 void vision_batch<cloud_pairs...>::expand_batch(
-                                              std::string json, 
-                                              std::string key,
-                                              std::index_sequence<batch_size...>
-                                            ) 
+                                                 std::string json, 
+                                                 std::string key,
+                                                 std::index_sequence<batch_size...>
+                                               ) 
 {
     find_cloud_type(std::get<batch_size>(batch__)..., json, key);
 }
 
 template <class... cloud_pairs>
 void vision_batch<cloud_pairs...>::find_cloud_type(
-                                                  cloud_pairs... args, 
-                                                  std::string json, 
-                                                  std::string key
-                                               )
+                                                    cloud_pairs... args, 
+                                                    std::string json, 
+                                                    std::string key
+                                                  )
 {
     misc::for_each_arg([&](const auto & pair){
         auto first = std::get<0>(pair);
@@ -79,6 +76,5 @@ void vision_batch<cloud_pairs...>::find_cloud_type(
         }
     }, args...);
 }
-
 }
 }

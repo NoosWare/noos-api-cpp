@@ -105,8 +105,9 @@ void asio_http::send(
                                              boost::asio::placeholders::bytes_transferred));
     }
     else {
-        auto error = boost::asio::error::eof;
-        shutdown(error);
+        auto err = boost::asio::error::eof;
+        error_(err); 
+        shutdown(err);
     }
 }
 
@@ -120,6 +121,7 @@ void asio_http::shutdown(const boost::system::error_code err)
 
 void asio_http::stop_timeout()
 {
+    assert(deadline_);
     deadline_->cancel();
 }
 
@@ -127,9 +129,11 @@ void asio_http::time_check()
 {
     // BUG: this is a bad way of handling deadline expiration
     // deadline pointer has expired?!
+    assert(deadline_);
     if (!deadline_) {
         return;
     }
+    // BUG: is this correct? expires at before or equal???
     if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
         #if (!NDEBUG)
         std::cerr << "[time-out]: closing socket" << std::endl;

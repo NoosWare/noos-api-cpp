@@ -3,9 +3,10 @@
  */
 template <class cloud_type,
           class callback,
-          class socket_type>
-callable<cloud_type,callback,socket_type>::callable(cloud_type object,
-                                                    callback functor)
+          class socket_type,
+          class error_handle>
+callable<cloud_type,callback,socket_type,error_handle>::callable(cloud_type object,
+                                                                 callback functor)
 : object(object), 
   functor(functor), 
   buffer_(std::make_unique<boost::asio::streambuf>())
@@ -13,10 +14,11 @@ callable<cloud_type,callback,socket_type>::callable(cloud_type object,
 
 template <class cloud_type,
           class callback,
-          class socket_type>
+          class socket_type,
+          class error_handle>
 template <typename... parameters>
-callable<cloud_type,callback,socket_type>::callable(parameters... args,
-                                                    callback functor)
+callable<cloud_type,callback,socket_type,error_handle>::callable(parameters... args,
+                                                                 callback functor)
 : object(args...), 
   functor(functor),
   buffer_(std::make_unique<boost::asio::streambuf>())
@@ -24,15 +26,15 @@ callable<cloud_type,callback,socket_type>::callable(parameters... args,
 
 template <class cloud_type,
           class callback,
-          class socket_type>
-void callable<cloud_type,callback,socket_type>::socket(
-                                    std::function<void(std::string)> cloud_function,
-                                    std::function<void(boost::system::error_code)> error_function,
-                                    boost::asio::io_service & io_service,
-                                    bool keep_alive)
+          class socket_type,
+          class error_handle>
+void callable<cloud_type,callback,socket_type,error_handle>::socket(
+                                            std::function<void(std::string)> cloud_function,
+                                            boost::asio::io_service & io_service,
+                                            bool keep_alive)
 {
     socket_ = std::make_unique<socket_type>(cloud_function, 
-                                            error_function, 
+                                            [&](auto e){ error_handle()(e); }, 
                                             io_service, 
                                             keep_alive,
                                             *buffer_.get());
@@ -41,8 +43,9 @@ void callable<cloud_type,callback,socket_type>::socket(
 
 template <class cloud_type,
           class callback,
-          class socket_type>
-void callable<cloud_type,callback,socket_type>::send(
+          class socket_type,
+          class error_handle>
+void callable<cloud_type,callback,socket_type,error_handle>::send(
                                             boost::asio::ip::tcp::resolver::query & query,
                                             boost::asio::ip::tcp::resolver & resolver,
                                             unsigned int timeout,

@@ -23,7 +23,8 @@ namespace cloud {
  */
 template <class socket_type,
           class child_class> 
-class asio_handler : protected http_response
+class asio_handler 
+: protected http_response
 {
 public:
 	/**
