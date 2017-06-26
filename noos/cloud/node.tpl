@@ -56,7 +56,8 @@ template <class cloud_type,
 callable<cloud_type,callback,socket_type>  
     node<socket_type,error_handle>::make(parameters... args, callback functor)
 {
-    auto result = callable<cloud_type,callback,socket_type>(std::forward<parameters...>(args)..., functor);
+    auto result = callable<cloud_type,callback,socket_type>(
+                        std::forward<parameters...>(args)..., functor);
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
                   "`cloud_type` cannot be a `cloud_batch` derived class");
     result.socket(
