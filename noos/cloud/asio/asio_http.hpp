@@ -63,7 +63,7 @@ public:
              );
 
     /// @brief shutdown connection
-    void shutdown(const boost::system::error_code);
+    void shutdown(boost::system::error_code);
 
     /// @brie stop timeout timer
     void stop_timeout();

@@ -12,6 +12,17 @@ http_request::http_request(const std::string uri)
     assert(header_ && post_);
 }
 
+http_request::http_request(const std::string uri,
+                           bool keep_alive)
+{
+    if (uri.empty()) {
+        throw std::runtime_error("empty uri param");
+    }
+    header_ = std::make_shared<noos::cloud::http_header>(uri, keep_alive);
+    post_   = std::make_shared<noos::cloud::http_post>(header_->get_boundary());
+    assert(header_ && post_);
+}
+
 http_request::http_request(const http_request & arg)
 {
     this->header_ = arg.header_;

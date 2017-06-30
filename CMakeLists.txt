@@ -58,6 +58,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
+             ${INCLUDES}/cloud/goodbye.cpp
              ${INCLUDES}/cloud/deserialize.cpp
 
              ${INCLUDES}/objects/human.cpp
@@ -65,6 +66,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/picture.cpp
              ${INCLUDES}/objects/audio.cpp
              ${INCLUDES}/objects/qr_code.cpp
+             ${INCLUDES}/objects/laser.cpp
              )
 
 # Begin searching for packgages we use in RAPP API
@@ -154,7 +156,7 @@ else()
 	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 	#
     # use shared boost - build shared libs - set correct flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -D_GLIBCXX_DEBUG") ######Added -D_GLIBCXX_DEBUG
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
@@ -230,6 +232,7 @@ if (${BUILD_EXAMPLES})
                  #object_recognition.cpp
                  #object_recognition_my_own_models.cpp
                  #picture_handling.cpp
+                 keep_alive_test.cpp
                   )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")

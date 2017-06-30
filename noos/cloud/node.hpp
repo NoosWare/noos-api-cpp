@@ -11,6 +11,7 @@
 #include <noos/cloud/cloud_batch.hpp>
 #include <noos/cloud/deserialize.hpp>
 #include <noos/cloud/vision_batch.hpp>
+#include <noos/cloud/goodbye.hpp>
 /// @brief noos API namespace
 namespace noos {
 /// @brief cloud service namespace
@@ -186,7 +187,7 @@ public:
      */
     template <class... callables>
     std::tuple<callables...> pack_call(callables ...);
-     
+
 protected:
     void run_reset();
 

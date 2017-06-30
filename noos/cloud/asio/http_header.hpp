@@ -24,6 +24,15 @@ public:
 	 */
     http_header(std::string uri);
 
+    /** 
+	 * @brief constructor of the http_header
+	 * @brief set the \param uri 
+	 * @warning requires newline
+     * @brief set \param keep_alive
+	 */
+    http_header(std::string uri, 
+                bool keep_alive);
+
     /**
      * @brief make this header a `multipart/form-data`
      * @warning it will modify the HTTP Header
@@ -51,6 +60,7 @@ private:
 	std::string content_length_;
 	std::string content_type_;
     std::string boundary_;
+    std::atomic<bool> keep_alive_ = {true};
 };
 }
 }

@@ -23,6 +23,11 @@ public:
 	/// @brief construct a cloud HTTP request (multipart/form-data)
     http_request(const std::string uri);
 
+    /// @brief construct a cloud HTTP request (multipart/form-data)
+    ///        with keep_alive param
+    http_request(const std::string uri,
+                 bool keep_alive);
+
     /// @brief copy constructor
     http_request(const http_request & arg);
 
@@ -38,24 +43,24 @@ public:
                       noos::cloud::platform info
                     );
 
-    /// @brief @TODO: maria ramos, move this to a tpl and add documentation
+    /// @brief add multiple content to the post with
+    ///        HTTP Protocol 
     template <typename... Args>
-    void add_content(Args... args)
-    {
-		post_->add_content(std::forward<Args>(args)...);
-    }
+    void add_content(Args... args);
 
     /// @brief close this request properly
     /// @warning a non-closed HTTP request is an illegal one!
     void close();
 
-    /// @brief @TODO Maria Ramos,a dd documentation
+    /// @brief translate noos::cloud::platform parameters
+    ///        into a string with HTTP Protocol format
     std::string to_string(noos::cloud::platform info) const;
 
-    /// @brief @TODO Maria Ramos,a dd documentation
+    /// @brief translate post data into a string
+    ///        with HTTP Protocol format    
     std::string to_post() const;
 
-    /// @brief @TODO Maria Ramos,a dd documentation
+    /// @brief compare if two http_request are equal
     bool operator==(const http_request & rhs) const;
 
     /// @brief make this a multipart-form, by creating
@@ -68,4 +73,5 @@ private:
 };
 }
 }
+#include "http_request.tpl"
 #endif

@@ -132,6 +132,8 @@ void http_response::flush_data()
 {
 	reply_string.clear();
 	bytes_transferred_ = 0;
+    content_length_ = 0;
+    once_ = false;
 }
 
 }

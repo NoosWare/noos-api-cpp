@@ -24,6 +24,18 @@ callable<cloud_type,callback,socket_type,error_handle>::callable(parameters... a
   buffer_(std::make_unique<boost::asio::streambuf>())
 {}
 
+/*
+ * TODO:check unique_ptr<socket> implicitly deleted
+ */
+//template <class cloud_type,
+//          class callback,
+//          class socket_type,
+//          class error_handle>
+//callable<cloud_type,callback,socket_type,error_handle>::~callable()
+//{
+//    disconnect();
+//}
+
 template <class cloud_type,
           class callback,
           class socket_type,
@@ -58,4 +70,29 @@ void callable<cloud_type,callback,socket_type,error_handle>::send(
     socket_->is_connected() ? 
         socket_->send(query, resolver, timeout, *buffer_.get()) :
         socket_->begin(query, resolver, timeout);
+}
+
+template <class cloud_type,
+          class callback,
+          class socket_type,
+          class error_handle>
+void callable<cloud_type,callback,socket_type,error_handle>::disconnect()
+{
+    // TODO: create a "/bye" service/URI in the Platform
+    //       which when activated, closes the connection of that caller
+    //
+    auto functor = [&](std::string str) {
+        boost::system::error_code err;
+        socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, err);
+        socket_.reset();
+    }; 
+    auto result = callable<goodbye,
+                           std::function<void(std::string)>,
+                           noos::cloud::asio_http,
+                           noos::cloud::default_error_handler>(goodbye(), functor);
+    //result.socket(
+    //    [&](auto reply){ functor(deserialize<goodbye, std::string>()(reply)); }, 
+    //    io_,
+    //    false);
+    //result.send(query_, resol_, timeout_, info_);
 }

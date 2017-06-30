@@ -13,6 +13,7 @@ struct orb_load_models;
 struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
+struct goodbye;
 
 // face_detection and faces
 template <>
@@ -196,6 +197,20 @@ std::vector<std::pair<std::string,std::string>>
     return services;
 }
 
+template<>
+std::string deserialize<goodbye,
+                        std::string
+                       >::operator()(std::string json)
+{
+    nlohmann::json json_f;
+    std::string bye;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+           bye = json_f["bye"]; 
+        }
+    }
+    return bye;
+}
 }
 }
 

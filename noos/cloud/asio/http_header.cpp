@@ -9,6 +9,16 @@ http_header::http_header(std::string uri)
 	user_agent_ = "User-Agent: noos_api-cpp-0.7.3\r\n";
 }
 
+http_header::http_header(std::string uri,
+                         bool keep_alive)
+: uri_(uri), 
+  boundary_(noos::misc::random_boundary()),
+  keep_alive_(keep_alive)
+{
+    connection_ = "Connection: close\r\n";
+	user_agent_ = "User-Agent: noos_api-cpp-0.7.3\r\n";
+}
+
 // BUG: make ONLY ONCE
 void http_header::make_multipart_form()
 {
@@ -25,16 +35,18 @@ std::string http_header::to_string(
 	std::string token = "Accept-Token: " + endpoint.token + "\r\n";
     if (length > 0) {
 	    content_length_	  = "Content-Length: " + boost::lexical_cast<std::string>(length) + "\r\n";
-        return uri_ + 
-               host + 
-               user + 
-               token + 
-               content_length_ + 
-               content_type_ + 
-               "\r\n\r\n";
+        if (keep_alive_) {
+            return uri_ + host + user + token + content_length_ + content_type_ + "\r\n\r\n";
+        }
+        else {
+            return uri_ + host + user + token + connection_ + content_length_ + content_type_ + "\r\n\r\n";
+        }
     }
     else {
-        return uri_ + host + user + token + "\r\n\r\n";
+        if (keep_alive_) 
+            return uri_ + host + user + token + "\r\n\r\n";
+        else
+            return uri_ + host + user + token + connection_+ "\r\n\r\n";
     }
 }
 
