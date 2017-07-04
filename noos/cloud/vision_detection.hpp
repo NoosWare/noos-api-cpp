@@ -4,7 +4,6 @@
  * LICENSE HERE
  */
 #include "includes.ihh"
-#include <noos/cloud/node.hpp>
 #include <noos/objects.hpp>
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>

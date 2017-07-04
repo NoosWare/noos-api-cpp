@@ -13,7 +13,6 @@ int main()
     * We'll use this object to create cloud calls to the platform.
     */
     platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
-    node<> ctrl(info);
 
     /*
      * The image is loaded from its path to a picture class.
@@ -42,6 +41,9 @@ int main()
      * For more information \see noos::cloud::qr_detection
      */
     //ctrl.test_call(qr_request, callback);
-    ctrl.make_call(qr_request, callback);
+    callable<qr_recognition,
+             false> cb(info, qr_request, callback);
+    cb.send(2);
+
     return 0;
 } 

@@ -14,7 +14,6 @@ int main()
      */
 	
 	platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
-	node<> ctrl(info);
 
     /*
      * Now construct a lambda, std::function or bind your own functor.
@@ -46,7 +45,8 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    ctrl.make_call(request, callback);
+    callable<available_services> cb(info, request, callback);
+    cb.send(2);
     
     return 0;
 }

@@ -14,7 +14,6 @@ int main()
      * We'll use this object to create cloud calls to the platform.
      */
     platform info = {"localhost", "8080", "mysecret", "alex"}; 
-    node<> ctrl(info);
 
     /**
      * The image is loaded from its path to a picture class.
@@ -43,12 +42,18 @@ int main()
      * used to connect.
      * For more information @see vision_batch.hpp
      */
-    auto query = ctrl.make(pic, 
-                           std::make_pair(face_detection(), face_cb), 
-                           std::make_pair(human_detection(), human_cb));
+    vision_batch<std::pair<face_detection,face_detection::callback>,
+                 std::pair<human_detection,human_detection::callback>>
+                 batch(pic, 
+                       std::make_pair(face_detection(), face_cb), 
+                       std::make_pair(human_detection(), human_cb));
+    // then the callable
+    callable<vision_batch<std::pair<face_detection,face_detection::callback>,
+                          std::pair<human_detection,human_detection::callback>>
+             > cb(info, batch);
 
     // Last but not least, we'll call the noos service for 
     // a vision batch of face and human detection
-    ctrl.call(query);
+    cb.send(2);
     return 0;
 }

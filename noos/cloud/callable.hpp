@@ -8,14 +8,13 @@
 #include <noos/cloud/default_error_handler.hpp>
 #include <noos/cloud/goodbye.hpp>
 #include <noos/cloud/asio/asio_http.hpp>
+#include <noos/cloud/asio/platform.hpp>
+#include <noos/cloud/cloud_batch.hpp>
+#include <noos/cloud/deserialize.hpp>
+#include <noos/cloud/vision_batch.hpp>
+
 namespace noos {
 namespace cloud {
-//
-// @inline forward declaration of class `node` used to befriend callable
-// ignore this and @see node.hpp for full definition
-template <class socket_type,
-          class error_handle>
-class node;
 
 /**
  * @class callable
@@ -25,26 +24,33 @@ class node;
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 template <class cloud_type,
-          class callback,
-          class socket_type,
-          class error_handle>
+          bool  keep_alive   = true,
+          class socket_type  = noos::cloud::asio_http,
+          class error_handle = noos::cloud::default_error_handler>
 struct callable
 {
+    using callback = typename cloud_type::callback;
+    using cloud_class = cloud_type;
+
     cloud_type object;
     callback functor;
-    using cloud_class = cloud_type;
     
-protected:
-    friend class node<socket_type,error_handle>;
+    // default constructor - TODO: add default noos::cloud::default_node
+    //                             add default noos::cloud::eu_node
+    //                             add default noos::cloud::us_node
+    //                             ...
+    callable(platform);
 
-    /**
-     * @brief construct a callbable object wrapper
-     * @param `functor` is the callback receiving the reply
-     * @param `object` is the cloud data being sent
-     * @see `cloud_type::callback` for callback signature
-     */
-    callable(cloud_type object, callback functor);
+    // convenience constructor - TODO: static assert not a vision_batch
+    callable(platform, 
+             cloud_type, 
+             callback);
 
+    // overload for vision_batch
+    template <typename... parameters>
+    callable(platform,
+             vision_batch<parameters...> arg);
+    
     /**
      * @brief construct a callable object wrapper
      * @param `args` is the variadic `cloud_type` constructor arguments
@@ -52,30 +58,32 @@ protected:
      * @see `cloud_type::callback` for callback signature
      */
     template <typename... parameters>
-    callable(parameters... args, callback functor);
+    callable(platform, 
+             parameters... args, 
+             callback functor);
 
-    /**
-     * @brief destructor should implictly disconnect the socket
-     */
-    //~callable();
-
-    /// @brief set the @param socket - used by `rapp::cloud::node`
-    void socket(std::function<void(std::string)> cloud_function,
-                boost::asio::io_service & io_service,
-                bool keep_alive);
+    // no empty constructor allowed - we need the platform/endpoint
+    callable() = delete;
 
     /// @brief send the cloud_type data once to the cloud endpoint
-    void send(boost::asio::ip::tcp::resolver::query & query,
-			  boost::asio::ip::tcp::resolver & resolver,
-              unsigned int timeout,
-              noos::cloud::platform endpoint);
+    void send(unsigned int timeout = 2);
+
+    // TODO - test if we can construct and call send in one line
+    void operator()(unsigned int timeout = 2);
 
     /// @brief gracefully disconnect from the endpoint
     void disconnect();
 
+protected:
+    /// @brief set the @param socket - used by `rapp::cloud::node`
+    void socket(std::function<void(std::string)> cloud_function);
 private:
     std::unique_ptr<socket_type> socket_;
     std::unique_ptr<boost::asio::streambuf> buffer_;
+    noos::cloud::platform endpoint;
+    boost::asio::ip::tcp::resolver::query query_;
+    boost::asio::io_service io_;
+    boost::asio::ip::tcp::resolver resol_;
 };
 #include "callable.tpl"
 }

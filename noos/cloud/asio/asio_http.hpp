@@ -87,7 +87,7 @@ private:
                 );
 
     // check if we have timed out
-    void time_check();
+    void time_check(const boost::system::error_code & ec);
 
     // members
     std::function<void(boost::system::error_code)> error_;

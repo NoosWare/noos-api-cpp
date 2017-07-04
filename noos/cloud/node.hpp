@@ -4,7 +4,6 @@
  * LICENSE HERE
  */
 #include "includes.ihh"
-#include <noos/cloud/callable.hpp>
 #include <noos/cloud/default_error_handler.hpp>
 #include <noos/cloud/asio/asio_http.hpp>
 #include <noos/cloud/asio/platform.hpp>

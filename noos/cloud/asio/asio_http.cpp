@@ -15,8 +15,8 @@ asio_http::asio_http(
   request_(request)
 {
     socket_ = std::make_shared<http_socket>(io_service);
-    //deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
-	//assert(callback_ && error_ && socket_ && deadline_);
+    deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
+	assert(callback_ && error_ && socket_ && deadline_);
     asio_handler::set_socket(socket_);
 }
 
@@ -26,16 +26,17 @@ void asio_http::begin(
                         unsigned int timeout
 					 )
 {
-    // PROBLEM: the async_wait callback will be bound to *this* 
-    //          so even when the class has finished, we still have a queued
-    //          operation in the io_service waiting for time_check
-    //deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
-    //deadline_->expires_from_now(boost::posix_time::seconds(timeout));
-    resolver.async_resolve(query,
-                            boost::bind(&asio_http::resolve,
-                                        this,
-                                        boost::asio::placeholders::error,
-                                        boost::asio::placeholders::iterator));
+    if(!deadline_) {
+        error_(boost::asio::error::connection_aborted);
+        shutdown(boost::asio::error::connection_aborted);
+    }
+    else {
+        resolver.async_resolve(query,
+                                boost::bind(&asio_http::resolve,
+                                            this,
+                                            boost::asio::placeholders::error,
+                                            boost::asio::placeholders::iterator));
+    }
 }
 
 void asio_http::resolve(
@@ -96,7 +97,8 @@ void asio_http::send(
                     )
 {
     if (connected_) {
-        //deadline_->expires_from_now(boost::posix_time::seconds(timeout));
+        deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1)); 
+        deadline_->expires_from_now(boost::posix_time::seconds(timeout));
         boost::asio::async_write(*socket_.get(),
                                  request,
                                  boost::bind(&asio_handler<http_socket,asio_http>::write_request, 
@@ -116,37 +118,42 @@ void asio_http::shutdown(boost::system::error_code err)
     connected_ = false;
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, err);
     //socket_->close();
-    //assert(deadline_);
-    //deadline_->cancel();
-    //deadline_.reset(); 
+    if (deadline_) {
+        deadline_->cancel();
+        deadline_.reset(); //It creates a new empty pointer. reset(other ptr) reset the old pointer to the new one.  
+    }
 }
 
 void asio_http::stop_timeout()
 {
-    //assert(deadline_);
-    //deadline_->expires_at(boost::posix_time::pos_infin);
+    assert(deadline_);
+    //deadline_->expires_from_now(boost::posix_time::pos_infin);
+    deadline_->cancel(); ///When this function is used, it call time_check with the error operation_aborted
 }
 
-void asio_http::time_check()
+void asio_http::time_check(const boost::system::error_code & ec)
 {
     // BUG: this is a bad way of handling deadline expiration
     // deadline pointer has expired?!
     //assert(deadline_);
-    //if (!deadline_) {
-    //    return;
-    //}
-    //// BUG: is this correct? expires at before or equal???
-    //if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    //    #if (!NDEBUG)
-    //    std::cerr << "[time-out]: closing socket" << std::endl;
-    //    #endif
-    //    socket_->close();
-    //    deadline_->cancel();
-    //    connected_ = false;
-    //}
-    //else {
-    //    //deadline_->async_wait(boost::bind(&asio_http::time_check, this));
-    //}
+    if (!deadline_) {
+        return;
+    }
+    if (!ec) { 
+        // BUG: is this correct? expires at before or equal???
+        if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+            #if (!NDEBUG)
+            std::cerr << "[time-out]: closing socket" << std::endl;
+            #endif
+            socket_->close();
+            deadline_->cancel();
+            connected_ = false;
+        }
+        else {
+            deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1));
+        }
+    }
+    ///TODO: If it works, implement else
 }
 
 bool asio_http::is_connected() const
