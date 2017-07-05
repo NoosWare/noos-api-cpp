@@ -13,7 +13,7 @@ int main()
     * Then proceed to create a cloud controller.
     * We'll use this object to create cloud calls to the platform.
     */
-    platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
+    platform info = default_node;
 
     /*
      * The image is loaded from its path to a picture class.
@@ -42,10 +42,9 @@ int main()
      * For more information \see noos::cloud::qr_detection
      */
     callable<qr_recognition> cb(info, qr_request, callback);
-    for (auto i = 0; i < 10; i++) { 
+    for (auto i = 0; i < 5; i++) { 
         cb.send(2);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));;
     }
-
     return 0;
 }

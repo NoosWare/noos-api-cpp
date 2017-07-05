@@ -13,3 +13,4 @@
 #include <noos/cloud/vision_recognition.hpp>
 #include <noos/cloud/vision_detection.hpp>
 #include <noos/cloud/vision_batch.hpp>
+#include <noos/cloud/node_connection.hpp>

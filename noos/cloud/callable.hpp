@@ -12,6 +12,7 @@
 #include <noos/cloud/cloud_batch.hpp>
 #include <noos/cloud/deserialize.hpp>
 #include <noos/cloud/vision_batch.hpp>
+#include <noos/cloud/node_connection.hpp>
 
 namespace noos {
 namespace cloud {
@@ -35,18 +36,31 @@ struct callable
     cloud_type object;
     callback functor;
     
-    // default constructor - TODO: add default noos::cloud::default_node
-    //                             add default noos::cloud::eu_node
-    //                             add default noos::cloud::us_node
-    //                             ...
-    callable(platform);
+    /** 
+     * @brief construct a callable using a noos::cloud::platform object
+     * @param platform must contain all required fields
+     */
+    callable(platform = default_node);
 
-    // convenience constructor - TODO: static assert not a vision_batch
+    /** 
+     * @brief construct a callable using a nlohmann::json object
+     * @param json must contain all required fields of noos::cloud::platform object
+     */ 
+    callable(json json_object);
+
+    /** 
+     * @brief construct a callable using a ini file
+     * @param filename must contain a JSON with all required
+     *        fields of noos::cloud::platform object
+     */ 
+    callable(std::string filename);
+
+    /// @brief convenience constructor 
     callable(platform, 
              cloud_type, 
              callback);
 
-    // overload for vision_batch
+    /// @brief overload for vision_batch
     template <typename... parameters>
     callable(platform,
              vision_batch<parameters...> arg);
@@ -62,7 +76,7 @@ struct callable
              parameters... args, 
              callback functor);
 
-    // no empty constructor allowed - we need the platform/endpoint
+    /// @brief no empty constructor allowed - we need the platform/endpoint
     callable() = delete;
 
     /// @brief send the cloud_type data once to the cloud endpoint
@@ -70,9 +84,6 @@ struct callable
 
     // TODO - test if we can construct and call send in one line
     void operator()(unsigned int timeout = 2);
-
-    /// @brief gracefully disconnect from the endpoint
-    void disconnect();
 
 protected:
     /// @brief set the @param socket - used by `rapp::cloud::node`

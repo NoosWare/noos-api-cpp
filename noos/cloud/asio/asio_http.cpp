@@ -127,7 +127,6 @@ void asio_http::shutdown(boost::system::error_code err)
 void asio_http::stop_timeout()
 {
     assert(deadline_);
-    //deadline_->expires_from_now(boost::posix_time::pos_infin);
     deadline_->cancel(); ///When this function is used, it call time_check with the error operation_aborted
 }
 
@@ -135,7 +134,6 @@ void asio_http::time_check(const boost::system::error_code & ec)
 {
     // BUG: this is a bad way of handling deadline expiration
     // deadline pointer has expired?!
-    //assert(deadline_);
     if (!deadline_) {
         return;
     }
@@ -153,7 +151,7 @@ void asio_http::time_check(const boost::system::error_code & ec)
             deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1));
         }
     }
-    ///TODO: If it works, implement else
+    ///TODO: Implement else
 }
 
 bool asio_http::is_connected() const

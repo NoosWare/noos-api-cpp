@@ -30,6 +30,48 @@ template <class cloud_type,
 callable<cloud_type,
          keep_alive,
          socket_type,
+         error_handle
+         >::callable(json json_object)
+: buffer_(std::make_unique<boost::asio::streambuf>()),
+  endpoint(platform()(json_object)),
+  query_(endpoint.address, endpoint.port),
+  io_(),
+  resol_(io_)
+{
+    socket([&](auto reply){
+            functor(deserialize<cloud_type, 
+                                typename cloud_type::data_type>()(reply)); });
+}
+
+template <class cloud_type,
+          bool  keep_alive,
+          class socket_type,
+          class error_handle
+          >
+callable<cloud_type,
+         keep_alive,
+         socket_type,
+         error_handle
+         >::callable(std::string filename)
+: buffer_(std::make_unique<boost::asio::streambuf>()),
+  endpoint(platform()(filename)),
+  query_(endpoint.address, endpoint.port),
+  io_(),
+  resol_(io_)
+{
+    socket([&](auto reply){
+            functor(deserialize<cloud_type, 
+                                typename cloud_type::data_type>()(reply)); });
+}
+
+template <class cloud_type,
+          bool  keep_alive,
+          class socket_type,
+          class error_handle
+          >
+callable<cloud_type,
+         keep_alive,
+         socket_type,
          error_handle>
          ::callable(noos::cloud::platform info,
                     cloud_type object,
@@ -42,6 +84,8 @@ callable<cloud_type,
   io_(),
   resol_(io_)
 { 
+    static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
+                  "`cloud_type` cannot be a `cloud_batch` derived class in this method");
     socket([&](auto reply){
             functor(deserialize<cloud_type, 
                                 typename cloud_type::data_type>()(reply)); });
@@ -135,31 +179,4 @@ void callable<cloud_type,
         socket_->begin(query_, resol_, timeout);
     io_.run();
     io_.reset();
-}
-
-template <class cloud_type,
-          bool  keep_alive,
-          class socket_type,
-          class error_handle
-         >
-void callable<cloud_type,
-              keep_alive,
-              socket_type,
-              error_handle
-             >::disconnect()
-{
-    // TODO: create a "/bye" service/URI in the Platform
-    //       which when activated, closes the connection of that caller
-    //
-    auto functor = [&](std::string str) {
-        boost::system::error_code err;
-        socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, err);
-        socket_.reset();
-    }; 
-    /*
-    auto result = callable<goodbye,
-                           std::function<void(std::string)>,
-                           noos::cloud::asio_http,
-                           noos::cloud::default_error_handler>(goodbye(), functor);
-                           */
 }
