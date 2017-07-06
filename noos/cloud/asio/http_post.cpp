@@ -7,10 +7,10 @@ http_post::http_post(std::string boundary)
 {}
 
 void http_post::add_content(
-							 const std::string name, 
-							 const std::string content,
-							 bool newline
-							)
+                            const std::string name, 
+                            const std::string content,
+                            bool newline
+                           )
 {
 	if (name.empty() || content.empty()) {
 		throw std::runtime_error("empty param(s)");
@@ -24,10 +24,10 @@ void http_post::add_content(
 }
 
 void http_post::add_content(
-							  const std::string name,
-							  const std::string filename,
-							  const std::vector<noos::types::byte> bytes
-							)
+                            const std::string name,
+                            const std::string filename,
+                            const std::vector<noos::types::byte> bytes
+                           )
 {
 	if (name.empty() || filename.empty() || bytes.size() == 0) {
 		throw std::runtime_error("empty param(s)");

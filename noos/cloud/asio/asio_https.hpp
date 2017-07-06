@@ -39,16 +39,16 @@ public:
                 bool keep_alive
              );
 
-	/**
-	 * \brief begin connection
-	 * \param query defines the URL/URI
-	 * \param resolver resolves the URL/URI address
+    /**
+     * \brief begin connection
+     * \param query defines the URL/URI
+     * \param resolver resolves the URL/URI address
      * \param io_service is the queue on which jobs are scheduled
      * \warning only TLS 1.2 and later are allowed
-	 */
+     */
 	void begin(
-			    boost::asio::ip::tcp::resolver::query & query,
-			    boost::asio::ip::tcp::resolver & resolver,
+                boost::asio::ip::tcp::resolver::query & query,
+                boost::asio::ip::tcp::resolver & resolver,
                 unsigned int timeout
               );
 
@@ -61,21 +61,21 @@ public:
 private:
     friend asio_handler<tls_socket,asio_https>;
 
-	/// \brief verify TLS certificate
-	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
+    /// \brief verify TLS certificate
+    bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
 
-	/// \brief begin connection
-	void connect(const boost::system::error_code err);
+    /// \brief begin connection
+    void connect(const boost::system::error_code err);
 
-	/// \brief handle handshake
-  	void handshake(const boost::system::error_code err);
-    
+    /// \brief handle handshake
+    void handshake(const boost::system::error_code err);
+
     /// \brief check if we have timed out
     void time_check();
 
     std::function<void(boost::system::error_code err)> error_;
     std::function<void(std::string)> callback_;
-	boost::asio::ssl::context ctx_;
+    boost::asio::ssl::context ctx_;
     std::shared_ptr<tls_socket> socket_;
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;

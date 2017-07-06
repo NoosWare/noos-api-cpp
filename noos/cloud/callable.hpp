@@ -6,13 +6,11 @@
 #include "includes.ihh"
 #include <noos/cloud/asio/platform.hpp>
 #include <noos/cloud/default_error_handler.hpp>
-#include <noos/cloud/goodbye.hpp>
 #include <noos/cloud/asio/asio_http.hpp>
 #include <noos/cloud/asio/platform.hpp>
-#include <noos/cloud/cloud_batch.hpp>
+#include <noos/cloud/cloud_base.hpp>
 #include <noos/cloud/deserialize.hpp>
 #include <noos/cloud/vision_batch.hpp>
-#include <noos/cloud/node_connection.hpp>
 
 namespace noos {
 namespace cloud {
@@ -36,34 +34,24 @@ struct callable
     cloud_type object;
     callback functor;
     
+    /// @brief no empty constructor allowed
+    callable() = delete;
+
     /** 
      * @brief construct a callable using a noos::cloud::platform object
      * @param platform must contain all required fields
      */
     callable(platform = default_node);
 
-    /** 
-     * @brief construct a callable using a nlohmann::json object
-     * @param json must contain all required fields of noos::cloud::platform object
-     */ 
-    callable(json json_object);
-
-    /** 
-     * @brief construct a callable using a ini file
-     * @param filename must contain a JSON with all required
-     *        fields of noos::cloud::platform object
-     */ 
-    callable(std::string filename);
-
     /// @brief convenience constructor 
-    callable(platform, 
-             cloud_type, 
-             callback);
+    callable(cloud_type, 
+             callback,
+             platform = default_node);
 
     /// @brief overload for vision_batch
     template <typename... parameters>
-    callable(platform,
-             vision_batch<parameters...> arg);
+    callable(vision_batch<parameters...> arg,
+             platform = default_node);
     
     /**
      * @brief construct a callable object wrapper
@@ -72,22 +60,17 @@ struct callable
      * @see `cloud_type::callback` for callback signature
      */
     template <typename... parameters>
-    callable(platform, 
-             parameters... args, 
-             callback functor);
-
-    /// @brief no empty constructor allowed - we need the platform/endpoint
-    callable() = delete;
+    callable(parameters... args, 
+             callback functor,
+             platform = default_node);
 
     /// @brief send the cloud_type data once to the cloud endpoint
     void send(unsigned int timeout = 2);
-
-    // TODO - test if we can construct and call send in one line
-    void operator()(unsigned int timeout = 2);
-
+    
 protected:
     /// @brief set the @param socket - used by `rapp::cloud::node`
     void socket(std::function<void(std::string)> cloud_function);
+
 private:
     std::unique_ptr<socket_type> socket_;
     std::unique_ptr<boost::asio::streambuf> buffer_;

@@ -40,6 +40,17 @@ protected:
     bool single_callable;
 };
 
+/**
+ * @brief cloud service batch class
+ * @note defines if it is a batch service
+ * @version 0.7.3
+ * @date 06.07.2017
+ */
+struct cloud_batch
+{
+    unsigned int size;
+};
+
 #include "cloud_base.tpl"
 }
 }

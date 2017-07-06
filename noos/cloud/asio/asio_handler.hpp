@@ -6,7 +6,6 @@
 #include "includes.ihh"
 #include <boost/asio/ssl.hpp>
 #include <noos/cloud/asio/http_response.hpp>
-#include <noos/cloud/asio/asio_timer.hpp>
 typedef boost::asio::ip::tcp::socket http_socket;
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
 typedef boost::system::error_code error_code;
@@ -27,12 +26,12 @@ class asio_handler
 : protected http_response
 {
 public:
-	/**
+    /**
      * @brief construct by callbacks and socket T pointer 
      * @param cloud_function will receive the platform JSON reply
-	 * @param error_function will receive any asio errors
-	 * @param socket is the actual type T socket pointer
-	 */
+     * @param error_function will receive any asio errors
+     * @param socket is the actual type T socket pointer
+     */
     asio_handler(const bool keep_alive,
                  std::function<void(error_code)> error_callback);
 
@@ -41,28 +40,28 @@ public:
 	    
     /** 
      * @brief write the cloud request to the socket
-	 * @param err is propagated from boost asio
+     * @param err is propagated from boost asio
      */
     void write_request(const boost::system::error_code & err,
                        const std::size_t bytes);
 
     /** 
      * @brief read first HTTP line and check for a 200 response
-	 * @param err is propagated from boost asio
+     * @param err is propagated from boost asio
      */
     void read_status_line(const boost::system::error_code & err,
                           const std::size_t bytes);
     
     /** 
      * @brief read HTTP headers and validate
-	 * @param err is propagated from boost asio
+     * @param err is propagated from boost asio
      */
     void read_headers(const boost::system::error_code & err,
                       const std::size_t bytes);
 
     /** 
      * @brief strip the header and read the POST data
-	 * @param err is propagated from boost asio
+     * @param err is propagated from boost asio
      */
     void read_content(
                       const boost::system::error_code & err,
@@ -71,7 +70,7 @@ public:
 
     /**
      * @brief close socket and cleanup members
-	 * @param err is propagated from boost asio
+     * @param err is propagated from boost asio
      */
     void end(const boost::system::error_code & err);
 

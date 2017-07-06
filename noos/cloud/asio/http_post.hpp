@@ -17,32 +17,32 @@ namespace cloud {
 class http_post
 {
 public:
-	/**
-	 * @brief preferred constructor
-	 * @param boundary must be obtained from `http_header::get_boundary()` 
-	 * @see http_header
-	 */
+    /**
+     * @brief preferred constructor
+     * @param boundary must be obtained from `http_header::get_boundary()` 
+     * @see http_header
+     */
     http_post(std::string boundary);
     
     /**
-	 * @brief add multipart/form-data content to the POST data
+     * @brief add multipart/form-data content to the POST data
      * @param name of the form
      * @param content is the value
      * @param newline adds newline return at the end of content
-	 */
+     */
     void add_content(
                       const std::string name, 
                       const std::string content,
                       bool newline
                     );
 
-	/**
-	 * @brief adding content to the POST data
+    /**
+     * @brief adding content to the POST data
      * @param name is the name of the string variable
      * @param filename which want to use
      * @param vector contains the data of the file in binary type  
-	 * @warning it will add newline return after the bytes
-	 */
+     * @warning it will add newline return after the bytes
+     */
     void add_content(
                       const std::string name,
                       const std::string filename,

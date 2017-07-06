@@ -30,52 +30,10 @@ template <class cloud_type,
 callable<cloud_type,
          keep_alive,
          socket_type,
-         error_handle
-         >::callable(json json_object)
-: buffer_(std::make_unique<boost::asio::streambuf>()),
-  endpoint(platform()(json_object)),
-  query_(endpoint.address, endpoint.port),
-  io_(),
-  resol_(io_)
-{
-    socket([&](auto reply){
-            functor(deserialize<cloud_type, 
-                                typename cloud_type::data_type>()(reply)); });
-}
-
-template <class cloud_type,
-          bool  keep_alive,
-          class socket_type,
-          class error_handle
-          >
-callable<cloud_type,
-         keep_alive,
-         socket_type,
-         error_handle
-         >::callable(std::string filename)
-: buffer_(std::make_unique<boost::asio::streambuf>()),
-  endpoint(platform()(filename)),
-  query_(endpoint.address, endpoint.port),
-  io_(),
-  resol_(io_)
-{
-    socket([&](auto reply){
-            functor(deserialize<cloud_type, 
-                                typename cloud_type::data_type>()(reply)); });
-}
-
-template <class cloud_type,
-          bool  keep_alive,
-          class socket_type,
-          class error_handle
-          >
-callable<cloud_type,
-         keep_alive,
-         socket_type,
          error_handle>
-         ::callable(noos::cloud::platform info,
-                    cloud_type object,
-                    callback functor)
+         ::callable(cloud_type object,
+                    callback functor,
+                    noos::cloud::platform info)
 : object(object), 
   functor(functor), 
   buffer_(std::make_unique<boost::asio::streambuf>()),
@@ -101,8 +59,8 @@ callable<cloud_type,
          keep_alive,
          socket_type,
          error_handle
-        >::callable(noos::cloud::platform info,
-                    vision_batch<parameters...> arg)
+        >::callable(vision_batch<parameters...> arg,
+                    noos::cloud::platform info)
 : object(vision_batch<parameters...>(arg)), 
   buffer_(std::make_unique<boost::asio::streambuf>()),
   endpoint(info),
@@ -123,9 +81,9 @@ callable<cloud_type,
          keep_alive,
          socket_type,
          error_handle
-        >::callable(noos::cloud::platform info,
-                    parameters... args,
-                    callback functor)
+        >::callable(parameters... args,
+                    callback functor,
+                    noos::cloud::platform info)
 : object(args...), 
   functor(functor),
   buffer_(std::make_unique<boost::asio::streambuf>()),

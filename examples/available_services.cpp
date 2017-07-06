@@ -9,13 +9,6 @@ int main()
 {
     using namespace noos::cloud;
     /*
-     * Construct the platform info setting the hostname/IP, port and authentication token.
-     * Then proceed to create a cloud node, we'll use it to create and call the cloud services.
-     */
-	
-	platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
-
-    /*
      * Now construct a lambda, std::function or bind your own functor.
      * This functor will receive the reply from the cloud **asynchronously**!
      * In this example we'll pass an inline lambda as the callback.
@@ -45,7 +38,7 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<available_services> cb(info, request, callback);
+    callable<available_services> cb(request, callback);
     cb.send(2);
     
     return 0;

@@ -43,13 +43,13 @@ unsigned int http_response::strip_http_header(unsigned int bytes)
     // WARNING - call first, else if we strip we lose the `Content-Length`
     content_length_ = content_length();
 
-	// find the "\r\n\r\n" double return after the header
-	std::size_t i = reply_string.find("\r\n\r\n");
+    // find the "\r\n\r\n" double return after the header
+    std::size_t i = reply_string.find("\r\n\r\n");
 
     // found OK, update the reply string
-	if (i != std::string::npos) {
-		reply_string = reply_string.substr(i + 4, std::string::npos);
-	}
+    if (i != std::string::npos) {
+        reply_string = reply_string.substr(i + 4, std::string::npos);
+    }
     // no "\r\n\r\n" means malformed reply
     else {
        error_cb_(boost::system::errc::make_error_code(
@@ -96,7 +96,7 @@ bool http_response::check_http_header()
     // HTTP 404: URL not found
     // HTTP 500: Internal Server Error
     // HTTP 401: Unauthorized Acces (noos token)
-	// HTTP reply is not 200
+    // HTTP reply is not 200
 	else if (status_code != 200) {
 		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
         #if (!NDEBUG)
@@ -116,22 +116,21 @@ unsigned int http_response::bytes_received() const
 bool http_response::consume_buffer(std::function<void(std::string)> callback, 
                                    unsigned int bytes)
 {
-	assert(callback);
+    assert(callback);
     reply_string += to_string();
-	bytes_transferred_ = reply_string.size()*sizeof(std::string::value_type);
-	// have received the data correctly
-	if (bytes_transferred_ >= content_length_) {
-		callback(reply_string); 
-		return true;
-	}
-    // else what???
-	return false;
+    bytes_transferred_ = reply_string.size()*sizeof(std::string::value_type);
+    // have received the data correctly
+    if (bytes_transferred_ >= content_length_) {
+        callback(reply_string); 
+        return true;
+    }
+    return false;
 }
 
 void http_response::flush_data()
 {
-	reply_string.clear();
-	bytes_transferred_ = 0;
+    reply_string.clear();
+    bytes_transferred_ = 0;
     content_length_ = 0;
     once_ = false;
 }

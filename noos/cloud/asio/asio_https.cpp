@@ -3,34 +3,34 @@ namespace noos {
 namespace cloud {
 
 asio_https::asio_https(
-						std::function<void(std::string)> cloud_callback,
-						std::function<void(error_code error)> error_callback,
-						boost::asio::io_service & io_service,
-						boost::asio::streambuf & request,
+                        std::function<void(std::string)> cloud_callback,
+                        std::function<void(error_code error)> error_callback,
+                        boost::asio::io_service & io_service,
+                        boost::asio::streambuf & request,
                         bool keep_alive
 					  )
 :  asio_handler<tls_socket,asio_https>(keep_alive, error_callback),
-    error_(error_callback), 
-    callback_(cloud_callback),
-    ctx_(boost::asio::ssl::context::tlsv12_client),
-    request_(request)
+   error_(error_callback), 
+   callback_(cloud_callback),
+   ctx_(boost::asio::ssl::context::tlsv12_client),
+   request_(request)
 {
-	socket_ = std::make_shared<tls_socket>(io_service, ctx_);
+    socket_ = std::make_shared<tls_socket>(io_service, ctx_);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
-	assert(callback_ && error_ && socket_);
-	asio_handler::set_socket(socket_);
+    assert(callback_ && error_ && socket_);
+    asio_handler::set_socket(socket_);
     deadline_->async_wait(boost::bind(&asio_https::time_check, this)); 
-	// set context option for TLS - allow only TLS v1.2 and later
-	ctx_.set_options(boost::asio::ssl::context::default_workarounds
-					 | boost::asio::ssl::context::no_sslv2
-					 | boost::asio::ssl::context::no_sslv3
-					 | boost::asio::ssl::context::no_tlsv1
-					 | boost::asio::ssl::context::single_dh_use);
+    // set context option for TLS - allow only TLS v1.2 and later
+    ctx_.set_options(boost::asio::ssl::context::default_workarounds
+                    | boost::asio::ssl::context::no_sslv2
+                    | boost::asio::ssl::context::no_sslv3
+                    | boost::asio::ssl::context::no_tlsv1
+                    | boost::asio::ssl::context::single_dh_use);
 }
 
 void asio_https::begin(
-						boost::asio::ip::tcp::resolver::query & query,
-						boost::asio::ip::tcp::resolver & resolver,
+                        boost::asio::ip::tcp::resolver::query & query,
+                        boost::asio::ip::tcp::resolver & resolver,
                         unsigned int timeout
 					  )
 {
@@ -62,33 +62,33 @@ void asio_https::begin(
 
 bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
 {
-	char subject_name[256];
-	X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
-	X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-	return preverified;
+    char subject_name[256];
+    X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+    X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+    return preverified;
 }
 
 void asio_https::connect(const boost::system::error_code err)
 {
-	if (err) {
-		asio_handler::end(err);
-		return;
-	}
-	socket_->async_handshake(boost::asio::ssl::stream_base::client,
-							 boost::bind(&asio_https::handshake, 
+    if (err) {
+        asio_handler::end(err);
+        return;
+    }
+    socket_->async_handshake(boost::asio::ssl::stream_base::client,
+                             boost::bind(&asio_https::handshake, 
                                          this, 
                                          boost::asio::placeholders::error));
 }
 
 void asio_https::handshake(const boost::system::error_code err)
 {
-	if (err) {
+    if (err) {
         asio_handler::end(err);
         #if (!NDEBUG)
-		std::cerr << "[Handshake failed]: " << err.message() << "\n";
+        std::cerr << "[Handshake failed]: " << err.message() << "\n";
         #endif
-		return;
-	}
+        return;
+    }
 	boost::asio::async_write(*socket_,
 							 request_,
 							 boost::bind(&asio_handler::write_request, 

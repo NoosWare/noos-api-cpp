@@ -12,7 +12,7 @@
 #include <tuple>
 #include <atomic>
 #include <type_traits>
-
+#define BOOST_ASIO_HAS_MOVE
 #include <boost/asio.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>

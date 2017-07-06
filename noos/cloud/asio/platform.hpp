@@ -12,10 +12,13 @@ namespace cloud {
  * @version 0.7.2
  * @date 19 December 2016
  * @author Alex Giokas <a.giokas@ortelio.co.uk>
- * @brief use to construct a service controller with correct params
- *
- * @TODO: add better documentation
-  */
+ * @brief data of the platform where 
+ *        you are going to connect
+ * @param address is the IP of the platform
+ * @param port is the port used in the platform
+ * @param token is the password need it to connect
+ * @param user is the user need it to connect
+ */
 struct platform
 {
    std::string address;
@@ -30,6 +33,21 @@ struct platform
    /// @brief read a file with a json to build the platform
    platform operator()(std::string filename);
 };
+
+/**
+ *  @brief default platform where to connect
+ *  @version 0.7.3
+ *  @date 05.07.2017
+ */
+const platform default_node = {"10.130.3.17", "8080", "mysecret", "alex"};
+
+/**
+ *  @brief european platform
+ *  @version 0.7.3
+ *  @date 05.07.2017
+ */
+const platform eu_node = {"10.130.3.17", "8080", "mysecret", "alex"};
+
 }
 }
 #endif

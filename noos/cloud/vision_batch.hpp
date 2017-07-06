@@ -3,7 +3,6 @@
 #include <noos/cloud/includes.ihh>
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>
-#include <noos/cloud/cloud_batch.hpp>
 #include <noos/cloud/deserialize.hpp>
 #include <noos/cloud/vision_base.hpp>
 #include <noos/objects.hpp>
@@ -30,16 +29,15 @@ class vision_batch
 {
 public:
     using callback = std::function<void(std::string)>;
+    typedef typename vision_batch<cloud_pairs...>::data_type data_types;
     /**
      * @brief construct a vision_batch using a list of std::pair<cloud_type,callback>
      * @param image is a noos::object::picture 
      * @param args are the std::pair<cloud_type, callback> services which are
      *        going to be called in a sequential manner (in the order of variadic arguments)
      */
-    vision_batch(
-                  const noos::object::picture & image,
-                  cloud_pairs... args
-                );
+    vision_batch(const noos::object::picture & image,
+                  cloud_pairs... args);
    
     /** 
      * @brief process the JSON reply and delegate to services

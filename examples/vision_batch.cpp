@@ -9,13 +9,6 @@ int main()
 {
     using namespace noos::cloud;
     /**
-     * Construct the platform info setting the hostname/IP, port and authentication token
-     * Then proceed to create a cloud controller.
-     * We'll use this object to create cloud calls to the platform.
-     */
-    platform info = {"localhost", "8080", "mysecret", "alex"}; 
-
-    /**
      * The image is loaded from its path to a picture class.
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
@@ -40,7 +33,7 @@ int main()
      * Now lets create the callable object which will be used for subsequent calls.
      * This object wraps around the vision_batch data and image, as well as the socket
      * used to connect.
-     * For more information @see vision_batch.hpp
+     * For more information @see noos::cloud::vision_batch.hpp
      */
     vision_batch<std::pair<face_detection,face_detection::callback>,
                  std::pair<human_detection,human_detection::callback>>
@@ -48,9 +41,7 @@ int main()
                        std::make_pair(face_detection(), face_cb), 
                        std::make_pair(human_detection(), human_cb));
     // then the callable
-    callable<vision_batch<std::pair<face_detection,face_detection::callback>,
-                          std::pair<human_detection,human_detection::callback>>
-             > cb(info, batch);
+    callable<decltype(batch)> cb(batch);
 
     // Last but not least, we'll call the noos service for 
     // a vision batch of face and human detection

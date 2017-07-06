@@ -3,9 +3,9 @@ namespace noos {
 namespace cloud {
 
 asio_http::asio_http(
-						std::function<void(std::string)> cloud_callback,
-						std::function<void(error_code)> error_callback,
-						boost::asio::io_service & io_service,
+                        std::function<void(std::string)> cloud_callback,
+                        std::function<void(error_code)> error_callback,
+                        boost::asio::io_service & io_service,
                         const bool keep_alive,
                         boost::asio::streambuf & request
 					)
@@ -16,13 +16,13 @@ asio_http::asio_http(
 {
     socket_ = std::make_shared<http_socket>(io_service);
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
-	assert(callback_ && error_ && socket_ && deadline_);
+    assert(callback_ && error_ && socket_ && deadline_);
     asio_handler::set_socket(socket_);
 }
 
 void asio_http::begin( 
-						boost::asio::ip::tcp::resolver::query & query,
-						boost::asio::ip::tcp::resolver & resolver,
+                        boost::asio::ip::tcp::resolver::query & query,
+                        boost::asio::ip::tcp::resolver & resolver,
                         unsigned int timeout
 					 )
 {
@@ -117,17 +117,17 @@ void asio_http::shutdown(boost::system::error_code err)
 {
     connected_ = false;
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, err);
-    //socket_->close();
     if (deadline_) {
         deadline_->cancel();
-        deadline_.reset(); //It creates a new empty pointer. reset(other ptr) reset the old pointer to the new one.  
+        deadline_.reset(); 
     }
 }
 
 void asio_http::stop_timeout()
 {
     assert(deadline_);
-    deadline_->cancel(); ///When this function is used, it call time_check with the error operation_aborted
+    //When this function is used, it call time_check with the error operation_aborted
+    deadline_->cancel(); 
 }
 
 void asio_http::time_check(const boost::system::error_code & ec)
@@ -138,7 +138,6 @@ void asio_http::time_check(const boost::system::error_code & ec)
         return;
     }
     if (!ec) { 
-        // BUG: is this correct? expires at before or equal???
         if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
             #if (!NDEBUG)
             std::cerr << "[time-out]: closing socket" << std::endl;
@@ -151,7 +150,13 @@ void asio_http::time_check(const boost::system::error_code & ec)
             deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1));
         }
     }
-    ///TODO: Implement else
+    else {
+        if (ec != boost::asio::error::operation_aborted) {
+            socket_->close();
+            deadline_->cancel();
+            connected_ = false;
+        }
+    }
 }
 
 bool asio_http::is_connected() const

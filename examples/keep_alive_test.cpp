@@ -7,13 +7,6 @@
 int main()
 {
     using namespace noos::cloud;
-    
-    /*
-    * Construct the platform info setting the hostname/IP, port and authentication token
-    * Then proceed to create a cloud controller.
-    * We'll use this object to create cloud calls to the platform.
-    */
-    platform info = default_node;
 
     /*
      * The image is loaded from its path to a picture class.
@@ -38,13 +31,15 @@ int main()
     };
 
     /*
-     * We make a call to qr_code_detection class to detect qr_codes in the file
+     * We make a call to qr_recognition class to detect qr_codes in the file
      * For more information \see noos::cloud::qr_detection
      */
-    callable<qr_recognition> cb(info, qr_request, callback);
+    callable<qr_recognition> cb(qr_request, callback);
+
     for (auto i = 0; i < 5; i++) { 
-        cb.send(2);
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));;
+        cb.send();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+
     return 0;
 }

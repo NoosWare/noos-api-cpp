@@ -1,4 +1,4 @@
-# @date June 2017
+# date June 2017
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
 # CMake flags in use:
 #       -DBUILD_SHARED=ON		                        (Default: compile a shared libnoos)
@@ -46,7 +46,6 @@ include_directories(".")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-             ${INCLUDES}/cloud/asio/asio_timer.cpp
              ${INCLUDES}/cloud/asio/asio_http.cpp
              ${INCLUDES}/cloud/asio/asio_https.cpp
              ${INCLUDES}/cloud/asio/http_header.cpp
@@ -58,7 +57,6 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
-             ${INCLUDES}/cloud/goodbye.cpp
              ${INCLUDES}/cloud/deserialize.cpp
 
              ${INCLUDES}/objects/human.cpp
@@ -223,9 +221,9 @@ if (${BUILD_EXAMPLES})
                  #batch.cpp
                  vision_batch.cpp
                  #class_reactor.cpp
-                 #loop.cpp
-                 #face_detect.cpp
-                 #human_detect.cpp
+                 loop.cpp
+                 face_detect.cpp
+                 human_detect.cpp
                  #hazard_detect.cpp
                  qr_recognition.cpp
                  #light_detection.cpp

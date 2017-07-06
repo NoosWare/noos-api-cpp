@@ -44,8 +44,8 @@ public:
      * @param io_service is the queue on which jobs are scheduled
 	 */
 	void begin(
-			    boost::asio::ip::tcp::resolver::query & query,
-			    boost::asio::ip::tcp::resolver & resolver,
+                boost::asio::ip::tcp::resolver::query & query,
+                boost::asio::ip::tcp::resolver & resolver,
                 unsigned int timeout
               );
 
@@ -56,8 +56,8 @@ public:
      * @param io_service is the queue on which jobs are scheduled
 	 */
     void send(
-			    boost::asio::ip::tcp::resolver::query & query,
-			    boost::asio::ip::tcp::resolver & resolver,
+                boost::asio::ip::tcp::resolver::query & query,
+                boost::asio::ip::tcp::resolver & resolver,
                 unsigned int timeout,
                 boost::asio::streambuf & request
              );

@@ -8,13 +8,6 @@ int main()
     using namespace noos::cloud;
     
     /*
-    * Construct the platform info setting the hostname/IP, port and authentication token
-    * Then proceed to create a cloud controller.
-    * We'll use this object to create cloud calls to the platform.
-    */
-    platform info = {"10.130.3.17", "8080", "mysecret", "alex"}; 
-
-    /*
      * The image is loaded from its path to a picture class.
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
@@ -40,10 +33,8 @@ int main()
      * We make a call to qr_code_detection class to detect qr_codes in the file
      * For more information \see noos::cloud::qr_detection
      */
-    //ctrl.test_call(qr_request, callback);
-    callable<qr_recognition,
-             false> cb(info, qr_request, callback);
-    cb.send(2);
+    callable<qr_recognition,false> cb(qr_request, callback);
+    cb.send();
 
     return 0;
 } 
