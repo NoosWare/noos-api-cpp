@@ -5,6 +5,7 @@
  */
 int main()
 {
+    using namespace noos::cloud;
     /*
      * The image is loaded from its path to a picture class.
      * More than one image can be load to do the example. In this case
@@ -12,7 +13,7 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    auto pic = noos::object::picture("data/object_classes_picture_7.jpg");
+    auto pic = noos::object::picture("data/object_classes_picture_1.png");
 
     /*
      * Construct a lambda, std::function or bind your own functor.
@@ -21,7 +22,7 @@ int main()
      * we show the size of the vector to know how many faces have 
      * been found.
      */
-    auto face_cb = [&](std::vector<noos::object::face> faces) { 
+    auto face_callback = [&](std::vector<noos::object::face> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
     };
 
@@ -31,17 +32,23 @@ int main()
      * we show the size of the vector to know how many humans have 
      * been found.
      */
-    auto human_cb = [&](std::vector<noos::object::human> humans) {
+    auto human_callback = [&](std::vector<noos::object::human> humans) {
         std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
 
     /*
-     * We make the calls to face_detection, human_detection and
-     * door_angle_detection classes
+     * A callable is created per service
+     */
+    callable<face_detection, false> cb_face(face_detection(pic), face_callback);
+    callable<human_detection, false> cb_human(human_detection(pic), human_callback);
+
+    /*
+     * We make the calls to face_detection and human_detection
      * For more information \see noos::cloud::face_detection
      *                      \see noos::cloud::human_detection
      */
-    ctrl.make_calls(noos::cloud::face_detection(pic, false, face_cb),
-                    noos::cloud::human_detection(pic, human_cb));
+    cb_face.send();
+    cb_human.send();
+
     return 0;
 }

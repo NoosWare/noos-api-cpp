@@ -12,7 +12,7 @@ int main()
 
     using namespace noos::cloud;
 
-    auto pic = noos::object::picture("data/asio_classes_qr_code_1.png");
+    auto pic = noos::object::picture("data/object_classes_picture_1.png");
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
@@ -37,10 +37,17 @@ int main()
 	 * infinite loop.
      */
 	std::function<void(const boost::system::error_code&)> func = [&](const auto & err) {
-        cb.send();
-        pic = noos::object::picture("data/asio_classes_qr_code_1.png");
+        /*
+         * The information of the face_detection object is sent
+         */
+        cb.send(2);
+        /*
+         * If the image needs to be changed, just a new face_detection object
+         * with the new image can be created
+         */
+        pic = noos::object::picture("data/object_classes_picture_1.png");
         cb.object = face_detection(pic);
-		timer.expires_at(timer.expires_at() + boost::posix_time::milliseconds(1000));
+		timer.expires_at(timer.expires_at() + boost::posix_time::milliseconds(50));
 		timer.async_wait(func);
 	};
 

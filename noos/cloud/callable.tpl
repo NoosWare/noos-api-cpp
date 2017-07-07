@@ -138,3 +138,17 @@ void callable<cloud_type,
     io_.run();
     io_.reset();
 }
+
+template <class cloud_type,
+          bool  keep_alive,
+          class socket_type,
+          class error_handle
+         >
+void callable<cloud_type,
+              keep_alive,
+              socket_type,
+              error_handle
+             >::stop()
+{
+    io_.stop();
+}

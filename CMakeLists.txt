@@ -218,18 +218,17 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 ####
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
-                 #batch.cpp
+                 batch.cpp
                  vision_batch.cpp
-                 #class_reactor.cpp
+                 class_reactor.cpp
                  loop.cpp
                  face_detect.cpp
                  human_detect.cpp
-                 #hazard_detect.cpp
                  qr_recognition.cpp
                  #light_detection.cpp
                  #object_recognition.cpp
                  #object_recognition_my_own_models.cpp
-                 #picture_handling.cpp
+                 picture_handling.cpp
                  keep_alive_test.cpp
                   )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)

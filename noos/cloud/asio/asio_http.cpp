@@ -117,6 +117,7 @@ void asio_http::shutdown(boost::system::error_code err)
 {
     connected_ = false;
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_both, err);
+    socket_->close();
     if (deadline_) {
         deadline_->cancel();
         deadline_.reset(); 

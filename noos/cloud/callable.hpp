@@ -67,6 +67,9 @@ struct callable
     /// @brief send the cloud_type data once to the cloud endpoint
     void send(unsigned int timeout = 2);
     
+    /// @brief shutdown
+    void stop();
+
 protected:
     /// @brief set the @param socket - used by `rapp::cloud::node`
     void socket(std::function<void(std::string)> cloud_function);
