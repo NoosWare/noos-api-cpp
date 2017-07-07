@@ -1,3 +1,6 @@
 [submodule "noos/misc/json"]
 	path = noos/misc/json
 	url = https://github.com/nlohmann/json.git
+[submodule "tests/Catch"]
+	path = tests/Catch
+	url = https://github.com/philsquared/Catch.git
