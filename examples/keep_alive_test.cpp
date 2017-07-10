@@ -31,12 +31,16 @@ int main()
     };
 
     /*
-     * We make a call to qr_recognition class to detect qr_codes in the file
+     * We make a callable object of qr_recognition class to detect qr_codes in the file
      * For more information \see noos::cloud::qr_detection
      */
     callable<qr_recognition> cb(qr_request, callback);
 
-    for (auto i = 0; i < 5; i++) { 
+    /*
+     * We send the information in a loop, waiting 1 second between calls.
+     * The socket is the same for every call.
+     */
+    for (auto i = 0; i < 10; i++) { 
         cb.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }

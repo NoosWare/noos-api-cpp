@@ -64,6 +64,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/picture.cpp
              ${INCLUDES}/objects/audio.cpp
              ${INCLUDES}/objects/qr_code.cpp
+             ${INCLUDES}/objects/time.cpp
              ${INCLUDES}/objects/laser.cpp
              )
 
@@ -154,7 +155,7 @@ else()
 	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 	#
     # use shared boost - build shared libs - set correct flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -D_GLIBCXX_DEBUG") ######Added -D_GLIBCXX_DEBUG
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
@@ -177,15 +178,12 @@ if (${BUILD_TESTS})
     if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
         message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
     else()
-        find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
         enable_testing()
-        add_definitions(-DBOOST_TEST_DYN_LINK)
         set(TESTS ${TESTS} tests)
         set(TESTFILES ${TESTFILES} asio_classes.cpp 
-                                   #json_classes.cpp 
-                                   #object_classes.cpp
-                                   #cloud_calls.cpp)
-                                   )
+                                   json_classes.cpp 
+                                   object_classes.cpp
+                                   cloud_calls.cpp)
         set(TEST_DIR ${TEST_DIR} tests)
         message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
         # create "/tests"
@@ -204,7 +202,7 @@ if (${BUILD_TESTS})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
             add_executable(${TARGET} ${TESTS}/${ITEM})
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT}) ######
+            target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
             add_test(${TARGET} ${TEST_DIR}/${TARGET})
@@ -226,9 +224,9 @@ if (${BUILD_EXAMPLES})
                  face_detect.cpp
                  human_detect.cpp
                  qr_recognition.cpp
-                 #light_detection.cpp
-                 #object_recognition.cpp
-                 #object_recognition_my_own_models.cpp
+                 light_detection.cpp
+                 object_recognition.cpp
+                 orb.cpp
                  picture_handling.cpp
                  keep_alive_test.cpp
                   )

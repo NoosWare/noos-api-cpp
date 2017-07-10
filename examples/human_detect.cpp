@@ -26,7 +26,8 @@ int main()
     };
 
     /*
-     * We make a call to human_detection class to detect humans in the file
+     * We make a callable object of human_detection class  and we send
+     * the information to the platform to detect humans in the file.
      * For more information \see noos::cloud::human_detection
      */
     callable<noos::cloud::human_detection> cb(human_request, callback);

@@ -67,10 +67,8 @@ SCENARIO("Create http_header", "[http_header]")
     GIVEN ("A known uri(std::string)") {
         std::string ur = "hop/test\r\n";
         noos::cloud::http_header head1(ur);
-        WHEN("http_header is constructed") {
-            THEN("The object is created") {
-                REQUIRE(!head1.get_boundary().empty());
-            }
+        THEN("The object is created") {
+            REQUIRE(!head1.get_boundary().empty());
         }
         WHEN("http_header is given the platform data") {
             THEN("All the attributes are filled") {
@@ -107,7 +105,7 @@ SCENARIO("Create http_header", "[http_header]")
  * Last, method 'size' is checked using the same string and calculating
  * the size manually and with the method.
  */ 
-SCENARIO("Create http_post", "[http_post]")
+SCENARIO("Test http_post", "[http_post]")
 {
     GIVEN("http_post is constructed") {
         std::string boundary_example = noos::misc::random_boundary();
@@ -165,12 +163,12 @@ SCENARIO("Create http_post", "[http_post]")
 /**
  * \brief TEST for http_request class
  */
-SCENARIO("http_request", "[http_request]")
+SCENARIO("Test http_request", "[http_request]")
 {
-    GIVEN("A known uri") {
+    GIVEN ("A known uri") {
         const std::string ur = "ur\r\n";
         std::string ur2 = ur;
-        THEN("http_request is constructed and create copies") {
+        THEN ("http_request is constructed and create copies") {
             auto request_test1 = noos::cloud::http_request(ur);
             auto request_test2 = noos::cloud::http_request(request_test1);
             REQUIRE(request_test1 == request_test2);
@@ -179,7 +177,7 @@ SCENARIO("http_request", "[http_request]")
             auto request_test4 = noos::cloud::http_request(request_test3);
             REQUIRE(request_test3 == request_test4);
         }
-        THEN("two different object constructed with the same uri are not equal") {
+        THEN ("two different object constructed with the same uri are not equal") {
             auto request_test5 = noos::cloud::http_request(ur);
             auto request_test6 = noos::cloud::http_request(ur);
             REQUIRE((request_test5 == request_test6) == false);
@@ -190,4 +188,55 @@ SCENARIO("http_request", "[http_request]")
 /**
  * \brief TEST for platform
  */
-SCENARIO()
+SCENARIO("Test platform struct", "[platform]")
+{
+    GIVEN ("An address, a port, an user and a password") {
+        THEN ("The platform can be created and copied") {
+            noos::cloud::platform platform1 = { "192.168.1.1", "22", "pass", "user", "http" };
+            REQUIRE(platform1.address == "192.168.1.1");
+            REQUIRE(platform1.port == "22");
+            REQUIRE(platform1.user == "user");
+            REQUIRE(platform1.token == "pass");
+            REQUIRE(platform1.protocol == "http");
+
+            auto platform2 = platform1;
+            REQUIRE(platform1.address == platform2.address);
+            REQUIRE(platform1.port == platform2.port);
+            REQUIRE(platform1.user == platform2.user);
+            REQUIRE(platform1.token == platform2.token);
+            REQUIRE(platform1.protocol == platform2.protocol);
+        }
+    }
+    GIVEN ("A json with all the parameters need it for the platform") {
+        THEN ("A platform can be created") {
+            auto json1 = R"(
+                      {
+                        "platform":{ 
+                                     "address" : "192.168.1.2",
+                                     "port" : "23",
+                                     "token" : "pass",
+                                     "user" : "user",
+                                     "protocol" : "http"
+                                   } 
+                       })"_json;
+            auto platform3 = noos::cloud::platform()(json1);
+            REQUIRE(platform3.address == "192.168.1.2");
+            REQUIRE(platform3.port == "23");
+            REQUIRE(platform3.user == "user");
+            REQUIRE(platform3.token == "pass");
+            REQUIRE(platform3.protocol == "http");
+        }
+    }
+    GIVEN ("A file with a json with all the parameters need it for the platform") {
+        THEN ("A platform can be created") {
+            std::string filename = "tests/data/platform_file.json";
+            auto platform4 = noos::cloud::platform()(filename);
+            REQUIRE(platform4.address == "192.168.1.2");
+            REQUIRE(platform4.port == "23");
+            REQUIRE(platform4.user == "user");
+            REQUIRE(platform4.token == "pass");
+            REQUIRE(platform4.protocol == "http");
+
+        }
+    }
+}

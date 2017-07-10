@@ -9,7 +9,8 @@ platform platform::operator()(json json_object)
         platform info = { json_object["platform"]["address"],
                           json_object["platform"]["port"],
                           json_object["platform"]["token"],
-                          json_object["platform"]["user"] };
+                          json_object["platform"]["user"],
+                          json_object["platform"]["protocol"]};
         return info;
     }
     else {

@@ -50,13 +50,12 @@ int main()
 
     /*
      * We initialize an reactor object.
-     * We have to pass it like a pointer because its member
-     * callable can't be copied
+     * We have to pass it like a pointer because its member `callable` can't be copied
      */
     auto my_reactor = std::make_unique<reactor>();
 
     /*
-     * The method run is done to make the multiple calls,
+     * The method run is done to make the call to the platform,
      * passing the corresponding parameters.
      */
     my_reactor->run(pict);

@@ -30,8 +30,9 @@ int main()
     };
 
     /*
-     * We make a call to qr_code_detection class to detect qr_codes in the file
-     * For more information \see noos::cloud::qr_detection
+     * We make a callable object of qr_recognition class to detect qr_codes in the file
+     * and we send the information to the platform.
+     * For more information \see noos::cloud::qr_recognition
      */
     callable<qr_recognition,false> cb(qr_request, callback);
     cb.send();

@@ -31,9 +31,9 @@ int main()
      };
 
     /*
-     * Finally we make and run call:
-     * The simplest way is to use the `make_call` template function, specifying
-     * as template parameter the cloud class you want to use (e.g., noos::cloud::available_services)
+     * Finally we create a callable object and send the information to the platform
+     * with a timeout of 2 seconds
+     * For more information /see noos::cloud::callable
      *
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.

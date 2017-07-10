@@ -47,6 +47,7 @@ int main()
          */
         pic = noos::object::picture("data/object_classes_picture_1.png");
         cb.object = face_detection(pic);
+
 		timer.expires_at(timer.expires_at() + boost::posix_time::milliseconds(50));
 		timer.async_wait(func);
 	};

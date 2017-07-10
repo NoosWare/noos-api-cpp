@@ -1,25 +1,57 @@
-#define BOOST_TEST_MODULE ServiceTest
-#include <boost/test/unit_test.hpp>
+#define CATCH_CONFIG_MAIN
+#include <tests/Catch/single_include/catch.hpp>
 #include <fstream>
-#include <noos/misc/json.hpp>
-#include <noos/cloud.hpp>
+#include <noos/misc/json/src/json.hpp>
+#include <noos/noos>
 
-BOOST_AUTO_TEST_SUITE (cloud_calls)
+/**
+ * \brief check noos::cloud::callable
+ */
+SCENARIO("A service needs to be call")
+{
+    using namespace noos::cloud;
+    GIVEN("A service and its callback") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_request = face_detection(pic);
+        auto callback = [&](std::vector<noos::object::face> faces) { 
+            REQUIRE(faces.size() == 1);
+        };
+        THEN("A call can be made") {
+            callable<face_detection,false>callable_obj(face_request, callback);
+            REQUIRE(callable_obj.object.uri == "face_detection");
+        }
+    }
+    GIVEN("A platform and a service known") {
+        THEN("A callable object can be done") {
+            auto callable_obj = std::make_unique<callable<face_detection>>(default_node);
+            REQUIRE(callable_obj);
+        }
+    }
+    GIVEN("A vision batch service and its callback") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_cb = [&](std::vector<noos::object::face> faces) {};
+        auto human_cb = [&](std::vector<noos::object::human> humans) {};
+        vision_batch<std::pair<face_detection,face_detection::callback>,
+                 std::pair<human_detection,human_detection::callback>>
+                 batch(pic, 
+                       std::make_pair(face_detection(), face_cb), 
+                       std::make_pair(human_detection(), human_cb));        
+
+        THEN("A call can be made") {
+            auto callable_obj = std::make_unique<callable<decltype(batch)>>(batch);
+            REQUIRE(callable_obj);
+        }
+    }
+}
 
 /**
  * \brief check noos::cloud::available_services
- * A callback function is done to check that the 
- * desearialization is correct.
  * A json is done manually to be sure about results.
  */    
-/*
-BOOST_AUTO_TEST_CASE(available_services_cloud_test)
+TEST_CASE("Test service Available services", "[available_services]")
 {
-    auto callback = [] (std::vector<std::pair<std::string, std::string>> service) {
-        BOOST_CHECK_EQUAL(service.at(0).first, "name");
-        BOOST_CHECK_EQUAL(service.at(0).second, "url");
-    };
-    noos::cloud::available_services as1(callback);
+    std::vector<std::pair<std::string, std::string>> services;
+    noos::cloud::available_services available_serv;
     auto j1 = R"(
               {
                 "services" : [{
@@ -30,246 +62,299 @@ BOOST_AUTO_TEST_CASE(available_services_cloud_test)
               }
               )"_json;
     std::string j1_string = j1.dump(-1);
-    as1.deserialise(j1_string);
+    services = noos::cloud::deserialize<noos::cloud::available_services,
+                                        typename noos::cloud::available_services::data_type>()(j1_string);
+    REQUIRE(services.at(0).first == "name");
+    REQUIRE(services.at(0).second == "url");  
 }
-*/
 
 /**
  * \brief check the vision detection classes
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
  */  
-BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
+TEST_CASE("Test services vision detection", "[vision_detection]")
 {
-    //Class face_detection
-    auto face_call = [] (std::vector<noos::object::face> faces) {
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_y(), 4);
+    using namespace noos::cloud;
+    SECTION ("Face detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_detect = face_detection(pic); 
+        REQUIRE(face_detect.uri == "face_detection"); 
+        REQUIRE(face_detect.is_single_callable() == true);
 
-    };
-    auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
-    auto fd = std::make_shared<noos::cloud::face_detection>(pic, false, face_call); 
-    auto j1 = R"(
-              {
-                "faces":[{ 
-                            "up_left_point":{
-                                                "x": 1, 
-                                                "y": 2
-                            }, 
-                            "down_right_point":{
-                                                "x": 3, 
-                                                "y": 4
-                            } 
-                 }],
-                 "error" : ""
-               })"_json;
-    std::string j1_string = j1.dump(-1);
-    fd->process(j1_string);
-    //Class door_angle_detection
-    auto door_call = [] (double angle) {
-        BOOST_CHECK_EQUAL(angle, 5);
-    };
-    auto dad = std::make_shared<noos::cloud::door_angle_detection>(pic, door_call);
-    auto j2 = R"(
-              {
-                "door_angle" : 5,
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    dad->process(j2_string);
-    //Class light_detection
-    auto light_call = [] (int level) {
-       BOOST_CHECK_EQUAL(level, 500);
-    };
-    auto ld = std::make_shared<noos::cloud::light_detection>(pic, light_call);
-    auto j3 = R"(
-              {
-                "light_level" : 500,
-                "error" : ""
-              })"_json;
-    std::string j3_string = j3.dump(-1);
-    ld->process(j3_string); 
-    //Class human_detection
-    auto human_call = [] (std::vector<noos::object::human> humans) {
-        BOOST_CHECK_EQUAL(humans.at(0).get_left_x(), 1);
-        BOOST_CHECK_EQUAL(humans.at(0).get_left_y(), 2);   
-        BOOST_CHECK_EQUAL(humans.at(0).get_right_x(), 3);
-        BOOST_CHECK_EQUAL(humans.at(0).get_right_y(), 4);
+        auto face_detect_batch = face_detection();
+        REQUIRE(face_detect_batch.uri == "face_detection");
+        REQUIRE(face_detect_batch.is_single_callable() == false);
 
-    };
-    auto hd = std::make_shared<noos::cloud::human_detection>(pic, human_call);
-    auto j4 = R"(
-              {
-                  "humans":[{ 
-                              "up_left_point":{
-                                                  "x": 1, 
-                                                  "y": 2
-                              }, 
-                              "down_right_point":{
-                                                  "x": 3, 
-                                                  "y": 4
-                              } 
-                  }],
-                  "error" : ""
-              })"_json;
-    std::string j4_string = j4.dump(-1);
-    hd->process(j4_string);
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "faces":[{ 
+                                "up_left_point":{
+                                                    "x": 1, 
+                                                    "y": 2
+                                }, 
+                                "down_right_point":{
+                                                    "x": 3, 
+                                                    "y": 4
+                                } 
+                     }],
+                     "error" : ""
+                   })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::face> faces;
+        faces = deserialize<face_detection,
+                            typename face_detection::data_type>()(j1_string);
+        REQUIRE(faces.at(0).top_left_x == 1);
+        REQUIRE(faces.at(0).top_left_y == 2);   
+        REQUIRE(faces.at(0).bottom_right_x == 3);
+        REQUIRE(faces.at(0).bottom_right_y == 4);
 
-    //Class object_detection_learn_object
-    auto learn_call = [] (int result)
-    {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-    auto odlo = std::make_shared<noos::cloud::object_detection_learn_object>(pic, "cat", "user", learn_call);
-    auto j5 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j5_string = j5.dump(-1);
-    odlo->process(j5_string);
+    }
 
-    //Class object_detection_clear_models
-    auto clear_call = [] (int result)
-    {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-    noos::cloud::object_detection_clear_models odcm("user", clear_call);
-    auto j6 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j6_string = j6.dump(-1);
-    odcm.process(j6_string);
+    SECTION ("Light detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto light_detect = light_detection(pic);
+        REQUIRE(light_detect.uri == "light_detection"); 
+        REQUIRE(light_detect.is_single_callable() == true);
 
-    //Class object_detection_load_models
-    auto load_call = [] (int result) {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
+        auto light_detect_batch = light_detection();
+        REQUIRE(light_detect_batch.uri == "light_detection");
+        REQUIRE(light_detect_batch.is_single_callable() == false);
 
-    std::vector<std::string> names = {"cat"};
-    noos::cloud::object_detection_load_models odlm("user", names, load_call);
-    auto j7 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j7_string = j7.dump(-1);
-    odlm.process(j7_string);
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "light_level" : 500,
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        int light = deserialize<light_detection,
+                                typename light_detection::data_type>()(j1_string);    
+        REQUIRE(light == 500);
+    }
 
-    //Class object_detection_find_objects 
-    auto find_call = [] (noos::object::orb_object orb)
-    {
-        BOOST_CHECK_EQUAL(orb.names.at(0), "cat");
-        BOOST_CHECK_EQUAL(orb.points.at(0).get_x(), 0.999);      
-        BOOST_CHECK_EQUAL(orb.points.at(0).get_y(), 0.999);
-        BOOST_CHECK_EQUAL(orb.scores.at(0), 0.9);
-        BOOST_CHECK_EQUAL(orb.result, 0);
-    };
-    auto odfo = std::make_shared<noos::cloud::object_detection_find_objects>(pic, "user", 1, find_call);
-    auto j8 = R"(
-              {
-                "found_names": ["cat"],
-                "found_centers": [{
-                                      "x": 0.999,
-                                      "y": 0.999,
-                                      "z": 0 
-                                 },
-                                 {
-                                      "x": 0.899,
-                                      "y": 0.799,
-                                      "z": 0 
-                                 }],
-                "found_scores": [0.9],
-                "result": 0,
-                "error": ""
-              })"_json;
-    std::string j8_string = j8.dump(-1);
-    odfo->process(j8_string);
+    SECTION ("Human detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto human_detect = human_detection(pic);
+        REQUIRE(human_detect.uri == "human_detection"); 
+        REQUIRE(human_detect.is_single_callable() == true);
+
+        auto human_detect_batch = human_detection();
+        REQUIRE(human_detect_batch.uri == "human_detection");
+        REQUIRE(human_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "humans":[{ 
+                                  "up_left_point":{
+                                                      "x": 1, 
+                                                      "y": 2
+                                  }, 
+                                  "down_right_point":{
+                                                      "x": 3, 
+                                                      "y": 4
+                                  } 
+                      }],
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::human> humans;
+        humans = deserialize<human_detection,
+                             typename human_detection::data_type>()(j1_string);
+        REQUIRE(humans.at(0).top_left_x == 1);
+        REQUIRE(humans.at(0).top_left_y == 2);
+        REQUIRE(humans.at(0).bottom_right_x == 3);
+        REQUIRE(humans.at(0).bottom_right_y == 4);
+    }
+
+    SECTION("Orb algorthim") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
+        auto orb_learn_obj = orb_learn_object(pic, "cat");
+        REQUIRE(orb_learn_obj.uri == "orb_learn_object"); 
+        REQUIRE(orb_learn_obj.is_single_callable() == true);
+
+        auto orb_learn_obj_batch = orb_learn_object("cat");
+        REQUIRE(orb_learn_obj_batch.uri == "orb_learn_object");
+        REQUIRE(orb_learn_obj_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        int learn_reply = deserialize<orb_learn_object,
+                                      typename orb_learn_object::data_type>()(j1_string);
+        REQUIRE(learn_reply == 0);
+
+        //Class object_detection_clear_models
+        orb_clear_models orb_clear("user");
+        REQUIRE(orb_clear.uri == "orb_clear_models"); 
+        REQUIRE(orb_clear.is_single_callable() == true);
+
+        //Deserialize
+        auto j2 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j2_string = j2.dump(-1);
+        int clear_reply = deserialize<orb_clear_models,
+                                      typename orb_clear_models::data_type>()(j2_string);
+        REQUIRE(clear_reply == 0);
+
+        //Class object_detection_load_models
+        std::vector<std::string> names = {"cat"};
+        orb_load_models load_models(names);
+        REQUIRE(load_models.uri == "orb_load_models"); 
+        REQUIRE(load_models.is_single_callable() == true);
+
+        auto j3 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j3_string = j3.dump(-1);
+        int load_models_reply = deserialize<orb_load_models,
+                                            typename orb_load_models::data_type>()(j3_string);
+        REQUIRE(load_models_reply == 0);
+
+        //Class object_detection_find_objects 
+        auto orb_find_obj = orb_find_objects(pic, 1);
+        REQUIRE(orb_find_obj.uri == "orb_find_objects"); 
+        REQUIRE(orb_find_obj.is_single_callable() == true);
+
+        auto orb_find_obj_batch = orb_find_objects(1);
+        REQUIRE(orb_find_obj_batch.uri == "orb_find_objects");
+        REQUIRE(orb_find_obj_batch.is_single_callable() == false);
+        auto j4 = R"(
+                  {
+                    "found_names": ["cat"],
+                    "found_centers": [{
+                                          "x": 0.999,
+                                          "y": 0.999,
+                                          "z": 0 
+                                     },
+                                     {
+                                          "x": 0.899,
+                                          "y": 0.799,
+                                          "z": 0 
+                                     }],
+                    "found_scores": [0.9],
+                    "result": 0,
+                    "error": ""
+                  })"_json;
+        std::string j4_string = j4.dump(-1);
+        noos::object::orb_object orb_reply;
+        orb_reply = deserialize<orb_find_objects,
+                                typename orb_find_objects::data_type>()(j4_string);
+        REQUIRE(orb_reply.names.at(0) == "cat");
+        REQUIRE(orb_reply.points.at(0).x == 0.999);
+        REQUIRE(orb_reply.points.at(0).y == 0.999);
+        REQUIRE(orb_reply.points.at(0).z == 0);
+        REQUIRE(orb_reply.points.at(1).x == 0.899);
+        REQUIRE(orb_reply.points.at(1).y == 0.799);
+        REQUIRE(orb_reply.points.at(1).z == 0);
+        REQUIRE(orb_reply.scores.at(0) == 0.9);
+        REQUIRE(orb_reply.result == 0);
+
+    }
 }
 
 /**
  * \brief check the vision recognition classes 
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
  */
-BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
+TEST_CASE("Test services vision recognition", "[vision_recognition]")
 {
-    //Class qr_recognition
-    auto qr_call = [] (std::vector<noos::object::qr_code> qrs) {
-        BOOST_CHECK_EQUAL(qrs.label(), "label");
-        noos::object::qr_code qr2(1 ,2, "label");
-        BOOST_CHECK(qrs.at(0) == qr2);
-    };
-    auto pic_qr = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
-    auto qd = std::make_shared<noos::cloud::qr_recognition>(pic_qr, qr_call);
-    auto j1 = R"(
-              {
-                "qrs":[{ 
-                                "x": 1, 
-                                "y": 2.
-                                "message": "label"
-                              }], 
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    qd->process(j1_string);
+    using namespace noos::cloud;
+    SECTION("Qr recognition") {
+        auto pic_qr = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
+        auto qr_obj = qr_recognition(pic_qr);
+        REQUIRE(qr_obj.uri == "qr_detection"); 
+        REQUIRE(qr_obj.is_single_callable() == true);
 
-    //Class object_recognition
-    auto object_call = [] (std::string object) {
-        BOOST_CHECK_EQUAL(object, "something");
-    };
-    auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
-    auto objr = std::make_shared<noos::cloud::object_recognition>(pic, object_call);
-    auto j2 = R"(
-              {
-                "object_class" : "something",
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    objr->process(j2_string);
+        auto qr_obj_batch = qr_recognition();
+        REQUIRE(qr_obj_batch.uri == "qr_detection");
+        REQUIRE(qr_obj_batch.is_single_callable() == false);
+
+        auto j1 = R"(
+                  {
+                    "qrs":[{ 
+                            "x": 1, 
+                            "y": 2,
+                            "message": "label"
+                          }], 
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::qr_code> qr_reply;
+        qr_reply = deserialize<qr_recognition,
+                                typename qr_recognition::data_type>()(j1_string);
+        REQUIRE(qr_reply.at(0).message == "label");
+        REQUIRE(qr_reply.at(0).centre_x == 1);
+        REQUIRE(qr_reply.at(0).centre_y == 2);
+    }
+
+    SECTION("Object recognition") {
+        //Class object_recognition
+        auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
+        auto obj_recognition = object_recognition(pic);
+        REQUIRE(obj_recognition.uri == "object_recognition_caffe");
+        REQUIRE(obj_recognition.is_single_callable() == true);
+
+        auto obj_recog_batch = object_recognition();
+        REQUIRE(obj_recog_batch.uri == "object_recognition_caffe");
+        REQUIRE(obj_recog_batch.is_single_callable() == false);
+
+        auto j1 = R"(
+                  {
+                    "object_class" : "something",
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::string reply = deserialize<object_recognition,
+                                        typename object_recognition::data_type>()(j1_string);
+        REQUIRE(reply == "something");
+    }
 }
 
 /**
  * \brief check the vision batch class
  * A callback is done to check that the desearilization
  * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
  */
-BOOST_AUTO_TEST_CASE(vision_batch_test)
+TEST_CASE("Test service vision_batch", "[vision_batch]")
 {
-    //Vision batch
+    using namespace noos::cloud;
     auto pic = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
 
     //Class qr_recognition
     auto qr_call = [] (std::vector<noos::object::qr_code> qrs) {
-        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
-        noos::object::qr_code qr2(1 ,2, "label");
-        BOOST_CHECK(qrs.at(0) == qr2);
+        REQUIRE(qrs.at(0).message == "label");
+        REQUIRE(qrs.at(0).centre_x == 1);
+        REQUIRE(qrs.at(0).centre_y == 2);
     };
 
     //Class face_detection
     auto face_call = [] (std::vector<noos::object::face> faces) {
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_y(), 4);
+        REQUIRE(faces.at(0).top_left_x == 1);
+        REQUIRE(faces.at(0).top_left_y == 2);   
+        REQUIRE(faces.at(0).bottom_right_x == 3);
+        REQUIRE(faces.at(0).bottom_right_y == 4);
 
     };
 
-    noos::cloud::vision_batch<noos::cloud::face_detection,
-                              noos::cloud::qr_recognition> vb( pic,
-                                                               noos::cloud::face_detection(false, face_call),
-                                                               noos::cloud::qr_recognition(qr_call)
-                                                              );    
+    vision_batch<std::pair<face_detection, face_detection::callback>,
+                 std::pair<qr_recognition, qr_recognition::callback>> 
+                                  vision_batch_obj( pic,
+                                                    std::make_pair(face_detection(), face_call),
+                                                    std::make_pair(qr_recognition(), qr_call)
+                                                  );    
+    REQUIRE(vision_batch_obj.is_single_callable() == true);
 
 
     auto j1 = R"(
@@ -286,17 +371,15 @@ BOOST_AUTO_TEST_CASE(vision_batch_test)
                                                }],
                                          "error" : ""
                                        },
-                    "qr_detection" :   { "qr_centers":[{ 
-                                                        "x": 1, 
-                                                        "y": 2
-                                                      }], 
-                                         "qr_messages":["label"],
+                    "qr_recognition" : { "qrs":[{ 
+                                                    "x": 1, 
+                                                    "y": 2,
+                                                    "message": "label"
+                                               }], 
                                          "error" : ""
                                        }
               }])"_json;
     std::string j1_str = j1.dump(-1);
-    vb.process(j1_str);
+    vision_batch_obj.process(j1_str);
 
 }
-
-BOOST_AUTO_TEST_SUITE_END()

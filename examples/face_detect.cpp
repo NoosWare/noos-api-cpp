@@ -26,7 +26,9 @@ int main()
     };
 
     /*
-     * We make a call to face_detection class to detect faces in the file
+     * We make a callable object of face_detection class 
+     * and send the information to the platform to detect faces 
+     * in the file.
      * For more information \see noos::cloud::face_detection
      */
     callable<face_detection,false>cb(face_request, callback);
