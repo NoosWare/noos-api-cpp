@@ -4,7 +4,7 @@ namespace cloud {
 
 //service names
 const std::string object_recognition::uri = "object_recognition_caffe";
-const std::string qr_recognition::uri = "qr_detection";
+const std::string qr_recognition::uri = "qr_recognition";
 
 /// Class object_recognition
 object_recognition::object_recognition(const noos::object::picture & image)

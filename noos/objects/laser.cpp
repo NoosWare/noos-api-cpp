@@ -16,7 +16,6 @@ json::object_t laser::to_json() const
                                 {"sensor_pose", pose.to_json()}
                                };
     return scan_data;
-
 }
 
 }

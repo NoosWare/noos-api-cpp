@@ -274,11 +274,11 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
     SECTION("Qr recognition") {
         auto pic_qr = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
         auto qr_obj = qr_recognition(pic_qr);
-        REQUIRE(qr_obj.uri == "qr_detection"); 
+        REQUIRE(qr_obj.uri == "qr_recognition"); 
         REQUIRE(qr_obj.is_single_callable() == true);
 
         auto qr_obj_batch = qr_recognition();
-        REQUIRE(qr_obj_batch.uri == "qr_detection");
+        REQUIRE(qr_obj_batch.uri == "qr_recognition");
         REQUIRE(qr_obj_batch.is_single_callable() == false);
 
         auto j1 = R"(
