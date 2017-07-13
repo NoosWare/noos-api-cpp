@@ -13,7 +13,7 @@ struct orb_load_models;
 struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
-struct goodbye;
+struct icp_slam;
 
 // face_detection and faces
 template <>
@@ -198,19 +198,21 @@ std::vector<std::pair<std::string,std::string>>
 }
 
 template<>
-std::string deserialize<goodbye,
-                        std::string
-                       >::operator()(std::string json)
+noos::object::pose<float> deserialize<icp_slam,
+                                      noos::object::pose<float>
+                                     >::operator()(std::string json)
 {
     nlohmann::json json_f;
-    std::string bye;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
-           bye = json_f["bye"]; 
+           noos::object::pose<float>pose3d(json_f.find("pose")); 
+           return pose3d;
         }
     }
-    return bye;
+    noos::object::pose<float> empty_pose;
+    return empty_pose;
 }
+
 }
 }
 

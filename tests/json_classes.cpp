@@ -75,6 +75,12 @@ TEST_CASE("Json test for point", "[point]")
     REQUIRE(point1 == point_obj);
     auto point2(point_obj);
     REQUIRE(point2 == point_obj);
+
+    //Default constructor
+    noos::object::point<float> point3;
+    REQUIRE(point3.x == 0);
+    REQUIRE(point3.y == 0);
+    REQUIRE(point3.z == 0);
 }
 
 /**
@@ -128,4 +134,82 @@ TEST_CASE("Json test for face", "[face]")
     REQUIRE(face1 == face_obj);
     REQUIRE(face2 == face_obj);
 
+}
+
+/**
+ * \brief check noos::object::orientation for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+TEST_CASE("Json test for orientation", "[orientation]")
+{
+    std::string string = read_json_file("tests/data/json_classes_orientation.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto it = json.find("orientation");
+    REQUIRE(it != json.end());
+
+    noos::object::orientation<double> angles_obj = noos::object::orientation<double>(it);
+    REQUIRE(angles_obj.roll  == 0.99999997);
+    REQUIRE(angles_obj.pitch == 0.99999995);
+    REQUIRE(angles_obj.yaw   == 0.99999996);
+
+    nlohmann::json::object_t out = {{"orientation", angles_obj.to_json()}};
+    REQUIRE(json == out);
+
+    //Copy and assignment
+    auto angles1 = angles_obj;
+    REQUIRE(angles1 == angles_obj);
+    auto angles2(angles_obj);
+    REQUIRE(angles2 == angles_obj);
+
+    //Default constructor
+    noos::object::orientation<float> angles3;
+    REQUIRE(angles3.roll == 0);
+    REQUIRE(angles3.pitch == 0);
+    REQUIRE(angles3.yaw == 0);
+}
+
+/**
+ * \brief check noos::object::pose for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+TEST_CASE("Json test for pose", "[pose]")
+{
+    std::string string = read_json_file("tests/data/json_classes_pose.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto it = json.find("pose");
+    REQUIRE(it != json.end());
+
+    noos::object::pose<double> pose_obj = noos::object::pose<double>(it);
+    REQUIRE(pose_obj.coordinates.x == 0.9999991);
+    REQUIRE(pose_obj.coordinates.y == 0.9999992);
+    REQUIRE(pose_obj.coordinates.z == 0.0);
+    REQUIRE(pose_obj.angles.roll  == 0.001);
+    REQUIRE(pose_obj.angles.pitch == 0.002);
+    REQUIRE(pose_obj.angles.yaw   == 0.17576372515799546);
+
+    nlohmann::json::object_t out = {{"pose", pose_obj.to_json()}};
+    REQUIRE(json == out);
+
+    //Copy and assignment
+    auto pose1 = pose_obj;
+    REQUIRE(pose1 == pose_obj);
+    auto pose2(pose_obj);
+    REQUIRE(pose2 == pose_obj);
+
+    //Default constructor
+    noos::object::pose<float> pose3;
+    REQUIRE(pose3.coordinates.x == 0);
+    REQUIRE(pose3.coordinates.y == 0);
+    REQUIRE(pose3.coordinates.z == 0);
+    REQUIRE(pose3.angles.roll == 0);
+    REQUIRE(pose3.angles.pitch == 0);
+    REQUIRE(pose3.angles.yaw == 0);
 }

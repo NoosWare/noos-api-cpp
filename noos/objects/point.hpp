@@ -21,6 +21,14 @@ struct point
     value_type y = 0;
     value_type z = 0;
 
+    /// @brief default constructor
+    point() = default;
+
+    /// @brief constructor taking parameters x, y and z
+    point(value_type x_data,
+          value_type y_data,
+          value_type z_data);
+
     /// @brief Construct using library "json for modern c++"
     point(const json::const_iterator & position);
    

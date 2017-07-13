@@ -4,7 +4,7 @@
  * LICENSE HERE
  */
 #include "includes.ihh"
-#include "noos/objects/point.hpp"
+#include "noos/objects/pose.hpp"
 namespace noos {
 /// @brief common object namespace
 namespace object {
@@ -31,10 +31,8 @@ struct laser
     std::vector<float> ranges;
     /// Intensity values of the scan
     std::vector<int> intensities;
-    /// Check if measurements are valid
-    std::vector<char> valid_range;
     /// Sensor pose
-    point<float> pose;
+    noos::object::pose<float> pose3d;
 
     /// @brief Constructor 
     laser() = default;
@@ -42,6 +40,8 @@ struct laser
     /// @return json object
     json::object_t to_json() const;
 
+    /// @brief Equality operator
+    bool operator==(const noos::object::laser & rhs) const;
 };
 }
 }

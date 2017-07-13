@@ -1,3 +1,12 @@
+template <class value_type>
+point<value_type>::point( value_type x_data,
+                          value_type y_data,
+                          value_type z_data)
+{
+    x = x_data;
+    y = y_data;
+    z = z_data;
+}
 
 template <class value_type>
 point<value_type>::point(const json::const_iterator & position)

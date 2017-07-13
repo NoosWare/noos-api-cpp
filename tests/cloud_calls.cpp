@@ -4,6 +4,24 @@
 #include <noos/misc/json/src/json.hpp>
 #include <noos/noos>
 
+/// \brief function to read a json file and it is converted 
+//  into a string param
+std::string read_json_file(const std::string file)
+{
+    if (file.empty()){
+        throw std::runtime_error("empty file param");
+    }
+    std::ifstream t(file);
+    if (t.good()) {
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+	t.close();
+	return buffer.str();
+    }
+    else {
+        throw std::runtime_error("failed to open ifsteam");
+    }
+}
 /**
  * \brief check noos::cloud::callable
  */
@@ -382,4 +400,61 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
     std::string j1_str = j1.dump(-1);
     vision_batch_obj.process(j1_str);
 
+}
+
+/**
+ * \brief check the navigation classes
+ * A callback is done to check that the desearilization
+ * is correct comparing with a json file done manually 
+ */
+TEST_CASE("Test navigation services", "[navigation]")
+{
+    using namespace noos::cloud;
+    SECTION("Icp slam") {
+        std::string string = read_json_file("tests/data/cloud_class_laser_data.json");
+        REQUIRE(!string.empty());
+
+        //Filling laser data
+        auto json = nlohmann::json::parse(string);
+        std::vector<float> laser_ranges = json["ranges"];
+        std::vector<int> laser_intensities = json["intensities"];
+        noos::object::laser laser;
+        laser.ranges = laser_ranges;
+        laser.intensities = laser_intensities;
+        laser.aperture = 4.71239;
+        laser.max_range = 10.0f;
+        laser.std_error = 0.02;
+        laser.right_to_left = true;
+        laser.pose3d = noos::object::pose<float>(); 
+
+        auto icp = icp_slam(laser);
+        REQUIRE(icp.uri == "icp_slam");
+        REQUIRE(icp.is_single_callable() == true);
+
+        auto j1 = R"(
+                    {
+                        "pose": {
+                                    "position": {
+                                                    "x": 0.99991,
+                                                    "y": 0.99992,
+                                                    "z": 0.0
+                                                },
+                                    "orientation": {
+                                                    "roll"  : 0.001,
+                                                    "pitch" : 0.002,
+                                                    "yaw"   : 0.175763
+                                                   }
+                                },
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto pose_obj = deserialize<icp_slam,
+                                        typename icp_slam::data_type>()(j1_string);
+        REQUIRE(pose_obj.coordinates.x == 0.99991f);
+        REQUIRE(pose_obj.coordinates.y == 0.99992f);
+        REQUIRE(pose_obj.coordinates.z == 0.0f);
+        REQUIRE(pose_obj.angles.roll  == 0.001f);
+        REQUIRE(pose_obj.angles.pitch == 0.002f);
+        REQUIRE(pose_obj.angles.yaw   == 0.175763f);
+    }
 }
