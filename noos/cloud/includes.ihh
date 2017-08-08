@@ -1,0 +1,24 @@
+#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <tuple>
+#include <thread>
+#include <mutex>
+#include <cassert>
+#include <tuple>
+#include <atomic>
+#include <type_traits>
+#define BOOST_ASIO_HAS_MOVE
+#include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#
+#include <noos/misc/json/src/json.hpp>
+#include <noos/misc/misc.hpp>
+
+using json = nlohmann::json;

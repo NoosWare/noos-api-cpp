@@ -1,37 +1,75 @@
-#define BOOST_TEST_MODULE ServiceTest
-#include <boost/test/unit_test.hpp>
+#define CATCH_CONFIG_MAIN
+#include <tests/Catch/single_include/catch.hpp>
 #include <fstream>
-#include <rapp/misc/json.hpp>
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/available_services.hpp>
-#include <rapp/cloud/cognitive_exercises.hpp>
-#include <rapp/cloud/geolocation.hpp>
-#include <rapp/cloud/path_planning.hpp>
-#include <rapp/cloud/news.hpp>
-#include <rapp/cloud/ontology.hpp>
-#include <rapp/cloud/speech_recognition.hpp>
-#include <rapp/cloud/text_to_speech.hpp>
-#include <rapp/cloud/vision_detection.hpp>
-#include <rapp/cloud/vision_recognition.hpp>
-#include <rapp/cloud/weather_report.hpp>
-#include <rapp/cloud/email.hpp>
-#include <rapp/cloud/authentication.hpp>
+#include <noos/misc/json/src/json.hpp>
+#include <noos/noos>
 
-BOOST_AUTO_TEST_SUITE (cloud_calls)
+/// \brief function to read a json file and it is converted 
+//  into a string param
+std::string read_json_file(const std::string file)
+{
+    if (file.empty()){
+        throw std::runtime_error("empty file param");
+    }
+    std::ifstream t(file);
+    if (t.good()) {
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+	t.close();
+	return buffer.str();
+    }
+    else {
+        throw std::runtime_error("failed to open ifsteam");
+    }
+}
+/**
+ * \brief check noos::cloud::callable
+ */
+SCENARIO("A service needs to be call")
+{
+    using namespace noos::cloud;
+    GIVEN("A service and its callback") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_request = face_detection(pic);
+        auto callback = [&](std::vector<noos::object::face> faces) { 
+            REQUIRE(faces.size() == 1);
+        };
+        THEN("A call can be made") {
+            callable<face_detection,false>callable_obj(face_request, callback);
+            REQUIRE(callable_obj.object.uri == "face_detection");
+        }
+    }
+    GIVEN("A platform and a service known") {
+        THEN("A callable object can be done") {
+            auto callable_obj = std::make_unique<callable<face_detection>>(default_node);
+            REQUIRE(callable_obj);
+        }
+    }
+    GIVEN("A vision batch service and its callback") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_cb = [&](std::vector<noos::object::face> faces) {};
+        auto human_cb = [&](std::vector<noos::object::human> humans) {};
+        vision_batch<std::pair<face_detection,face_detection::callback>,
+                 std::pair<human_detection,human_detection::callback>>
+                 batch(pic, 
+                       std::make_pair(face_detection(), face_cb), 
+                       std::make_pair(human_detection(), human_cb));        
 
-/*
- * \brief check rapp::cloud::available_services
- * A callback function is done to check that the 
- * desearialization is correct.
+        THEN("A call can be made") {
+            auto callable_obj = std::make_unique<callable<decltype(batch)>>(batch);
+            REQUIRE(callable_obj);
+        }
+    }
+}
+
+/**
+ * \brief check noos::cloud::available_services
  * A json is done manually to be sure about results.
  */    
-BOOST_AUTO_TEST_CASE(available_services_cloud_test)
+TEST_CASE("Test service Available services", "[available_services]")
 {
-    auto callback = [] (std::vector<std::pair<std::string, std::string>> service) {
-        BOOST_CHECK_EQUAL(service.at(0).first, "name");
-        BOOST_CHECK_EQUAL(service.at(0).second, "url");
-    };
-    rapp::cloud::available_services as1(callback);
+    std::vector<std::pair<std::string, std::string>> services;
+    noos::cloud::available_services available_serv;
     auto j1 = R"(
               {
                 "services" : [{
@@ -42,696 +80,381 @@ BOOST_AUTO_TEST_CASE(available_services_cloud_test)
               }
               )"_json;
     std::string j1_string = j1.dump(-1);
-    as1.deserialise(j1_string);
-}
-/*
- * \brief check all the cognitive_exercises classes
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually.
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(cognitive_exercises_cloud_test)
-{
-    //Cognitive_test_selector class
-    auto test_callback = [] (std::vector<std::string> q,
-                             std::vector<std::vector<std::string>> pa,
-                             std::vector<std::string> ca,
-                             std::string ti,
-                             std::string tt,
-                             std::string ts)
-    {
-        BOOST_CHECK_EQUAL(q.at(0), "questions");
-        BOOST_CHECK_EQUAL(pa.at(0).at(0), "possib_ans");
-        BOOST_CHECK_EQUAL(ca.at(0), "correct_ans");
-        BOOST_CHECK_EQUAL(ti, "test_instance");
-        BOOST_CHECK_EQUAL(tt, "test_type");
-        BOOST_CHECK_EQUAL(ts, "test_subtype");
-    };
-    rapp::cloud::cognitive_test_selector cts("ArithmeticCts", 
-                                             "TransactionChangeCts", 
-                                             "1", 
-                                             "1", 
-                                             test_callback);
-    auto j1 = R"(
-              {
-                "questions" : ["questions"],
-                "possib_ans" : [["possib_ans"]],
-                "correct_ans" : ["correct_ans"],
-                "test_instance" : "test_instance",
-                "test_type" : "test_type",
-                "test_subtype" : "test_subtype",
-                "error" : ""
-              }
-              )"_json;
-    std::string j1_string = j1.dump(-1);
-    cts.deserialise(j1_string); 
-    //cognitive_record_performance
-    auto performance_callback = [] (std::string pe) {
-        BOOST_CHECK_EQUAL(pe, "entry");
-    };
-    rapp::cloud::cognitive_record_performance rp("test", 1, performance_callback);
-    auto j2 = R"(
-              {
-                "performance_entry" : "entry",
-                "error" : ""
-              }
-              )"_json;
-    std::string j2_string = j2.dump(-1);
-    rp.deserialise(j2_string);
-    //cognitive_get_history
-    auto history_callback = [] (std::string r) {
-        nlohmann::json j_test;
-        j_test["error"] = "";
-        BOOST_CHECK_EQUAL(r, j_test.dump(-1));
-    };
-    rapp::cloud::cognitive_get_history gh(0, 0, "test", history_callback);
-    auto j3 = R"(
-              {
-                "error" : ""
-              }
-              )"_json;
-    std::string j3_string = j3.dump(-1);
-    gh.deserialise(j3_string);
-    //cognitive_get_scores
-    auto scores_callback = [] (std::vector<std::string> tc, std::vector<float> sc) {
-        BOOST_CHECK_EQUAL(tc.at(0), "test_classes");
-        BOOST_CHECK_EQUAL(sc.at(0), 0);
-    };
-    rapp::cloud::cognitive_get_scores gs(0, "test", scores_callback);
-    auto j4 = R"(
-              {
-                "test_classes" : ["test_classes"],
-                "scores" : [0],
-                "error" : ""
-              }
-              )"_json;
-    std::string j4_string = j4.dump(-1);
-    gs.deserialise(j4_string);
+    services = noos::cloud::deserialize<noos::cloud::available_services,
+                                        typename noos::cloud::available_services::data_type>()(j1_string);
+    REQUIRE(services.at(0).first == "name");
+    REQUIRE(services.at(0).second == "url");  
 }
 
-/*
- * \brief check geolocation
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually.
- */
-BOOST_AUTO_TEST_CASE(geolocation_cloud_test)
+/**
+ * \brief check the vision detection classes
+ */  
+TEST_CASE("Test services vision detection", "[vision_detection]")
 {
-    auto geo_call = [] (std::string city,
-                        std::string country,
-                        std::string country_c,
-                        float lat,
-                        float longt,
-                        std::string region,
-                        std::string time,
-                        std::string zip)     
-    {
-        BOOST_CHECK_EQUAL(city, "city");
-        BOOST_CHECK_EQUAL(country, "country");
-        BOOST_CHECK_EQUAL(country_c, "country_code");
-        BOOST_CHECK_EQUAL(lat, 1);
-        BOOST_CHECK_EQUAL(longt, 2);
-        BOOST_CHECK_EQUAL(region, "region");
-        BOOST_CHECK_EQUAL(time, "timezone");
-        BOOST_CHECK_EQUAL(zip, "zip");
-    };
-    rapp::cloud::geolocation geo("ipaddr", "engine", geo_call);
-    auto j1 = R"(
-              {
-                "city" : "city",
-                "country" : "country",
-                "country_code" : "country_code",
-                "latitude" : 1,
-                "longtitude" : 2,
-                "region" : "region",
-                "timezone" : "timezone",
-                "zip" : "zip",
-                "error" : ""
-              }
-              )"_json;
-    std::string j1_string = j1.dump(-1);
-    geo.deserialise(j1_string);
+    using namespace noos::cloud;
+    SECTION ("Face detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_detect = face_detection(pic); 
+        REQUIRE(face_detect.uri == "face_detection"); 
+        REQUIRE(face_detect.is_single_callable() == true);
 
-}
-/*
- * \brief check all the navigation/path_planning classes
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * or loading one.
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(navigation_cloud_test)
-{
-    //Load a json file into a string
-    std::ifstream t("tests/data/json_classes_planned_path.json");
-    std::string json_string;
-    if (t.good()) {
-        std::stringstream buffer;
-        buffer << t.rdbuf();
-        t.close();
-        json_string = buffer.str();
+        auto face_detect_batch = face_detection();
+        REQUIRE(face_detect_batch.uri == "face_detection");
+        REQUIRE(face_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "faces":[{ 
+                                "up_left_point":{
+                                                    "x": 1, 
+                                                    "y": 2
+                                }, 
+                                "down_right_point":{
+                                                    "x": 3, 
+                                                    "y": 4
+                                } 
+                     }],
+                     "error" : ""
+                   })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::face> faces;
+        faces = deserialize<face_detection,
+                            typename face_detection::data_type>()(j1_string);
+        REQUIRE(faces.at(0).top_left_x == 1);
+        REQUIRE(faces.at(0).top_left_y == 2);   
+        REQUIRE(faces.at(0).bottom_right_x == 3);
+        REQUIRE(faces.at(0).bottom_right_y == 4);
+
     }
-    else {
-        throw std::runtime_error("failed to open ifsteam");
+
+    SECTION ("Light detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto light_detect = light_detection(pic);
+        REQUIRE(light_detect.uri == "light_detection"); 
+        REQUIRE(light_detect.is_single_callable() == true);
+
+        auto light_detect_batch = light_detection();
+        REQUIRE(light_detect_batch.uri == "light_detection");
+        REQUIRE(light_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "light_level" : 500,
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        int light = deserialize<light_detection,
+                                typename light_detection::data_type>()(j1_string);    
+        REQUIRE(light == 500);
     }
-    //plan_path_2d
-    auto path_call = [] (rapp::object::planned_path pp) {
-        std::chrono::nanoseconds tim2(1464949299093018853);
-        auto time1 = rapp::object::time(tim2);
-        auto header1 = rapp::object::msg_metadata(0 , time1, "map");
-        auto quat1 = rapp::object::quaternion(0, 
-                                            0, 
-                                            0.17576372515799546, 
-                                            0.9844323810798712);
 
-        auto point1 = rapp::object::point(0.9999999776482582, 
-                                         0.9999999776482582, 
-                                         0);
-        auto pose1 = rapp::object::pose(point1, quat1);
-        auto ps_obj1 = rapp::object::pose_stamped(header1, pose1);
-        BOOST_CHECK(pp.get_path().at(0) == ps_obj1);
-        BOOST_CHECK_EQUAL(pp.get_plan(), 1);
-    };
-    std::chrono::nanoseconds tim(1464949299093018853);
-    auto time0 = rapp::object::time(tim);
-    auto header0 = rapp::object::msg_metadata(0 , time0, "map");
-    auto quat = rapp::object::quaternion(0, 
-                                        0, 
-                                        0.17576372515799546, 
-                                        0.9844323810798712);
+    SECTION ("Human detection") {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto human_detect = human_detection(pic);
+        REQUIRE(human_detect.uri == "human_detection"); 
+        REQUIRE(human_detect.is_single_callable() == true);
 
-    auto point = rapp::object::point(0.9999999776482582, 
-                                     0.9999999776482582, 
-                                     0);
-    auto pose0 = rapp::object::pose(point, quat);
-    rapp::object::pose_stamped start(header0, pose0);
-    rapp::object::pose_stamped goal(header0, pose0);
-    rapp::cloud::plan_path_2d pp2d("map", "robot", "algorithm", start, goal, path_call);
-    pp2d.deserialise(json_string);
-    //path_upload_map
-    auto upload_call = [] (std::string error) {
-        BOOST_CHECK_EQUAL(error, "");
-    };
-    rapp::object::picture png_file("tests/data/object_classes_map_1.png");
-    rapp::object::yaml yaml_file("tests/data/object_classes_map_1.yaml");
-    rapp::cloud::path_upload_map um(png_file, yaml_file, "map", upload_call);
-    auto j1 = R"(
-              {
-                "error" : ""
-              }
-              )"_json;
-    std::string j1_string = j1.dump(-1);
-    um.deserialise(j1_string);
+        auto human_detect_batch = human_detection();
+        REQUIRE(human_detect_batch.uri == "human_detection");
+        REQUIRE(human_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "humans":[{ 
+                                  "up_left_point":{
+                                                      "x": 1, 
+                                                      "y": 2
+                                  }, 
+                                  "down_right_point":{
+                                                      "x": 3, 
+                                                      "y": 4
+                                  } 
+                      }],
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::human> humans;
+        humans = deserialize<human_detection,
+                             typename human_detection::data_type>()(j1_string);
+        REQUIRE(humans.at(0).top_left_x == 1);
+        REQUIRE(humans.at(0).top_left_y == 2);
+        REQUIRE(humans.at(0).bottom_right_x == 3);
+        REQUIRE(humans.at(0).bottom_right_y == 4);
+    }
+
+    SECTION("Orb algorthim") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
+        auto orb_learn_obj = orb_learn_object(pic, "cat");
+        REQUIRE(orb_learn_obj.uri == "orb_learn_object"); 
+        REQUIRE(orb_learn_obj.is_single_callable() == true);
+
+        auto orb_learn_obj_batch = orb_learn_object("cat");
+        REQUIRE(orb_learn_obj_batch.uri == "orb_learn_object");
+        REQUIRE(orb_learn_obj_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        int learn_reply = deserialize<orb_learn_object,
+                                      typename orb_learn_object::data_type>()(j1_string);
+        REQUIRE(learn_reply == 0);
+
+        //Class object_detection_clear_models
+        orb_clear_models orb_clear("user");
+        REQUIRE(orb_clear.uri == "orb_clear_models"); 
+        REQUIRE(orb_clear.is_single_callable() == true);
+
+        //Deserialize
+        auto j2 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j2_string = j2.dump(-1);
+        int clear_reply = deserialize<orb_clear_models,
+                                      typename orb_clear_models::data_type>()(j2_string);
+        REQUIRE(clear_reply == 0);
+
+        //Class object_detection_load_models
+        std::vector<std::string> names = {"cat"};
+        orb_load_models load_models(names);
+        REQUIRE(load_models.uri == "orb_load_models"); 
+        REQUIRE(load_models.is_single_callable() == true);
+
+        auto j3 = R"(
+                  {
+                      "result" : 0,
+                      "error" : ""
+                  })"_json;
+        std::string j3_string = j3.dump(-1);
+        int load_models_reply = deserialize<orb_load_models,
+                                            typename orb_load_models::data_type>()(j3_string);
+        REQUIRE(load_models_reply == 0);
+
+        //Class object_detection_find_objects 
+        auto orb_find_obj = orb_find_objects(pic, 1);
+        REQUIRE(orb_find_obj.uri == "orb_find_objects"); 
+        REQUIRE(orb_find_obj.is_single_callable() == true);
+
+        auto orb_find_obj_batch = orb_find_objects(1);
+        REQUIRE(orb_find_obj_batch.uri == "orb_find_objects");
+        REQUIRE(orb_find_obj_batch.is_single_callable() == false);
+        auto j4 = R"(
+                  {
+                    "found_names": ["cat"],
+                    "found_centers": [{
+                                          "x": 0.999,
+                                          "y": 0.999,
+                                          "z": 0 
+                                     },
+                                     {
+                                          "x": 0.899,
+                                          "y": 0.799,
+                                          "z": 0 
+                                     }],
+                    "found_scores": [0.9],
+                    "result": 0,
+                    "error": ""
+                  })"_json;
+        std::string j4_string = j4.dump(-1);
+        noos::object::orb_object orb_reply;
+        orb_reply = deserialize<orb_find_objects,
+                                typename orb_find_objects::data_type>()(j4_string);
+        REQUIRE(orb_reply.names.at(0) == "cat");
+        REQUIRE(orb_reply.points.at(0).x == 0.999);
+        REQUIRE(orb_reply.points.at(0).y == 0.999);
+        REQUIRE(orb_reply.points.at(0).z == 0);
+        REQUIRE(orb_reply.points.at(1).x == 0.899);
+        REQUIRE(orb_reply.points.at(1).y == 0.799);
+        REQUIRE(orb_reply.points.at(1).z == 0);
+        REQUIRE(orb_reply.scores.at(0) == 0.9);
+        REQUIRE(orb_reply.result == 0);
+
+    }
 }
 
-/*
- * \brief check news_explore
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually.
+/**
+ * \brief check the vision recognition classes 
  */
-BOOST_AUTO_TEST_CASE(news_cloud_test)
+TEST_CASE("Test services vision recognition", "[vision_recognition]")
 {
-    auto news_call = [] (std::vector<std::vector<std::string>> news) {
-        BOOST_CHECK_EQUAL(news.at(0).at(0), "title");
-        BOOST_CHECK_EQUAL(news.at(0).at(1), "content");
-        BOOST_CHECK_EQUAL(news.at(0).at(2), "me");
-        BOOST_CHECK_EQUAL(news.at(0).at(3), "today");
-        BOOST_CHECK_EQUAL(news.at(0).at(4), "url");
-    };
-    rapp::cloud::news_explore ne("engine",std::vector<std::string>{{"key"}}, std::vector<std::string>{{"exclude"}}, "region", "topic", 1, news_call);
-    auto j1 = R"(
-              {
-                "news_stories" : [{
-                                    "title" : "title",
-                                    "content" : "content",
-                                    "publisher" : "me",
-                                    "publishedDate" : "today",
-                                    "url" : "url"
-                                  }],
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    ne.deserialise(j1_string);
-}
-/*
- * \brief check all the ontology classes
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(ontology_cloud_test)
-{
-    //Class ontology_subclasses_of
-    auto sub_call = [] (std::vector<std::string> classes) {
-        BOOST_CHECK_EQUAL(classes.at(0), "results");
-    };
-    rapp::cloud::ontology_subclasses_of osub("class", true, sub_call);
-    auto j1 = R"(
-              {
-                "results" : ["results"],
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    osub.deserialise(j1_string);
-    //Class ontology_is_superclass_of
-    rapp::cloud::ontology_superclasses_of osup("class", true, sub_call);
-    osup.deserialise(j1_string);
-    //Class ontology_is_subsuperclass_of
-    auto subsup_call = [] (bool result) {
-        BOOST_CHECK_EQUAL(result, true);
-    };
-    rapp::cloud::ontology_is_subsuperclass_of osubsup("parent", "child", true, subsup_call);
-    auto j2 = R"(
-              {
-                "result" : true,
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    osubsup.deserialise(j2_string);
+    using namespace noos::cloud;
+    SECTION("Qr recognition") {
+        auto pic_qr = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
+        auto qr_obj = qr_recognition(pic_qr);
+        REQUIRE(qr_obj.uri == "qr_recognition"); 
+        REQUIRE(qr_obj.is_single_callable() == true);
+
+        auto qr_obj_batch = qr_recognition();
+        REQUIRE(qr_obj_batch.uri == "qr_recognition");
+        REQUIRE(qr_obj_batch.is_single_callable() == false);
+
+        auto j1 = R"(
+                  {
+                    "qrs":[{ 
+                            "x": 1, 
+                            "y": 2,
+                            "message": "label"
+                          }], 
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::qr_code> qr_reply;
+        qr_reply = deserialize<qr_recognition,
+                                typename qr_recognition::data_type>()(j1_string);
+        REQUIRE(qr_reply.at(0).message == "label");
+        REQUIRE(qr_reply.at(0).centre_x == 1);
+        REQUIRE(qr_reply.at(0).centre_y == 2);
+    }
+
+    SECTION("Object recognition") {
+        //Class object_recognition
+        auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
+        auto obj_recognition = object_recognition(pic);
+        REQUIRE(obj_recognition.uri == "object_recognition_caffe");
+        REQUIRE(obj_recognition.is_single_callable() == true);
+
+        auto obj_recog_batch = object_recognition();
+        REQUIRE(obj_recog_batch.uri == "object_recognition_caffe");
+        REQUIRE(obj_recog_batch.is_single_callable() == false);
+
+        auto j1 = R"(
+                  {
+                    "object_class" : "something",
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::string reply = deserialize<object_recognition,
+                                        typename object_recognition::data_type>()(j1_string);
+        REQUIRE(reply == "something");
+    }
 }
 
-/*
- * \brief check most of the speech classes 
- * (not set_noise_profile)
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually. 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(speech_cloud_test)
-{
-    //Class speech_recognition_google
-    auto google_call = [] (std::vector<std::string> words, std::vector<std::vector<std::string>> alternatives) {
-        BOOST_CHECK_EQUAL(words.at(0), "words");
-        BOOST_CHECK_EQUAL(alternatives.at(0).at(0), "alternative");
-    };
-    rapp::object::audio audio1("tests/data/object_classes_audio_4.ogg");
-    rapp::cloud::speech_recognition_google srg(audio1.bytearray(), rapp::types::nao_ogg, "en", google_call);
-    auto j1 = R"(
-              {
-                "words" : ["words"],
-                "alternatives" : [["alternative"]],
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    srg.deserialise(j1_string);
-    //Class speech_recognition_sphinx4
-    auto sphinx_call = [] (std::vector<std::string> words) {
-        BOOST_CHECK_EQUAL(words.at(0), "words");
-    };
-    rapp::object::audio audio2("tests/data/yes-no.wav");
-    rapp::cloud::speech_recognition_sphinx4 srs(  audio2.bytearray(),
-                                                  rapp::types::headset,
-                                                  "en",
-                                                  std::vector<std::string>({{}}),
-                                                  std::vector<std::string>({{}}),
-                                                  std::vector<std::string>({{}}),
-                                                  sphinx_call
-                                                );
-    auto j2 = R"(
-              {
-                "words" : ["words"],
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    srs.deserialise(j2_string);
-    //Class text_to_speech
-    auto text_to_speech_call_1 = [] (rapp::object::audio test1) {
-        rapp::object::audio test2(test1);
-        BOOST_CHECK(test1 == test2);
-    };
-    rapp::cloud::text_to_speech tts("Hello", "en", text_to_speech_call_1);
-    auto j3 = R"(
-              {
-                "payload" : "UklGRua2AABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YcK2AAABAAAA//8BAAAAAAAAAAAA",
-                "error": ""
-              })"_json;
-    std::string j3_string = j3.dump(-1);
-    tts.deserialise(j3_string);
-}
-
-/*
- * \brief check all the vision classes (detection and 
- * recognition).
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
-{
-    //Class face_detection
-    auto face_call = [] (std::vector<rapp::object::face> faces) {
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_x(), 1);
-        BOOST_CHECK_EQUAL(faces.at(0).get_left_y(), 2);   
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_x(), 3);
-        BOOST_CHECK_EQUAL(faces.at(0).get_right_y(), 4);
-
-    };
-    auto pic = rapp::object::picture("tests/data/object_classes_picture_1.png");
-    rapp::cloud::face_detection fd(pic, false, face_call); 
-    auto j1 = R"(
-              {
-                "faces":[{ 
-                            "up_left_point":{
-                                                "x": 1, 
-                                                "y": 2
-                            }, 
-                            "down_right_point":{
-                                                "x": 3, 
-                                                "y": 4
-                            } 
-                 }],
-                 "error" : ""
-               })"_json;
-    std::string j1_string = j1.dump(-1);
-    fd.deserialise(j1_string);
-    //Class door_angle_detection
-    auto door_call = [] (double angle) {
-        BOOST_CHECK_EQUAL(angle, 5);
-    };
-    rapp::cloud::door_angle_detection dad(pic, door_call);
-    auto j2 = R"(
-              {
-                "door_angle" : 5,
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    dad.deserialise(j2_string);
-    //Class light_detection
-    auto light_call = [] (int level) {
-       BOOST_CHECK_EQUAL(level, 500);
-    };
-    rapp::cloud::light_detection ld(pic, light_call);
-    auto j3 = R"(
-              {
-                "light_level" : 500,
-                "error" : ""
-              })"_json;
-    std::string j3_string = j3.dump(-1);
-    ld.deserialise(j3_string); 
-    //Class human_detection
-    auto human_call = [] (std::vector<rapp::object::human> humans) {
-        BOOST_CHECK_EQUAL(humans.at(0).get_left_x(), 1);
-        BOOST_CHECK_EQUAL(humans.at(0).get_left_y(), 2);   
-        BOOST_CHECK_EQUAL(humans.at(0).get_right_x(), 3);
-        BOOST_CHECK_EQUAL(humans.at(0).get_right_y(), 4);
-
-    };
-    rapp::cloud::human_detection hd(pic,human_call);
-    auto j4 = R"(
-              {
-                  "humans":[{ 
-                              "up_left_point":{
-                                                  "x": 1, 
-                                                  "y": 2
-                              }, 
-                              "down_right_point":{
-                                                  "x": 3, 
-                                                  "y": 4
-                              } 
-                  }],
-                  "error" : ""
-              })"_json;
-    std::string j4_string = j4.dump(-1);
-    hd.deserialise(j4_string);
-}
-
-/*
- * \brief check all the weather_report classes
+/**
+ * \brief check the vision batch class
  * A callback is done to check that the desearilization
  * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
  */
-BOOST_AUTO_TEST_CASE(weather_cloud_test) 
+TEST_CASE("Test service vision_batch", "[vision_batch]")
 {
-    //Class weather_report_current
-    auto report_call = [](std::vector<std::string> weather) {
-        BOOST_CHECK_EQUAL(weather.at(0), "date"); 
-        BOOST_CHECK_EQUAL(weather.at(1), "temp");
-        BOOST_CHECK_EQUAL(weather.at(2), "description");
-        BOOST_CHECK_EQUAL(weather.at(3), "humidity");
-        BOOST_CHECK_EQUAL(weather.at(4), "visible");
-        BOOST_CHECK_EQUAL(weather.at(5), "pressure");
-        BOOST_CHECK_EQUAL(weather.at(6), "speed");
-        BOOST_CHECK_EQUAL(weather.at(7), "25C");
-        BOOST_CHECK_EQUAL(weather.at(8), "direction");
-    };
-    rapp::cloud::weather_report_current wrc("Madrid", "reporter", 1, report_call);
-    auto j1 = R"(
-              {
-                "date" : "date",
-                "temperature" : "temp",
-                "weather_description" : "description",
-                "humidity" : "humidity",
-                "visibility" : "visible",
-                "pressure" : "pressure",
-                "wind_speed" : "speed",
-                "wind_temperature" : "25C",
-                "wind_direction" : "direction",
-                "error" : ""
-              }
-              )"_json;
-    std::string j1_string = j1.dump(-1);
-    wrc.deserialise(j1_string);
-    //Class weather_report_forecast
-    auto forecast_call = [](std::vector<std::vector<std::string>> forecasts) {
-        BOOST_CHECK_EQUAL(forecasts.at(0).at(0), "40C"); 
-        BOOST_CHECK_EQUAL(forecasts.at(0).at(1), "30C");
-        BOOST_CHECK_EQUAL(forecasts.at(0).at(2), "hot");
-        BOOST_CHECK_EQUAL(forecasts.at(0).at(3), "today");
-    };
-    rapp::cloud::weather_report_forecast wrf("Madrid", "reporter", 1, forecast_call);
-    auto j2 = R"(
-              {
-                "forecast" : [{ 
-                                "high_temp" : "40C",
-                                "low_temp" : "30C",
-                                "description" : "hot",
-                                "date" : "today"
-                }],
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    wrf.deserialise(j2_string);
-}
+    using namespace noos::cloud;
+    auto pic = noos::object::picture("tests/data/asio_classes_qr_code_1.png");
 
-/*
- * \brief check all the email classes 
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(email_cloud_test)
-{
-    //Class email_fetch
-    auto fetch_call = [] (std::vector<std::tuple<std::string, 
-                                                 std::vector<std::string>,
-                                                 std::string,
-                                                 std::string,
-                                                 std::vector<std::string>>> emails)
-    {
-        BOOST_CHECK_EQUAL(std::get<0>(emails.at(0)), "me");
-        BOOST_CHECK_EQUAL(std::get<1>(emails.at(0)).at(0), "you");
-        BOOST_CHECK_EQUAL(std::get<2>(emails.at(0)), "body");
-        BOOST_CHECK_EQUAL(std::get<3>(emails.at(0)), "today");
-        BOOST_CHECK_EQUAL(std::get<4>(emails.at(0)).at(0), "nothing");
-    };
-    rapp::cloud::email_fetch ef("mail", "", "imap", "1", "ALL", 0, 0, 2, fetch_call);
-    auto j1 = R"(
-              {
-                "emails" : [{
-                              "sender" : "me",
-                              "receivers" : ["you"],
-                              "body" : "body",
-                              "date" : "today",
-                              "attachments" : ["nothing"]
-                }],
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    ef.deserialise(j1_string);
-    //Class email_send
-    auto send_call = [] (std::string error) {
-        BOOST_CHECK_EQUAL(error, "");
-    };
-    rapp::cloud::email_send es("mail", "", "smtp", "1",std::vector<std::string>({{}}), "b", "t", send_call);
-    auto j2 = R"(
-              {
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    es.deserialise(j2_string);
-}
-
-/*
- * \brief check all the authentication classes 
- * A callback is done to check that the desearilization
- * is correct comparing with a json file done manually 
- * \note: the name of the variables are the initial of
- *  the classes or words corresponding with json.
- */
-BOOST_AUTO_TEST_CASE(authentication_cloud_test)
-{
-    //Class login_user
-    auto login_call = [] (std::string token)
-    {
-        BOOST_CHECK_EQUAL(token, "token");
-    };
-    rapp::cloud::login_user lu("user", "pass", "dev_token", login_call);
-    auto j1 = R"(
-              {
-                  "token" : "token",
-                  "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    lu.deserialise(j1_string);
-
-    //Class register_user_from_platform
-    auto platform_call = [](std::string suggested_name)
-    {
-        BOOST_CHECK_EQUAL(suggested_name, "s_name");
-    };
-    rapp::cloud::register_user_from_platform rufp("creator_user", "creator_pass", "user_name", "user_pass", "english", platform_call);
-    auto j2 = R"(
-              {
-                  "suggested_username" : "s_name",
-                  "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    rufp.deserialise(j2_string);
-
-    //Class register_user_from_store
-    auto store_call = [] (std::string suggested_name)
-    {
-        BOOST_CHECK_EQUAL(suggested_name, "another");
-    };
-    rapp::cloud::register_user_from_store rufs("name", "pass", "token", "english", store_call);
-    auto j3 = R"(
-              {
-                  "suggested_username" : "another",
-                  "error" : ""
-              })"_json;
-    std::string j3_string = j3.dump(-1);
-    rufs.deserialise(j3_string);
-}
-
-/**/
-BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
-{
     //Class qr_recognition
-    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
-        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
-        rapp::object::qr_code qr2(1 ,2, "label");
-        BOOST_CHECK(qrs.at(0) == qr2);
+    auto qr_call = [] (std::vector<noos::object::qr_code> qrs) {
+        REQUIRE(qrs.at(0).message == "label");
+        REQUIRE(qrs.at(0).centre_x == 1);
+        REQUIRE(qrs.at(0).centre_y == 2);
     };
-    auto pic_qr = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
-    rapp::cloud::qr_recognition qd(pic_qr, qr_call);
+
+    //Class face_detection
+    auto face_call = [] (std::vector<noos::object::face> faces) {
+        REQUIRE(faces.at(0).top_left_x == 1);
+        REQUIRE(faces.at(0).top_left_y == 2);   
+        REQUIRE(faces.at(0).bottom_right_x == 3);
+        REQUIRE(faces.at(0).bottom_right_y == 4);
+
+    };
+
+    vision_batch<std::pair<face_detection, face_detection::callback>,
+                 std::pair<qr_recognition, qr_recognition::callback>> 
+                                  vision_batch_obj( pic,
+                                                    std::make_pair(face_detection(), face_call),
+                                                    std::make_pair(qr_recognition(), qr_call)
+                                                  );    
+    REQUIRE(vision_batch_obj.is_single_callable() == true);
+
+
     auto j1 = R"(
-              {
-                "qr_centers":[{ 
-                                "x": 1, 
-                                "y": 2
-                              }], 
-                "qr_messages":["label"],
-                "error" : ""
-              })"_json;
-    std::string j1_string = j1.dump(-1);
-    qd.deserialise(j1_string);
+              [{
+                    "face_detection" : { "faces":[{ 
+                                                    "up_left_point":{
+                                                                        "x": 1, 
+                                                                        "y": 2
+                                                    }, 
+                                                    "down_right_point":{
+                                                                        "x": 3, 
+                                                                        "y": 4
+                                                    } 
+                                               }],
+                                         "error" : ""
+                                       },
+                    "qr_recognition" : { "qrs":[{ 
+                                                    "x": 1, 
+                                                    "y": 2,
+                                                    "message": "label"
+                                               }], 
+                                         "error" : ""
+                                       }
+              }])"_json;
+    std::string j1_str = j1.dump(-1);
+    vision_batch_obj.process(j1_str);
 
-    //Class object_recognition
-    auto object_call = [] (std::string object) {
-        BOOST_CHECK_EQUAL(object, "something");
-    };
-    auto pic = rapp::object::picture("tests/data/object_classes_picture_2.jpg");
-    rapp::cloud::object_recognition objr(pic, object_call);
-    auto j2 = R"(
-              {
-                "object_class" : "something",
-                "error" : ""
-              })"_json;
-    std::string j2_string = j2.dump(-1);
-    objr.deserialise(j2_string);
-
-    //Class object_detection_learn_object
-    auto learn_call = [] (int result)
-    {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-    rapp::cloud::object_detection_learn_object odlo(pic, "cat", "user", learn_call);
-    auto j3 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j3_string = j3.dump(-1);
-    odlo.deserialise(j3_string);
-
-    //Class object_detection_clear_models
-    auto clear_call = [] (int result)
-    {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-    rapp::cloud::object_detection_clear_models odcm("user", clear_call);
-    auto j4 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j4_string = j4.dump(-1);
-    odcm.deserialise(j4_string);
-
-    //Class object_detection_load_models
-    auto load_call = [] (int result) {
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-
-    std::vector<std::string> names = {"cat"};
-    rapp::cloud::object_detection_load_models odlm("user", names, load_call);
-    auto j5 = R"(
-              {
-                  "result" : 0,
-                  "error" : ""
-              })"_json;
-    std::string j5_string = j5.dump(-1);
-    odlm.deserialise(j5_string);
-
-    //Class object_detection_find_objects 
-    auto find_call = [] (std::vector<std::string> found_names,
-                         std::vector<rapp::object::point> found_points, 
-                         std::vector<double> scores,
-                         int result)
-    {
-        BOOST_CHECK_EQUAL(found_names.at(0), "cat");
-        BOOST_CHECK_EQUAL(found_points.at(0).get_x(), 0.999);      
-        BOOST_CHECK_EQUAL(found_points.at(0).get_y(), 0.999);
-        BOOST_CHECK_EQUAL(scores.at(0), 0.9);
-        BOOST_CHECK_EQUAL(result, 0);
-    };
-    rapp::cloud::object_detection_find_objects odfo(pic, "user", 1, find_call);
-    auto j6 = R"(
-              {
-                "found_names": ["cat"],
-                "found_centers": [{
-                                      "x": 0.999,
-                                      "y": 0.999,
-                                      "z": 0 
-                                 },
-                                 {
-                                      "x": 0.899,
-                                      "y": 0.799,
-                                      "z": 0 
-                                 }],
-                "found_scores": [0.9],
-                "result": 0,
-                "error": ""
-              })"_json;
-    std::string j6_string = j6.dump(-1);
-    odfo.deserialise(j6_string);
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+/**
+ * \brief check the navigation classes
+ * A callback is done to check that the desearilization
+ * is correct comparing with a json file done manually 
+ */
+TEST_CASE("Test navigation services", "[navigation]")
+{
+    using namespace noos::cloud;
+    SECTION("Icp slam") {
+        std::string string = read_json_file("tests/data/cloud_class_laser_data.json");
+        REQUIRE(!string.empty());
+
+        //Filling laser data
+        auto json = nlohmann::json::parse(string);
+        std::vector<float> laser_ranges = json["ranges"];
+        std::vector<int> laser_intensities = json["intensities"];
+        noos::object::laser laser;
+        laser.ranges = laser_ranges;
+        laser.intensities = laser_intensities;
+        laser.aperture = 4.71239;
+        laser.max_range = 10.0f;
+        laser.std_error = 0.02;
+        laser.right_to_left = true;
+        laser.pose3d = noos::object::pose<float>(); 
+
+        auto icp = icp_slam(laser);
+        REQUIRE(icp.uri == "icp_slam");
+        REQUIRE(icp.is_single_callable() == true);
+
+        auto j1 = R"(
+                    {
+                        "pose": {
+                                    "position": {
+                                                    "x": 0.99991,
+                                                    "y": 0.99992,
+                                                    "z": 0.0
+                                                },
+                                    "orientation": {
+                                                    "roll"  : 0.001,
+                                                    "pitch" : 0.002,
+                                                    "yaw"   : 0.175763
+                                                   }
+                                },
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto pose_obj = deserialize<icp_slam,
+                                        typename icp_slam::data_type>()(j1_string);
+        REQUIRE(pose_obj.coordinates.x == 0.99991f);
+        REQUIRE(pose_obj.coordinates.y == 0.99992f);
+        REQUIRE(pose_obj.coordinates.z == 0.0f);
+        REQUIRE(pose_obj.angles.roll  == 0.001f);
+        REQUIRE(pose_obj.angles.pitch == 0.002f);
+        REQUIRE(pose_obj.angles.yaw   == 0.175763f);
+    }
+}

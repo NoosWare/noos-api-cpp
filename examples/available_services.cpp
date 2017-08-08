@@ -1,40 +1,29 @@
-/*
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/available_services.hpp>
+#include <noos/noos>
 #include <iostream>
 /*
- * \brief Example to show how available_services works
+ * Example which shows how a simple cloud call works.
+ * In this example we'll use `available_services` which returns a list of the
+ * services the noos platform supports.
  */
-int main(int argc, char* argv[])
+int main()
 {
+    using namespace noos::cloud;
     /*
-     * Construct the platform info setting the hostname/IP, port and authentication token
-     * Then proceed to create a cloud controller.
-     * We'll use this object to create cloud calls to the platform.
-     */
-	rapp::cloud::platform info = {"10.130.3.24", "8080", "mysecret", "alex"}; 
-	rapp::cloud::service_controller ctrl(info);
-
-    /*
-     * Construct a lambda, std::function or bind your own functor.
+     * Now construct a lambda, std::function or bind your own functor.
+     * This functor will receive the reply from the cloud **asynchronously**!
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a list of services and print them on stdout.
+     * 
+     * In order to use the correct callback, see the "callback" definition in each cloud class.
+     * For example, the class `available_services` has a `callback` alias set to:
+     *
+     *      `using callback = std::function<void(std::vector<service>)>;`
+     *
+     * The `service` is simply another alias set to:
+     *
+     *      `using service  = std::pair<std::string,std::string>;`
      */
-    auto cb = [](std::vector<std::pair<std::string, std::string>> services) {
+    auto request  = available_services();
+    auto callback = [](std::vector<std::pair<std::string, std::string>> services) {
          std::cout << "available services: " << std::endl;
          for (const auto & pair : services) {
             std::cout << pair.first << " " << pair.second << std::endl;
@@ -42,11 +31,15 @@ int main(int argc, char* argv[])
      };
 
     /*
-     * Finally we make the call.
-     * The simplest way is to use the `make_call` template function, specifying
-     * as template type the actual cloud call, in this case the `available_services` class.
-     * This method will **block** the service controller queue until its complete.
+     * Finally we create a callable object and send the information to the platform
+     * with a timeout of 2 seconds
+     * For more information /see noos::cloud::callable
+     *
+     * The actual parameter depends on the cloud class you're using,
+     * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    ctrl.make_call<rapp::cloud::available_services>(cb);
+    callable<available_services> cb(request, callback);
+    cb.send(2);
+    
     return 0;
 }

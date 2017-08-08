@@ -10,7 +10,7 @@ and try to format existing code to use this style.
 1. RAPP-API uses the Allman/BSD style of indentation.
 2. Indent *with spaces*, not tabs.
 3. Use *4 spaces per indent* (unless needed like `Makefile`).
-4. Opening curly bracket is on the following line:
+4. Opening curly bracket is on the following line for struct and classes, as well as methods:
 
         // ✔:
         struct name
@@ -18,26 +18,35 @@ and try to format existing code to use this style.
             // code
         };
         
-        void func()
-        {
-            // code
-        }
-
-        if (...)
-        {
-            // code
-        }
-
         // ✗:
         void func() {
             // code
         }
 
-5. Put space after `if`, `while` and `for` before conditions.
+        // ✔:
+        void func()
+        {
+            // code
+        }
+
+5. For code statements, please use a curly bracket after the statement, and not in a new line:
+
+        // ✗:
+        if (...)
+        {
+            // code
+        }
+
+        // ✔:
+        if (...) {
+            // code
+        }
+
+
+6. Put a single space after `if`, `while` and `for` before conditions.
 
         // ✔:
         if () {}
-        
 
         // ✗:
         if() {}
@@ -85,7 +94,26 @@ and try to format existing code to use this style.
         // ✗:
         func(param1, param2, param3);
 
-11. Calling Functions with *multiple parameters* that would extend the line in width,
+11. Template classes and struct definitions should use new lines:
+
+        // ✔:
+        template <typename T>
+        void foo<T>::bar()
+        { }
+
+        // ✗:
+        template <typename T> void foo<T>::bar()
+        { }
+
+12. Template parameters and template template parameters can use their own line:
+
+        // ✔:
+        template <typename foo,
+                  typename bar>
+        void foobar<foo,bar>::run()
+
+
+13. Calling Functions with *multiple parameters* that would extend the line in width,
 should be broken into new lines where and when possible:
 
         // ✔:
@@ -94,10 +122,16 @@ should be broken into new lines where and when possible:
              func2(param3, param4),
              param5);
 
+        func(param1,
+             func2(param2,
+                   param3,
+                   param4),
+            param5);
+
         // ✗:
         func(param1, param2, func2(param3, param4), param5);
 
-12. Naming *class* members which are private should follow an underscore:
+14. Naming *class* members which are private should follow an underscore:
 The only excpetion to this rule is `struct` where the member is public.
 
         // ✔:
@@ -130,14 +164,14 @@ Document your code using [Doxygen][dox].
          */
         void func();
 
-2. Use slash as tag mark:
+2. Use at `@` as tag mark:
 
         // ✔:
         
         /**
-         * \param a an integer argument.
-         * \param s a constant character pointer.
-         * \return The results
+         * @param a an integer argument.
+         * @param s a constant character pointer.
+         * @return The results
          */
         int foo(int a, const char *s);
 
@@ -147,23 +181,25 @@ All names in code should be `small_snake_case`. No Hungarian notation is used.
 Classes and structs names should not have capital letters.
 Use namespaces (in C++) and class modules (in Node.JS).
 
-## Directory Hierarchy
+## File Hierarchy
 
-1. Use a class directory for each class file.
-For example, class `foo` should be in `foo/foo.hpp`.
-2. Use the same name for both definition headers and implementation files.
+1. Use the same name for both definition headers and implementation files.
 Do not break up the definition and implementation files into different locations.
 
     `foo/foo.hpp`
     `foo/foo.cpp`
 
+2. For template code, either add it at the end of the header, or add it in a 
+`*.tpl` file, and include that file at the end of the header
+
 3. Use only internal headers (`.ihh`) for including files.
+Do **not** include 3rd party headers in the declaration headers.
 
     `foo/includes.ihh`
 
 4. Only include what is absolutely necessary, minimising dependencies.
+
 5. Do not polute the namespace or class definitions with various `#include`/`require`,
 put all of them within your internal include header (`includes.ihh`/`includes.js`).
-
 
 [dox]: http://www.stack.nl/~dimitri/doxygen/ "Doxygen homepage"

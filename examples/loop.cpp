@@ -1,51 +1,53 @@
-/**
- * Copyright 2015 RAPP
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * #http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_detection.hpp>
-#include <rapp/objects/picture.hpp>
+#include <noos/noos>
 #include <boost/asio.hpp>
 #include <functional>
 #include <iostream>
-//#include <chrono>
-
+/*
+ * \brief Example of a loop using asio timer
+ */
 int main() 
 {
     boost::asio::io_service io_service;
     boost::asio::deadline_timer timer(io_service, boost::posix_time::seconds(1));
 
-    /*
-     * Construct the platform info setting the hostname/IP, port and authentication token
-     * Then proceed to create a cloud controller.
-     * We'll use this object to create cloud calls to the platform.
-     */
-    rapp::cloud::platform info = {"127.0.0.1", "8080", "mysecret", "alex"}; 
-    rapp::cloud::service_controller ctrl(info);
+    using namespace noos::cloud;
 
+    auto pic = noos::object::picture("data/object_classes_picture_1.png");
+    /*
+     * Construct a lambda, std::function or bind your own functor.
+     * In this example we'll pass an inline lambda as the callback.
+     * All it does is receive a vector of noos::object::qr_code and
+     * we show the size of the vector to know how many qr_codes have 
+     * been found.
+     */
+    auto callback = [&](std::vector<noos::object::face> faces) { 
+        std::cout << "Found " << faces.size() << " faces!" << std::endl;
+    };
+    /*
+     * The face_detection object is created
+     */
+    auto face_request = face_detection(pic);
+    /*
+     * The callable object is created
+     */
+    callable<face_detection,true> cb(face_request, callback);
     /*
      * Construct a std::function which is going to be in charge of make the call
 	 * reinitialize the timer and call the own function a second later to make an
 	 * infinite loop.
      */
 	std::function<void(const boost::system::error_code&)> func = [&](const auto & err) {
-		auto pic = rapp::object::picture("data/object_classes_picture_1.png");
-		auto callback = [&](std::vector<rapp::object::face> faces) { 
-			std::cout << "Found " << faces.size() << " faces!" << std::endl;
-		};
-		ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
+        /*
+         * The information of the face_detection object is sent
+         */
+        cb.send(2);
+        /*
+         * If the image needs to be changed, just a new face_detection object
+         * with the new image can be created
+         */
+        pic = noos::object::picture("data/object_classes_picture_1.png");
+        cb.object = face_detection(pic);
+
 		timer.expires_at(timer.expires_at() + boost::posix_time::milliseconds(50));
 		timer.async_wait(func);
 	};

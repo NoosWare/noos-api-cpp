@@ -1,25 +1,24 @@
-# @date January 2016
+# date June 2017
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
-# 
-# Command line arguments you can use:
-#       -DRAPP_SHARED=ON		                    (Default: compile a shared librapp)
-#       -DRAPP_STATIC=ON		                    (Optional: compile a static librapp)
+# CMake flags in use:
+#       -DBUILD_SHARED=ON		                        (Default: compile a shared libnoos)
+#       -DBUILD_STATIC=ON		                        (Optional: compile a static libnoos)
 #       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
 #       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
-#       -DOPEN_NAO=ON                                   (Optional: compiling on OpenNAO requires additional CXX flags)
+#       -DOPEN_NAO=ON                                   (Optional: compiling for NAO requires additional CXX flags)
 #		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
 #       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
 #       -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/ (Optional: specify OpenSSL library directory)
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
-PROJECT(rapp)
-set (RAPP_VERSION_MAJOR 0)
-set (RAPP_VERSION_MINOR 7)
-set (RAPP_VERSION_PATCH 2)
-set (RAPP_VERSION_STRING ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
+PROJECT(noos)
+set (NOOS_VERSION_MAJOR 0)
+set (NOOS_VERSION_MINOR 7)
+set (NOOS_VERSION_PATCH 3)
+set (NOOS_VERSION_STRING ${NOOS_VERSION_MAJOR}.${NOOS_VERSION_MINOR}.${NOOS_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 
 # library paths
@@ -34,7 +33,7 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 # header paths
 set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
-set(INCLUDES ${INCLUDES} rapp)
+set(INCLUDES ${INCLUDES} noos)
 
 # set root at `/includes`
 add_subdirectory(${INCLUDES})
@@ -47,40 +46,27 @@ include_directories(".")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-             ${INCLUDES}/cloud/asio/asio_timer.cpp
              ${INCLUDES}/cloud/asio/asio_http.cpp
              ${INCLUDES}/cloud/asio/asio_https.cpp
              ${INCLUDES}/cloud/asio/http_header.cpp
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
-             ${INCLUDES}/cloud/authentication.cpp
+             ${INCLUDES}/cloud/asio/platform.cpp
+
              ${INCLUDES}/cloud/available_services.cpp
-             ${INCLUDES}/cloud/cognitive_exercises.cpp
-             ${INCLUDES}/cloud/email.cpp
-             ${INCLUDES}/cloud/geolocation.cpp
-             ${INCLUDES}/cloud/ontology.cpp
              ${INCLUDES}/cloud/vision_detection.cpp
              ${INCLUDES}/cloud/vision_recognition.cpp
-             ${INCLUDES}/cloud/weather_report.cpp
-             ${INCLUDES}/cloud/path_planning.cpp
-             ${INCLUDES}/cloud/news.cpp
-             ${INCLUDES}/cloud/speech_recognition.cpp
-             ${INCLUDES}/cloud/text_to_speech.cpp
-             ${INCLUDES}/cloud/service_controller.cpp
-             ${INCLUDES}/config/config.cpp
-             ${INCLUDES}/objects/time.cpp
-             ${INCLUDES}/objects/quaternion.cpp
-             ${INCLUDES}/objects/pose.cpp
-             ${INCLUDES}/objects/point.cpp
-             ${INCLUDES}/objects/msg_metadata.cpp
-             ${INCLUDES}/objects/pose_stamped.cpp
-             ${INCLUDES}/objects/planned_path.cpp
+             ${INCLUDES}/cloud/navigation.cpp
+             ${INCLUDES}/cloud/deserialize.cpp
+
              ${INCLUDES}/objects/human.cpp
              ${INCLUDES}/objects/face.cpp
              ${INCLUDES}/objects/picture.cpp
              ${INCLUDES}/objects/audio.cpp
              ${INCLUDES}/objects/qr_code.cpp
+             ${INCLUDES}/objects/time.cpp
+             ${INCLUDES}/objects/laser.cpp
              )
 
 # Begin searching for packgages we use in RAPP API
@@ -109,13 +95,13 @@ endif()
 ###
 # Set library sources
 #
-add_library(lrapp OBJECT ${SOURCES})
+add_library(lnoos OBJECT ${SOURCES})
 
 ###
 #   Static Library - only if asked 
 #	Use only if you want complete static linking
 ###
-if (${RAPP_STATIC})
+if (${BUILD_STATIC})
 	#
 	# RPATH
 	#
@@ -126,10 +112,10 @@ if (${RAPP_STATIC})
 	#
     # set target, add library - link with Boost and OpenSSL
 	#
-    set(LIBTARGET ${LIBTARGET} rapp)
-    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
-    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
+    set(LIBTARGET ${LIBTARGET} noos)
+    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${NOOS_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
@@ -146,9 +132,9 @@ elseif(${OPEN_NAO})
     # set target, add library - link with Boost and OpenSSL
     #
     set(LIBTARGET ${LIBTARGET} rapp)
-	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
-    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
+	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${NOOS_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
 	# No need to build static library, but the apps will have to statically link
@@ -170,13 +156,13 @@ else()
 	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 	#
     # use shared boost - build shared libs - set correct flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -D_GLIBCXX_DEBUG")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
-    set(LIBTARGET ${LIBTARGET} rapp)
-    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING} SOVERSION ${RAPP_VERSION_STRING})
+    set(LIBTARGET ${LIBTARGET} noos)
+    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lnoos>)
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING} SOVERSION ${NOOS_VERSION_STRING})
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set_target_properties(${LIBTARGET} PROPERTIES INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib")
     message(STATUS "Building Shared library: lib${LIBTARGET}")
@@ -193,9 +179,7 @@ if (${BUILD_TESTS})
     if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
         message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
     else()
-        find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
         enable_testing()
-        add_definitions(-DBOOST_TEST_DYN_LINK)
         set(TESTS ${TESTS} tests)
         set(TESTFILES ${TESTFILES} asio_classes.cpp 
                                    json_classes.cpp 
@@ -219,7 +203,7 @@ if (${BUILD_TESTS})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
             add_executable(${TARGET} ${TESTS}/${ITEM})
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT}) ######
+            target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
             add_test(${TARGET} ${TEST_DIR}/${TARGET})
@@ -229,37 +213,27 @@ else()
     message(STATUS "Not Building tests. Enable them with `-DBUILD_TESTS=ON`")
 endif()
 
-###
-#   build examples
-###
+####
+##   build examples
+####
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
-                  batch.cpp
-                  class_reactor.cpp
-                  loop.cpp
-                  face_detect.cpp
-                  human_detect.cpp
-                  hazard_detect.cpp
-                  qr_recognition.cpp
-                  light_detection.cpp
-                  object_recognition.cpp
-                  object_recognition_my_own_models.cpp
-                  knowrob_ontology.cpp
-                  picture_handling.cpp
-                  text_to_speech.cpp
-                  config.cpp
-                  cognitive_games.cpp
-                  geolocation.cpp
-                  weather.cpp
-                  path_planning.cpp
-                  email_handling.cpp
-                  news.cpp
-                  set_noise_profile.cpp
-                  speech_recognition_google.cpp
-                  speech_recognition_sphinx4.cpp)
+                 batch.cpp
+                 vision_batch.cpp
+                 class_reactor.cpp
+                 loop.cpp
+                 face_detect.cpp
+                 human_detect.cpp
+                 qr_recognition.cpp
+                 light_detection.cpp
+                 object_recognition.cpp
+                 orb.cpp
+                 picture_handling.cpp
+                 keep_alive_test.cpp
+                 icp_slam.cpp
+                  )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
-
     # create "/examples"
     add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
@@ -270,7 +244,7 @@ if (${BUILD_EXAMPLES})
     add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E create_symlink 
                        ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${NOOS_VERSION_STRING})
     # iterate tests
     foreach(ITEM ${EXAMPLES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})
@@ -344,34 +318,34 @@ message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 ###
 # Install library 
 #
-set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
-#
-# symbolic link library version to the generic name
-#
-if((${RAPP_STATIC}) OR (${OPEN_NAO}))
-    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE 
-        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.a.${LIB_VERSION}
-                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
-else()
-    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE 
-        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.so.${LIB_VERSION} 
-                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
-endif()
-message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
-#
-# Headers go under /usr/loca/include
-#
-install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
-                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
-message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
-#
-# Install rapp-config.cmake
-#
-configure_file(cmake/rapp-config.cmake
-               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
-               COPYONLY
-              )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
+#set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
+##
+## symbolic link library version to the generic name
+##
+#if((${RAPP_STATIC}) OR (${OPEN_NAO}))
+#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+#	install(CODE 
+#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.a.${LIB_VERSION}
+#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
+#else()
+#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+#	install(CODE 
+#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.so.${LIB_VERSION} 
+#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
+#endif()
+#message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
+##
+## Headers go under /usr/loca/include
+##
+#install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
+#                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
+#message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
+##
+## Install rapp-config.cmake
+##
+#configure_file(cmake/rapp-config.cmake
+#               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
+#               COPYONLY
+#              )
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
+#        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
