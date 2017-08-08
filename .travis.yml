@@ -23,12 +23,12 @@ before_install:
     - sudo apt-get install gcc-4.9 g++-4.9 libboost1.55-all-dev cmake git -y
     - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
     - sudo update-alternatives --set g++ /usr/bin/g++-4.9
-    - git submodule init
-    - git submodule update
 
 install: true
 
 script:
+    - git submodule init
+    - git submodule update
     - mkdir -p build
     - cd build
     - cmake .. -DBUILD_TESTS=ON 
