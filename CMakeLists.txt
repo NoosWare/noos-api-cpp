@@ -69,7 +69,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/laser.cpp
              )
 
-# Begin searching for packgages we use in RAPP API
+# Begin searching for packgages we use in NOOS API
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
@@ -176,7 +176,7 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 #   build tests - run with `make test`
 ###
 if (${BUILD_TESTS})
-    if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+    if ((${NOOS_STATIC}) OR (${OPEN_NAO}))
         message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
     else()
         enable_testing()
@@ -197,7 +197,7 @@ if (${BUILD_TESTS})
         add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E create_symlink 
                            ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
-                           ${TEST_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
+                           ${TEST_DIR}/lib${LIBTARGET}.so.${NOOS_VERSION_STRING})
         # iterate tests
         foreach(ITEM ${TESTFILES})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
@@ -277,7 +277,7 @@ endif()
 message (STATUS "Platform is `${CMAKE_SYSTEM_NAME}`" )
 
 ####
-# Linux should be the default OS/Platform for RAPP::API 
+# Linux should be the default OS/Platform for NOOS::API 
 # We need g++ 4.9 or higher, else json won't work
 # We could support 4.8.4 using c++1y only if we change json library.
 #
@@ -318,34 +318,34 @@ message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 ###
 # Install library 
 #
-#set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
-##
-## symbolic link library version to the generic name
-##
-#if((${RAPP_STATIC}) OR (${OPEN_NAO}))
-#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-#	install(CODE 
-#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.a.${LIB_VERSION}
-#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
-#else()
-#    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-#	install(CODE 
-#        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.so.${LIB_VERSION} 
-#                                        ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
-#endif()
-#message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
-##
-## Headers go under /usr/loca/include
-##
-#install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
-#                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
-#message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
-##
-## Install rapp-config.cmake
-##
-#configure_file(cmake/rapp-config.cmake
-#               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
-#               COPYONLY
-#              )
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
-#        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
+set(LIB_VERSION ${NOOS_VERSION_MAJOR}.${NOOS_VERSION_MINOR}.${NOOS_VERSION_PATCH})
+#
+# symbolic link library version to the generic name
+#
+if((${NOOS_STATIC}) OR (${OPEN_NAO}))
+    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+	install(CODE 
+        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/libnoos.a.${LIB_VERSION}
+                                        ${CMAKE_INSTALL_PREFIX}/lib/libnoos.a)")
+else()
+    install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+	install(CODE 
+        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/libnoos.so.${LIB_VERSION} 
+                                        ${CMAKE_INSTALL_PREFIX}/lib/libnoos.so)")
+endif()
+message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
+#
+# Headers go under /usr/loca/include
+#
+install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
+                  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
+message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
+#
+# Install rapp-config.cmake
+#
+configure_file(cmake/noos-config.cmake
+               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/noos-config.cmake"
+               COPYONLY
+              )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/noos-config.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake")
