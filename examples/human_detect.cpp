@@ -11,7 +11,7 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    auto pic = noos::object::picture("data/object_classes_picture_3.png");
+    auto pic = noos::object::picture("data/object_classes_picture_7.png");
 
     /*
      * Construct a lambda, std::function or bind your own functor.

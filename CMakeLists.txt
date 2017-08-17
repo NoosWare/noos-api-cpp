@@ -102,14 +102,7 @@ add_library(lnoos OBJECT ${SOURCES})
 #	Use only if you want complete static linking
 ###
 if (${BUILD_STATIC})
-	#
-	# RPATH
-	#
-	set(CMAKE_SKIP_BUILD_RPATH  TRUE)
-	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-	#
+    #
     # set target, add library - link with Boost and OpenSSL
 	#
     set(LIBTARGET ${LIBTARGET} noos)
@@ -147,14 +140,7 @@ elseif(${OPEN_NAO})
 #   Shared Library - By default
 ###
 else()
-	#
-	# RPATH
-	#
-	set(CMAKE_SKIP_BUILD_RPATH  TRUE)
-	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
-	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-	#
+    #
     # use shared boost - build shared libs - set correct flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -D_GLIBCXX_DEBUG")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
