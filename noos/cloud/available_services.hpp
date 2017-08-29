@@ -14,12 +14,10 @@ namespace cloud {
  */
 class available_services 
 : public http_request,
-  public cloud_base<std::vector<std::pair<std::string,
-                                          std::string>>>
+  public cloud_base<std::vector<std::string>>
 {
 public:
-    using service  = std::pair<std::string,std::string>;
-    using callback = std::function<void(std::vector<service>)>;
+    using callback = std::function<void(std::vector<std::string>)>;
     static const std::string uri;
 
     /// @brief construct without any special parameters

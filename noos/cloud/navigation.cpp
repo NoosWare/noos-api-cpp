@@ -3,7 +3,7 @@ namespace noos {
 namespace cloud {
 
 //service names
-const std::string icp_slam::uri = "icp_slam";
+const std::string icp_slam::uri = "slam";
 
 //Class icp_slam 
 icp_slam::icp_slam(const noos::object::laser & laser_data)

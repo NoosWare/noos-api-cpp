@@ -18,15 +18,12 @@ int main()
      *
      *      `using callback = std::function<void(std::vector<service>)>;`
      *
-     * The `service` is simply another alias set to:
-     *
-     *      `using service  = std::pair<std::string,std::string>;`
      */
     auto request  = available_services();
-    auto callback = [](std::vector<std::pair<std::string, std::string>> services) {
+    auto callback = [](std::vector<std::string> services) {
          std::cout << "available services: " << std::endl;
-         for (const auto & pair : services) {
-            std::cout << pair.first << " " << pair.second << std::endl;
+         for (const auto name : services) {
+            std::cout << name << std::endl;
          }
      };
 

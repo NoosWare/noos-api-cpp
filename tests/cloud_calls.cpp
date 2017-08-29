@@ -68,13 +68,12 @@ SCENARIO("A service needs to be call")
  */    
 TEST_CASE("Test service Available services", "[available_services]")
 {
-    std::vector<std::pair<std::string, std::string>> services;
+    std::vector<std::string> services;
     noos::cloud::available_services available_serv;
     auto j1 = R"(
               {
                 "services" : [{
-                               "name" : "name",
-                               "url" : "url"
+                               "name" : "name"
                               }],
                 "error" : ""
               }
@@ -82,8 +81,7 @@ TEST_CASE("Test service Available services", "[available_services]")
     std::string j1_string = j1.dump(-1);
     services = noos::cloud::deserialize<noos::cloud::available_services,
                                         typename noos::cloud::available_services::data_type>()(j1_string);
-    REQUIRE(services.at(0).first == "name");
-    REQUIRE(services.at(0).second == "url");  
+    REQUIRE(services.at(0) == "name");
 }
 
 /**
@@ -428,7 +426,7 @@ TEST_CASE("Test navigation services", "[navigation]")
         laser.pose3d = noos::object::pose<float>(); 
 
         auto icp = icp_slam(laser);
-        REQUIRE(icp.uri == "icp_slam");
+        REQUIRE(icp.uri == "slam");
         REQUIRE(icp.is_single_callable() == true);
 
         auto j1 = R"(

@@ -178,19 +178,17 @@ std::vector<noos::object::qr_code>
 
 // available services
 template<>
-std::vector<std::pair<std::string,std::string>>
+std::vector<std::string>
     deserialize<available_services,
-                std::vector<std::pair<std::string,
-                                      std::string>
-                >>::operator()(std::string json)
+                std::vector<std::string>
+                >::operator()(std::string json)
 {
     nlohmann::json json_f;
-    std::vector<std::pair<std::string,std::string>> services;
+    std::vector<std::string> services;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             for (auto it_s : json_f["services"]) {
-                services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
-                                                  misc::get_json_value<std::string>("url", it_s)));
+                services.push_back(misc::get_json_value<std::string>("name", it_s));
             }
         }
     }
