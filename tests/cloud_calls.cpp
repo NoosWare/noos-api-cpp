@@ -455,4 +455,35 @@ TEST_CASE("Test navigation services", "[navigation]")
         REQUIRE(pose_obj.angles.pitch == 0.002f);
         REQUIRE(pose_obj.angles.yaw   == 0.175763f);
     }
+
+    SECTION("Delete a map") {
+        delete_map remove_map("old_map");
+        REQUIRE(remove_map.uri == "delete_map");
+        REQUIRE(remove_map.is_single_callable());
+        auto j1 = R"(
+                    {
+                        "success": true,
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto success = deserialize<delete_map,
+                                   typename delete_map::data_type>()(j1_string);
+        REQUIRE(success);
+    }
+
+    SECTION("Upload a map") {
+        auto pic = noos::object::picture("tests/data/map_picture.png");
+        upload_map new_map("old_map", pic);
+        REQUIRE(new_map.uri == "upload_map");
+        REQUIRE(new_map.is_single_callable());
+        auto j1 = R"(
+                    {
+                        "success": true,
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto success = deserialize<upload_map,
+                                   typename upload_map::data_type>()(j1_string);
+        REQUIRE(success);
+    }
 }

@@ -14,6 +14,8 @@ struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
 struct icp_slam;
+struct delete_map;
+struct upload_map;
 
 // face_detection and faces
 template <>
@@ -195,6 +197,7 @@ std::vector<std::string>
     return services;
 }
 
+// icp slam
 template<>
 noos::object::pose<float> deserialize<icp_slam,
                                       noos::object::pose<float>
@@ -211,6 +214,33 @@ noos::object::pose<float> deserialize<icp_slam,
     return empty_pose;
 }
 
-}
+// delete map
+template <>
+bool deserialize<delete_map,
+                 bool>:: operator()(std::string json)
+{
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+           return json_f["success"];
+        }
+    }
+    return false;
 }
 
+// upload map
+template <>
+bool deserialize<upload_map,
+                 bool>:: operator()(std::string json)
+{
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+           return json_f["success"];
+        }
+    }
+    return false;
+}
+
+}
+}

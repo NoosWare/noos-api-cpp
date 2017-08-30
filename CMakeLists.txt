@@ -217,6 +217,7 @@ if (${BUILD_EXAMPLES})
                  picture_handling.cpp
                  keep_alive_test.cpp
                  icp_slam.cpp
+                 upload_delete_maps.cpp
                   )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
