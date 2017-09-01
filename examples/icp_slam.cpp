@@ -28,6 +28,33 @@ int main()
     using namespace noos::cloud;
     
     /*
+     * Before starting slam, a configuration file has to be sent
+     * to the platform. It's required only once.
+     * The next parameters are needed:
+     * @param noos::object::config_file is the configuration file
+     * @param noos::cloud::slam_type. Due to there are different methods
+     *                          for doing slam, it's needed to specify it.
+     */
+    auto config = noos::object::config_file("data/config_file.ini");
+
+    auto request  = upload_config_file(config, noos::cloud::slam_type::icp);
+    auto config_callback = [](bool success) {
+        std::cout << "Success uploading the config file: " << std::boolalpha << success << std::endl;
+    };
+
+    /*
+     * Finally we create a callable object and send the information to the platform
+     * with a timeout of 2 seconds
+     * For more information /see noos::cloud::callable
+     *
+     * The actual parameter depends on the cloud class you're using,
+     * so for a complete list, you need to read and understand how each cloud class functions.
+     */
+    callable<upload_config_file> config_callable(request, config_callback);
+    config_callable.send();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    /*
+     * Now, the SLAM part
      * First, the laser data is filled to allow do the mapping
      * For more information \see noos::object::laser
      */
@@ -48,11 +75,10 @@ int main()
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a vector of noos::object::qr_code and
-     * we show the size of the vector to know how many qr_codes have 
-     * been found.
+     * All it does is receive a noos::object::pose with the position
+     * of the robot
      */
-    auto icp_request = icp_slam(laser);
+    auto icp_request = icp_slam("map_name", 100, laser);
     auto callback = [&](noos::object::pose<float> pose3d) {
         std::cout << pose3d;
     };

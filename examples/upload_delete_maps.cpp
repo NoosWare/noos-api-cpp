@@ -41,6 +41,7 @@ int main()
     callable<upload_map> cb(request, callback);
     cb.send();
     
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     /*
      * Repeat the process for delete the map
      */

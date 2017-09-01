@@ -425,7 +425,7 @@ TEST_CASE("Test navigation services", "[navigation]")
         laser.right_to_left = true;
         laser.pose3d = noos::object::pose<float>(); 
 
-        auto icp = icp_slam(laser);
+        auto icp = icp_slam("new_map", 10, laser);
         REQUIRE(icp.uri == "slam");
         REQUIRE(icp.is_single_callable() == true);
 
@@ -484,6 +484,22 @@ TEST_CASE("Test navigation services", "[navigation]")
         std::string j1_string = j1.dump(-1);
         auto success = deserialize<upload_map,
                                    typename upload_map::data_type>()(j1_string);
+        REQUIRE(success);
+    }
+
+    SECTION("Upload a config_file") {
+        auto file = noos::object::config_file("tests/data/config_file.ini");
+        upload_config_file new_file(file, slam_type::icp);
+        REQUIRE(new_file.uri == "upload_config_file");
+        REQUIRE(new_file.is_single_callable());
+        auto j1 = R"(
+                    {
+                        "success": true,
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto success = deserialize<upload_map,
+                                   typename upload_config_file::data_type>()(j1_string);
         REQUIRE(success);
     }
 }

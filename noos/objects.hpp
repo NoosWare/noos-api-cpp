@@ -9,3 +9,4 @@
 #include <noos/objects/pose.hpp>
 #include <noos/objects/laser.hpp>
 #include <noos/objects/orientation.hpp>
+#include <noos/objects/config_file.hpp>

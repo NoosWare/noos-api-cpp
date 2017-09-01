@@ -67,6 +67,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/qr_code.cpp
              ${INCLUDES}/objects/time.cpp
              ${INCLUDES}/objects/laser.cpp
+             ${INCLUDES}/objects/config_file.cpp
              )
 
 # Begin searching for packgages we use in NOOS API
