@@ -27,7 +27,7 @@ int main()
     std::string map_name = "old_map";
     auto request  = upload_map(map_name, pic);
     auto callback = [](bool success) {
-         std::cout << "Success uploading a map: " << success << std::endl;
+         std::cout << "Success uploading a map: " << std::boolalpha << success << std::endl;
      };
 
     /*
@@ -38,19 +38,20 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<upload_map> cb(request, callback);
+    callable<upload_map, false> cb(request, callback);
     cb.send();
     
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
     /*
      * Repeat the process for delete the map
      */
     auto request2  = delete_map(map_name);
     auto callback2 = [](bool success) {
-         std::cout << "Success deleting map: " << success << std::endl;
+         std::cout << "Success deleting map: " << std::boolalpha << success << std::endl;
      };
 
-    callable<delete_map> cb2(request2, callback2);
+    callable<delete_map, false> cb2(request2, callback2);
     cb2.send();
 
     return 0;

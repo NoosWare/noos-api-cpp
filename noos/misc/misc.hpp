@@ -136,6 +136,21 @@ inline bool check_error(
     return true;
 }
 
+/// @brief take decoded data and save it into an image
+/// @param std::string data is the image data before decoding
+/// @param filename is path where to save the image
+inline bool save_dec_image(std::string data,
+                           std::string filename)
+{
+    std::string temporary = "tmp";
+    std::ofstream tmp(temporary);
+    tmp << misc::decode64(data);
+    tmp.close();
+    noos::object::picture result(temporary);
+    std::remove(temporary.c_str());
+    return result.save(filename);
+}
+
 }
 }
 

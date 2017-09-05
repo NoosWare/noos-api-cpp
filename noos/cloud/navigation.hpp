@@ -105,6 +105,25 @@ struct upload_config_file
     upload_config_file(noos::object::config_file & file,
                        slam_type type);
 };
+
+/**
+ * @struct get_map
+ * @brief get the image of the map name asked for
+ * @version 0.8.0
+ * @date 04.09.2017
+ */
+struct get_map 
+: public http_request, 
+  public cloud_base<bool>
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+    static std::map<slam_type, std::string> config_type;
+
+    /// @param laser_data is the laser reading
+    get_map(std::string map_name);
+};
+
 }
 }
 #endif

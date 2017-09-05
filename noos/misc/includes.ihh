@@ -12,5 +12,6 @@
 #include <boost/algorithm/string.hpp>
 
 #include "json/src/json.hpp"
+#include "noos/objects/picture.hpp"
 
 using json = nlohmann::json;

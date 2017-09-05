@@ -502,4 +502,22 @@ TEST_CASE("Test navigation services", "[navigation]")
                                    typename upload_config_file::data_type>()(j1_string);
         REQUIRE(success);
     }
+
+    SECTION("Get map") {
+        get_map new_map("old_map");
+        REQUIRE(new_map.uri == "get_map");
+        REQUIRE(new_map.is_single_callable());
+
+        std::string filename = "tests/data/get_map.json"; 
+        std::ifstream f(filename.c_str());
+        std::stringstream buffer;
+        buffer << f.rdbuf();
+        f.close();
+        json j1 = json::parse(buffer.str());
+
+        std::string j1_string = j1.dump(-1);
+        auto success = deserialize<get_map,
+                                   typename upload_config_file::data_type>()(j1_string);
+        REQUIRE(success);
+    }
 }

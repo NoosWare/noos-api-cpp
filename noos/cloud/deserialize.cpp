@@ -17,6 +17,7 @@ struct icp_slam;
 struct delete_map;
 struct upload_map;
 struct upload_config_file;
+struct get_map;
 
 // face_detection and faces
 template <>
@@ -251,6 +252,21 @@ bool deserialize<upload_config_file,
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
+           return json_f["success"];
+        }
+    }
+    return false;
+}
+
+// get map image
+template <>
+bool deserialize<get_map,
+                 bool>:: operator()(std::string json)
+{
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f) &&
+            misc::save_dec_image(json_f["image"], json_f["map_name"])) {
            return json_f["success"];
         }
     }
