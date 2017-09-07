@@ -3,7 +3,7 @@ namespace noos {
 namespace cloud {
 
 //service names
-const std::string object_recognition::uri = "object_recognition_caffe";
+const std::string object_recognition::uri = "object_recognition";
 const std::string qr_recognition::uri = "qr_recognition";
 
 /// Class object_recognition

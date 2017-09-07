@@ -1,4 +1,4 @@
-#include "vision_detection.hpp"
+include "vision_detection.hpp"
 namespace noos {
 namespace cloud {
 
@@ -69,6 +69,9 @@ human_detection::human_detection()
     nlohmann::json json_doc = {{"no_param", ""}};
     vision_base::json = json_doc.dump(-1);
 }
+
+// TODO: gender_detection
+//       age_detection
 
 /// Class orb_learn_object
 orb_learn_object::orb_learn_object(

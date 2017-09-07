@@ -71,6 +71,56 @@ struct human_detection
 };
 
 /**
+ * @struct gender_detection
+ * @brief detect gender of person in an image
+ * @note data type passed back is an `std::string`
+ *
+ * TODO - ALEX
+ */
+struct gender_detection 
+: public http_request, 
+  public cloud_base<std::string>,
+  public vision_base
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+
+    /**
+     * @param image is a picture object 
+     * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
+     */
+    gender_detection(const noos::object::picture & image);
+
+    /// @brief Constructor without image
+    gender_detection();
+};
+
+/**
+ * @struct age_detection
+ * @brief detect age range of person in an image
+ * @note data type passed back is `std::vector<std::pair<std::string,float>>`
+ * 
+ * TODO - ALEX
+ */
+struct age_detection 
+: public http_request, 
+  public cloud_base<std::vector<std::pair<std::string,float>>>,
+  public vision_base
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+
+    /**
+     * @param image is a picture object 
+     * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
+     */
+    age_detection(const noos::object::picture & image);
+
+    /// @brief Constructor without image
+    age_detection();
+};
+
+/**
  * @struct orb_learn_object
  * @brief learn object gives by the user
  */
