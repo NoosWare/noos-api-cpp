@@ -13,6 +13,9 @@ struct orb_load_models;
 struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
+struct age_detection;
+struct gender_detection;
+struct face_expression;
 struct icp_slam;
 struct delete_map;
 struct upload_map;
@@ -53,6 +56,7 @@ int deserialize<light_detection,
     }
     return -1;
 }
+
 // human detection
 template <>
 std::vector<noos::object::human> 
@@ -146,18 +150,68 @@ noos::object::orb_object
 
 // object recognition (Caffe2)
 template <>
-std::string 
+std::vector<std::pair<std::string,float>>
     deserialize<object_recognition,
-                std::string
+                std::vector<std::pair<std::string,float>>
                 >::operator()(std::string json) 
 {
+    std::vector<std::pair<std::string,float>> result;
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
-            return(json_f["object_class"]);
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));
+            }
         }
     }
-    return "";
+    return result;
+}
+
+// gender_detection (Caffe2)
+template <>
+std::vector<std::pair<std::string,float>>
+    deserialize<gender_detection,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json)
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));            
+            }
+        }
+    }
+    return result;
+}
+
+// age_detection (Caffe2)
+template<>
+std::vector<std::pair<std::string,float>>
+    deserialize<age_detection,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json)
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));            
+            }
+        }
+    }
+    return result;
 }
 
 // QR recongition

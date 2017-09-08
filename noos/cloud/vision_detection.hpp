@@ -74,8 +74,6 @@ struct human_detection
  * @struct gender_detection
  * @brief detect gender of person in an image
  * @note data type passed back is an `std::string`
- *
- * TODO - ALEX
  */
 struct gender_detection 
 : public http_request, 
@@ -84,7 +82,6 @@ struct gender_detection
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
-
     /**
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
@@ -99,8 +96,6 @@ struct gender_detection
  * @struct age_detection
  * @brief detect age range of person in an image
  * @note data type passed back is `std::vector<std::pair<std::string,float>>`
- * 
- * TODO - ALEX
  */
 struct age_detection 
 : public http_request, 
@@ -109,7 +104,6 @@ struct age_detection
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
-
     /**
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.

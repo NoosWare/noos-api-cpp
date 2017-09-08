@@ -17,8 +17,6 @@ namespace cloud {
  * @date 06.09.2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * @note data type passed back is `std::vector<std::pair<std::string,float>>`
- *
- * TODO - ALEX
  */
 struct object_recognition 
 : public http_request, 
@@ -42,8 +40,6 @@ struct object_recognition
  * @date 06.09.2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * @note data type passed back is `std::vector<std::pair<std::string,float>>`
- *
- * TODO - ALEX
  */
 struct face_expression
 : public http_request, 

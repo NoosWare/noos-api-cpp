@@ -1,17 +1,18 @@
-include "vision_detection.hpp"
+#include "vision_detection.hpp"
 namespace noos {
 namespace cloud {
 
 //service names
-const std::string face_detection::uri = "face_detection";
-const std::string light_detection::uri= "light_detection";
-const std::string human_detection::uri= "human_detection";
-const std::string orb_learn_object::uri= "orb_learn_object";
-const std::string orb_clear_models::uri= "orb_clear_models";
-const std::string orb_load_models::uri= "orb_load_models";
-const std::string orb_find_objects::uri= "orb_find_objects";
+const std::string face_detection::uri   = "face_detection";
+const std::string light_detection::uri  = "light_detection";
+const std::string human_detection::uri  = "human_detection";
+const std::string gender_detection::uri = "gender_detection";
+const std::string age_detection::uri    = "age_detection";
+const std::string orb_learn_object::uri = "orb_learn_object";
+const std::string orb_clear_models::uri = "orb_clear_models";
+const std::string orb_load_models::uri  = "orb_load_models";
+const std::string orb_find_objects::uri = "orb_find_objects";
 
-///Class face_detection
 face_detection::face_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
@@ -32,7 +33,6 @@ face_detection::face_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-/// Class light_detection
 light_detection::light_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
@@ -51,7 +51,6 @@ light_detection::light_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-/// Class human_detection
 human_detection::human_detection(const noos::object::picture & image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
@@ -70,14 +69,44 @@ human_detection::human_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-// TODO: gender_detection
-//       age_detection
+gender_detection::gender_detection(const noos::object::picture & image)
+: http_request(make_http_uri(uri)),
+  cloud_base(true)
+{
+    http_request::make_multipart_form();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
+    http_request::add_content("file", fname, image.bytearray());
+    http_request::close();
+}
 
-/// Class orb_learn_object
-orb_learn_object::orb_learn_object(
-                                    const noos::object::picture & image,
-                                    const std::string name
-                                  )
+gender_detection::gender_detection()
+: http_request(make_http_uri(uri)),
+  cloud_base(false)
+{
+    nlohmann::json json_doc = {{"no_param", ""}};
+    vision_base::json = json_doc.dump(-1);
+}
+
+age_detection::age_detection(const noos::object::picture & image)
+: http_request(make_http_uri(uri)),
+  cloud_base(true)
+{
+    http_request::make_multipart_form();
+    std::string fname = noos::misc::random_boundary() + "." + image.type();
+    http_request::add_content("file", fname, image.bytearray());
+    http_request::close();
+}
+
+age_detection::age_detection()
+: http_request(make_http_uri(uri)),
+  cloud_base(false)
+{
+    nlohmann::json json_doc = {{"no_param", ""}};
+    vision_base::json = json_doc.dump(-1);
+}
+
+orb_learn_object::orb_learn_object(const noos::object::picture & image,
+                                   const std::string name)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
@@ -119,10 +148,8 @@ orb_load_models::orb_load_models(const std::vector<std::string> names)
 }
 
 /// Class orb_find_objects
-orb_find_objects::orb_find_objects(
-                                    const noos::object::picture & image,
-                                    const int limit
-                                  )
+orb_find_objects::orb_find_objects(const noos::object::picture & image,
+                                   const int limit)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
