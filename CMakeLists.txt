@@ -205,21 +205,19 @@ endif()
 ####
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
-                 batch.cpp
-                 vision_batch.cpp
-                 class_reactor.cpp
-                 loop.cpp
-                 face_detect.cpp
-                 human_detect.cpp
-                 qr_recognition.cpp
-                 light_detection.cpp
-                 object_recognition.cpp
-                 orb.cpp
-                 picture_handling.cpp
-                 keep_alive_test.cpp
-                 icp_slam.cpp
-                 upload_delete_maps.cpp
-                  )
+                  vision_batch.cpp
+                  class_reactor.cpp
+                  age_detection.cpp
+                  face_detection.cpp
+                  face_expression.cpp
+                  gender_detection.cpp
+                  human_detection.cpp
+                  object_recognition.cpp
+                  qr_recognition.cpp
+                  orb.cpp
+                  icp_slam.cpp
+                  upload_delete_maps.cpp
+                 )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
     # create "/examples"

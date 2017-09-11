@@ -22,6 +22,25 @@ struct upload_map;
 struct upload_config_file;
 struct get_map;
 
+// available services
+template<>
+std::vector<std::string>
+    deserialize<available_services,
+                std::vector<std::string>
+                >::operator()(std::string json)
+{
+    nlohmann::json json_f;
+    std::vector<std::string> services;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            for (auto it_s : json_f["services"]) {
+                services.push_back(misc::get_json_value<std::string>("name", it_s));
+            }
+        }
+    }
+    return services;
+}
+
 // face_detection and faces
 template <>
 std::vector<noos::object::face> 
@@ -42,21 +61,6 @@ std::vector<noos::object::face>
     return faces;
 }
 
-// light detection
-template <>
-int deserialize<light_detection,
-                int
-                >::operator()(std::string json)
-{
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            return(json_f["light_level"]);
-        }
-    }
-    return -1;
-}
-
 // human detection
 template <>
 std::vector<noos::object::human> 
@@ -75,6 +79,114 @@ std::vector<noos::object::human>
         }
     }
     return humans;
+}
+
+// object recognition (Caffe2)
+template <>
+std::vector<std::pair<std::string,float>>
+    deserialize<object_recognition,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json) 
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));
+            }
+        }
+    }
+    return result;
+}
+
+// gender_detection (Caffe2)
+template <>
+std::vector<std::pair<std::string,float>>
+    deserialize<gender_detection,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json)
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));            
+            }
+        }
+    }
+    return result;
+}
+
+// age_detection (Caffe2)
+template<>
+std::vector<std::pair<std::string,float>>
+    deserialize<age_detection,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json)
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));            
+            }
+        }
+    }
+    return result;
+}
+
+// face_expression (Caffe2)
+template<>
+std::vector<std::pair<std::string,float>>
+    deserialize<face_expression,
+                std::vector<std::pair<std::string,float>>
+                >::operator()(std::string json)
+{
+    std::vector<std::pair<std::string,float>> result;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto results = json_f.find("result");
+            for (auto it = results->begin(); it != results->end(); it++) {
+                result.push_back(
+                        std::make_pair(it->find("label")->get<std::string>(),
+                                       it->find("probability")->get<float>()));            
+            }
+        }
+    }
+    return result;
+}
+
+// QR recongition
+template<>
+std::vector<noos::object::qr_code> 
+    deserialize<qr_recognition,
+                std::vector<noos::object::qr_code>
+                >::operator()(std::string json)
+{
+    std::vector<noos::object::qr_code> qr_codes;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_qrs = json_f.find("qrs");
+            for (auto it = it_qrs->begin(); it != it_qrs->end(); it++ ) {
+                qr_codes.push_back(noos::object::qr_code(it));
+            }
+        }
+    }
+    return qr_codes;
 }
 
 // ORB learn models
@@ -146,111 +258,6 @@ noos::object::orb_object
         }
     }
     return noos::object::orb_object{};
-}
-
-// object recognition (Caffe2)
-template <>
-std::vector<std::pair<std::string,float>>
-    deserialize<object_recognition,
-                std::vector<std::pair<std::string,float>>
-                >::operator()(std::string json) 
-{
-    std::vector<std::pair<std::string,float>> result;
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto results = json_f.find("result");
-            for (auto it = results->begin(); it != results->end(); it++) {
-                result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
-                                       it->find("probability")->get<float>()));
-            }
-        }
-    }
-    return result;
-}
-
-// gender_detection (Caffe2)
-template <>
-std::vector<std::pair<std::string,float>>
-    deserialize<gender_detection,
-                std::vector<std::pair<std::string,float>>
-                >::operator()(std::string json)
-{
-    std::vector<std::pair<std::string,float>> result;
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto results = json_f.find("result");
-            for (auto it = results->begin(); it != results->end(); it++) {
-                result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
-                                       it->find("probability")->get<float>()));            
-            }
-        }
-    }
-    return result;
-}
-
-// age_detection (Caffe2)
-template<>
-std::vector<std::pair<std::string,float>>
-    deserialize<age_detection,
-                std::vector<std::pair<std::string,float>>
-                >::operator()(std::string json)
-{
-    std::vector<std::pair<std::string,float>> result;
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto results = json_f.find("result");
-            for (auto it = results->begin(); it != results->end(); it++) {
-                result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
-                                       it->find("probability")->get<float>()));            
-            }
-        }
-    }
-    return result;
-}
-
-// QR recongition
-template<>
-std::vector<noos::object::qr_code> 
-    deserialize<qr_recognition,
-                std::vector<noos::object::qr_code>
-                >::operator()(std::string json)
-{
-    std::vector<noos::object::qr_code> qr_codes;
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            auto it_qrs = json_f.find("qrs");
-            for (auto it = it_qrs->begin(); it != it_qrs->end(); it++ ) {
-                qr_codes.push_back(noos::object::qr_code(it));
-            }
-        }
-    }
-    return qr_codes;
-}
-
-// available services
-template<>
-std::vector<std::string>
-    deserialize<available_services,
-                std::vector<std::string>
-                >::operator()(std::string json)
-{
-    nlohmann::json json_f;
-    std::vector<std::string> services;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            for (auto it_s : json_f["services"]) {
-                services.push_back(misc::get_json_value<std::string>("name", it_s));
-            }
-        }
-    }
-    return services;
 }
 
 // icp slam

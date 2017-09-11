@@ -4,7 +4,6 @@ namespace cloud {
 
 //service names
 const std::string face_detection::uri   = "face_detection";
-const std::string light_detection::uri  = "light_detection";
 const std::string human_detection::uri  = "human_detection";
 const std::string gender_detection::uri = "gender_detection";
 const std::string age_detection::uri    = "age_detection";
@@ -30,24 +29,6 @@ face_detection::face_detection()
   cloud_base(false)
 {
     nlohmann::json json_doc = {{"fast", true}};
-    vision_base::json = json_doc.dump(-1);
-}
-
-light_detection::light_detection(const noos::object::picture & image)
-: http_request(make_http_uri(uri)), 
-  cloud_base(true)
-{
-    http_request::make_multipart_form();
-    std::string fname = noos::misc::random_boundary() + "." + image.type();
-    http_request::add_content("file", fname, image.bytearray());
-    http_request::close();
-}
-
-light_detection::light_detection()
-: http_request(make_http_uri(uri)), 
-  cloud_base(false)
-{
-    nlohmann::json json_doc = {{"no_param", ""}};
     vision_base::json = json_doc.dump(-1);
 }
 

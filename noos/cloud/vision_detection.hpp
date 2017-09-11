@@ -30,25 +30,6 @@ struct face_detection
 };
 
 /**
- * @struct light_detection 
- * @brief detect the level of light
- */
-struct light_detection 
-: public http_request, 
-  public cloud_base<int>,
-  public vision_base
-{
-    using callback = std::function<void(int)>;
-    static const std::string uri;
-
-    /// @param image is the picture used
-    light_detection(const noos::object::picture & image);
-
-    /// @brief Constructor
-    light_detection();
-};
-
-/**
  * @struct human_detection
  * @brief detect humans in an image
  */
@@ -77,7 +58,7 @@ struct human_detection
  */
 struct gender_detection 
 : public http_request, 
-  public cloud_base<std::string>,
+  public cloud_base<std::vector<std::pair<std::string,float>>>,
   public vision_base
 {
     using callback = std::function<void(data_type)>;

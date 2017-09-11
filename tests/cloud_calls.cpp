@@ -90,7 +90,8 @@ TEST_CASE("Test service Available services", "[available_services]")
 TEST_CASE("Test services vision detection", "[vision_detection]")
 {
     using namespace noos::cloud;
-    SECTION ("Face detection") {
+    SECTION ("Face detection") 
+    {
         //Construct
         auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
         auto face_detect = face_detection(pic); 
@@ -127,31 +128,8 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
 
     }
 
-    SECTION ("Light detection") {
-        //Construct
-        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
-        auto light_detect = light_detection(pic);
-        REQUIRE(light_detect.uri == "light_detection"); 
-        REQUIRE(light_detect.is_single_callable() == true);
-
-        auto light_detect_batch = light_detection();
-        REQUIRE(light_detect_batch.uri == "light_detection");
-        REQUIRE(light_detect_batch.is_single_callable() == false);
-
-        //Deserialize
-        auto j1 = R"(
-                  {
-                    "light_level" : 500,
-                    "error" : ""
-                  })"_json;
-        std::string j1_string = j1.dump(-1);
-        int light = deserialize<light_detection,
-                                typename light_detection::data_type>()(j1_string);    
-        REQUIRE(light == 500);
-    }
-
-    SECTION ("Human detection") {
-        //Construct
+    SECTION ("Human detection") 
+    {
         auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
         auto human_detect = human_detection(pic);
         REQUIRE(human_detect.uri == "human_detection"); 
@@ -186,7 +164,8 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         REQUIRE(humans.at(0).bottom_right_y == 4);
     }
 
-    SECTION("Orb algorthim") {
+    SECTION("ORB algorithm") 
+    {
         auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
         auto orb_learn_obj = orb_learn_object(pic, "cat");
         REQUIRE(orb_learn_obj.uri == "orb_learn_object"); 
@@ -277,7 +256,6 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         REQUIRE(orb_reply.points.at(1).z == 0);
         REQUIRE(orb_reply.scores.at(0) == 0.9);
         REQUIRE(orb_reply.result == 0);
-
     }
 }
 
