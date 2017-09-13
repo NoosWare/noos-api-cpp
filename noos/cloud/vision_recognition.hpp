@@ -74,6 +74,27 @@ struct qr_recognition
     /// @brief empty ctor used by vision batch
     qr_recognition();
 };
+
+/**
+ * @struct face_recognition
+ * @brief recognise faces
+ * @version 0.8.0
+ * @date 13.09.2017
+ */
+struct face_recognition 
+: public http_request, 
+  public cloud_base<std::vector<noos::object::face_recognition_obj>>,
+  public vision_base
+{
+    using callback = std::function<void(std::vector<noos::object::face_recognition_obj>)>;
+    static const std::string uri;
+
+    /// @param image is a picture object reference
+    face_recognition(const noos::object::picture & image);
+
+    /// @brief empty ctor used by vision batch
+    face_recognition();
+};
 }
 }
 #endif

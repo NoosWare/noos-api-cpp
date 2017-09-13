@@ -21,6 +21,7 @@ struct delete_map;
 struct upload_map;
 struct upload_config_file;
 struct get_map;
+struct face_recognition;
 
 // available services
 template<>
@@ -332,6 +333,26 @@ bool deserialize<get_map,
         }
     }
     return false;
+}
+
+// face recognition
+template <>
+std::vector<noos::object::face_recognition_obj> 
+    deserialize<face_recognition,
+                std::vector<noos::object::face_recognition_obj>
+               >::operator()(std::string json)
+{
+    std::vector<noos::object::face_recognition_obj> faces;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_faces = json_f.find("faces");
+            for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
+                faces.push_back(noos::object::face_recognition_obj(it));
+            }
+        }
+    }
+    return faces;
 }
 }
 }
