@@ -41,10 +41,10 @@ int main()
                        std::make_pair(face_detection(), face_cb), 
                        std::make_pair(human_detection(), human_cb));
     // then the callable
-    callable<decltype(batch)> cb(batch);
+    callable<decltype(batch)> callable_batch(batch);
 
     // Last but not least, we'll call the noos service for 
     // a vision batch of face and human detection
-    cb.send(2);
+    callable_batch.send(2);
     return 0;
 }

@@ -88,9 +88,9 @@ int main()
      * and we send the information to the platform.
      * For more information \see noos::cloud::qr_recognition
      */
-    callable<icp_slam,true> cb(icp_request, callback);
+    callable<icp_slam,true> callable_icp(icp_request, callback);
     for (auto i = 0; i < 1500; i++) {
-        cb.send();
+        callable_icp.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 

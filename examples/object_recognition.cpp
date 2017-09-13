@@ -33,7 +33,7 @@ int main()
      * and we send it to the platform.
      * For more information \see noos::cloud::object_recognition
      */
-    callable<object_recognition> cb(object_recognition(pic), callback);
-    cb.send();
+    callable<object_recognition> callable_obj(object_recognition(pic), callback);
+    callable_obj.send();
     return 0;
 }

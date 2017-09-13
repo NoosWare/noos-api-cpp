@@ -35,8 +35,8 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<available_services> cb(request, callback);
-    cb.send(2);
+    callable<available_services> callable_services(request, callback);
+    callable_services.send(2);
     
     return 0;
 }

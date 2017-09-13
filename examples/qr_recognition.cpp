@@ -34,8 +34,8 @@ int main()
      * and we send the information to the platform.
      * For more information \see noos::cloud::qr_recognition
      */
-    callable<qr_recognition,false> cb(qr_request, callback);
-    cb.send();
+    callable<qr_recognition,false> callable_qr(qr_request, callback);
+    callable_qr.send();
 
     return 0;
 } 

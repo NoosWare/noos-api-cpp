@@ -30,7 +30,7 @@ int main()
      * the information to the platform to detect humans in the file.
      * For more information \see noos::cloud::human_detection
      */
-    callable<noos::cloud::human_detection> cb(human_request, callback);
-    cb.send();
+    callable<noos::cloud::human_detection> callable_human(human_request, callback);
+    callable_human.send();
     return 0;
 }

@@ -20,9 +20,15 @@ int main()
      * we show the size of the vector to know how many faces have 
      * been found.
      */
-    auto face_request = face_detection(pic);
-    auto callback = [&](std::vector<noos::object::face> faces) { 
+    auto face_request = face_recognition(pic);
+    auto callback = [&](std::vector<noos::object::face_recognition_obj> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
+        if (faces.size() > 0) { 
+            for (auto face : faces) {
+                std::cout << "Label: " <<face.label << std::endl;
+                std::cout << "Confidence: " << face.confidence << std::endl; 
+            }
+        }
     };
 
     /*
@@ -31,7 +37,7 @@ int main()
      * in the file.
      * For more information \see noos::cloud::face_detection
      */
-    callable<face_detection,false>callable_face(face_request, callback);
-    callable_face.send();
+    callable<face_recognition,false>callable(face_request, callback);
+    callable.send();
     return 0;
 }

@@ -27,7 +27,7 @@ int main()
      * and construct the callable data in one go.
      * @see noos::cloud::gender_detection
      */
-    callable<gender_detection> cb(gender_detection(pic), callback);
-    cb.send();
+    callable<gender_detection> callable_gender(gender_detection(pic), callback);
+    callable_gender.send();
     return 0;
 }

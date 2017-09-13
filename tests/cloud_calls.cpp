@@ -317,6 +317,47 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
         //REQUIRE(reply == "something");
         */
     }
+
+    SECTION("Face recognition") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_recog = face_recognition(pic); 
+        REQUIRE(face_recog.uri == "face_recognition"); 
+        REQUIRE(face_recog.is_single_callable() == true);
+
+        auto face_recog_batch = face_recognition();
+        REQUIRE(face_recog_batch.uri == "face_recognition");
+        REQUIRE(face_recog_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "faces":[{
+                                "rect" : { 
+                                            "up_left_point":{
+                                                                "x": 1, 
+                                                                "y": 2
+                                            }, 
+                                            "down_right_point":{
+                                                                "x": 3, 
+                                                                "y": 4
+                                            }
+                                         },
+                                "confidence" : 100,
+                                "label" : "label" 
+                     }],
+                     "error" : ""
+                   })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::face_recognition_obj> faces;
+        faces = deserialize<face_recognition,
+                            typename face_recognition::data_type>()(j1_string);
+        REQUIRE(faces.at(0).face_rect.top_left_x == 1);
+        REQUIRE(faces.at(0).face_rect.top_left_y == 2);   
+        REQUIRE(faces.at(0).face_rect.bottom_right_x == 3);
+        REQUIRE(faces.at(0).face_rect.bottom_right_y == 4);
+        REQUIRE(faces.at(0).confidence == 100);
+        REQUIRE(faces.at(0).label == "label");
+    }
 }
 
 /**
