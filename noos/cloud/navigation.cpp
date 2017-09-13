@@ -6,13 +6,13 @@ namespace cloud {
 const std::string icp_slam::uri = "slam";
 const std::string delete_map::uri = "delete_map";
 const std::string upload_map::uri = "upload_map";
-const std::string upload_config_file::uri = "upload_config_file";
+const std::string upload_slam_config_file::uri = "upload_slam_config_file";
 const std::string get_map::uri = "get_map";
 
 std::map<slam_type, std::string> 
-      upload_config_file::config_type {{slam_type::icp, "icp"},
-                                       {slam_type::rbpf, "rbpf"},
-                                       {slam_type::not_selected, "other"}};
+      upload_slam_config_file::config_type {{slam_type::icp, "icp"},
+                                            {slam_type::rbpf, "rbpf"},
+                                            {slam_type::not_selected, "other"}};
 
 //Class icp_slam 
 icp_slam::icp_slam(const std::string map_name,
@@ -57,7 +57,7 @@ upload_map::upload_map(const std::string name,
 }
 
 
-upload_config_file::upload_config_file(noos::object::config_file & file,
+upload_slam_config_file::upload_slam_config_file(noos::object::config_file & file,
                                        slam_type type)
 : http_request(make_http_uri(uri)),
   cloud_base(true)

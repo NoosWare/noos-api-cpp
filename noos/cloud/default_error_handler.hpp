@@ -1,5 +1,6 @@
 #ifndef NOOS_CLOUD_DEFAULT_ERROR_HANDLER
 #define NOOS_CLOUD_DEFAULT_ERROR_HANDLER
+#include "includes.ihh"
 namespace noos {
 namespace cloud {
 /**
@@ -17,20 +18,7 @@ namespace cloud {
  */
 struct default_error_handler
 {
-    void operator()(boost::system::error_code & error) const
-    {
-        #if (!NDEBUG)
-        switch(error.value()) { 
-            case 103:
-                std::cerr << "[error-message]: Connection aborted. Socket shutdown. Create a different connection." << std::endl;
-                break;
-            default:
-                std::cerr << "[error-message]: " << error.message() 
-                          << " [error-value]: " << error.value() << std::endl;
-                break;
-        }
-        #endif
-    }
+    void operator()(boost::system::error_code & error) const;
 };
 
 }

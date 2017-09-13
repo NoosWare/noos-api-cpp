@@ -257,6 +257,64 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         REQUIRE(orb_reply.scores.at(0) == 0.9);
         REQUIRE(orb_reply.result == 0);
     }
+
+    SECTION ("Gender detection") 
+    {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto gender_detect = gender_detection(pic);
+        REQUIRE(gender_detect.uri == "gender_detection"); 
+        REQUIRE(gender_detect.is_single_callable() == true);
+
+        auto gender_detect_batch = gender_detection();
+        REQUIRE(gender_detect_batch.uri == "gender_detection");
+        REQUIRE(gender_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "result":[{ 
+                                  "label": "male", 
+                                  "probability" : 10
+                                   
+                                 }],
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<std::pair<std::string,float>> gender;
+        gender = deserialize<gender_detection,
+                             typename gender_detection::data_type>()(j1_string);
+        REQUIRE(gender.at(0).first == "male");
+        REQUIRE(gender.at(0).second == 10);
+    }
+
+    SECTION ("Age detection") 
+    {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto age_detect = age_detection(pic);
+        REQUIRE(age_detect.uri == "age_detection"); 
+        REQUIRE(age_detect.is_single_callable() == true);
+
+        auto age_detect_batch = age_detection();
+        REQUIRE(age_detect_batch.uri == "age_detection");
+        REQUIRE(age_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                      "result":[{ 
+                                  "label": "male", 
+                                  "probability" : 10
+                                   
+                                 }],
+                      "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<std::pair<std::string,float>> age;
+        age = deserialize<age_detection,
+                             typename age_detection::data_type>()(j1_string);
+        REQUIRE(age.at(0).first == "male");
+        REQUIRE(age.at(0).second == 10);
+    }
 }
 
 /**
@@ -316,6 +374,73 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
                                         typename object_recognition::data_type>()(j1_string);
         //REQUIRE(reply == "something");
         */
+    }
+
+    SECTION("Face recognition") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto face_recog = face_recognition(pic); 
+        REQUIRE(face_recog.uri == "face_recognition"); 
+        REQUIRE(face_recog.is_single_callable() == true);
+
+        auto face_recog_batch = face_recognition();
+        REQUIRE(face_recog_batch.uri == "face_recognition");
+        REQUIRE(face_recog_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "faces":[{
+                                "rect" : { 
+                                            "up_left_point":{
+                                                                "x": 1, 
+                                                                "y": 2
+                                            }, 
+                                            "down_right_point":{
+                                                                "x": 3, 
+                                                                "y": 4
+                                            }
+                                         },
+                                "confidence" : 100,
+                                "label" : "label" 
+                     }],
+                     "error" : ""
+                   })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::face_recognition_obj> faces;
+        faces = deserialize<face_recognition,
+                            typename face_recognition::data_type>()(j1_string);
+        REQUIRE(faces.at(0).face_rect.top_left_x == 1);
+        REQUIRE(faces.at(0).face_rect.top_left_y == 2);   
+        REQUIRE(faces.at(0).face_rect.bottom_right_x == 3);
+        REQUIRE(faces.at(0).face_rect.bottom_right_y == 4);
+        REQUIRE(faces.at(0).confidence == 100);
+        REQUIRE(faces.at(0).label == "label");
+    }
+
+    SECTION("Face expression") {
+        auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
+        auto expression_obj = face_expression(pic);
+        REQUIRE(expression_obj.uri == "face_expression"); 
+        REQUIRE(expression_obj.is_single_callable() == true);
+
+        auto expression_obj_batch =face_expression();
+        REQUIRE(expression_obj_batch.uri == "face_expression");
+        REQUIRE(expression_obj_batch.is_single_callable() == false);
+
+        auto j1 = R"(
+                  {
+                    "result":[{ 
+                                "label": "happy", 
+                                "probability": 50
+                              }], 
+                    "error" : ""
+                  })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<std::pair<std::string, float>> reply;
+        reply = deserialize<face_expression,
+                            typename face_expression::data_type>()(j1_string);
+        REQUIRE(reply.at(0).first == "happy");
+        REQUIRE(reply.at(0).second == 50);
     }
 }
 
@@ -470,8 +595,8 @@ TEST_CASE("Test navigation services", "[navigation]")
 
     SECTION("Upload a config_file") {
         auto file = noos::object::config_file("tests/data/config_file.ini");
-        upload_config_file new_file(file, slam_type::icp);
-        REQUIRE(new_file.uri == "upload_config_file");
+        upload_slam_config_file new_file(file, slam_type::icp);
+        REQUIRE(new_file.uri == "upload_slam_config_file");
         REQUIRE(new_file.is_single_callable());
         auto j1 = R"(
                     {
@@ -480,7 +605,7 @@ TEST_CASE("Test navigation services", "[navigation]")
                     })"_json;
         std::string j1_string = j1.dump(-1);
         auto success = deserialize<upload_map,
-                                   typename upload_config_file::data_type>()(j1_string);
+                                   typename upload_slam_config_file::data_type>()(j1_string);
         REQUIRE(success);
     }
 
@@ -498,7 +623,7 @@ TEST_CASE("Test navigation services", "[navigation]")
 
         std::string j1_string = j1.dump(-1);
         auto success = deserialize<get_map,
-                                   typename upload_config_file::data_type>()(j1_string);
+                                   typename get_map::data_type>()(j1_string);
         REQUIRE(success);
     }
 }

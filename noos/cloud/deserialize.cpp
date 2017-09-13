@@ -19,7 +19,7 @@ struct face_expression;
 struct icp_slam;
 struct delete_map;
 struct upload_map;
-struct upload_config_file;
+struct upload_slam_config_file;
 struct get_map;
 struct face_recognition;
 
@@ -308,7 +308,7 @@ bool deserialize<upload_map,
 
 // upload config file
 template <>
-bool deserialize<upload_config_file,
+bool deserialize<upload_slam_config_file,
                  bool>:: operator()(std::string json)
 {
     nlohmann::json json_f;

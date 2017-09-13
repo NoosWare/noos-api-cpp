@@ -59,6 +59,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/vision_recognition.cpp
              ${INCLUDES}/cloud/navigation.cpp
              ${INCLUDES}/cloud/deserialize.cpp
+             ${INCLUDES}/cloud/default_error_handler.cpp
 
              ${INCLUDES}/objects/human.cpp
              ${INCLUDES}/objects/face.cpp
@@ -218,6 +219,7 @@ if (${BUILD_EXAMPLES})
                   orb.cpp
                   icp_slam.cpp
                   upload_delete_maps.cpp
+                  face_recognition.cpp
                  )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")

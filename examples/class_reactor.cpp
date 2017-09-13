@@ -11,7 +11,7 @@ public:
      * \brief constructor passing the information of the platform
      */
     reactor()
-    :cb_(default_node)
+    :callable_obj_(default_node)
     {}
 
     /*
@@ -28,13 +28,13 @@ public:
      */
     void run(noos::object::picture pic)
     {
-        cb_.object = face_detection(pic);
-        cb_.functor = std::bind(&reactor::handle_face, this, std::placeholders::_1);
-        cb_.send();
+        callable_obj_.object = face_detection(pic);
+        callable_obj_.functor = std::bind(&reactor::handle_face, this, std::placeholders::_1);
+        callable_obj_.send();
     }
     
 private:
-    callable<face_detection, true> cb_;
+    callable<face_detection, true> callable_obj_;
 };
 
 /*

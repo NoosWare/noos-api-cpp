@@ -37,7 +37,7 @@ int main()
      */
     auto config = noos::object::config_file("data/config_file.ini");
 
-    auto request  = upload_config_file(config, noos::cloud::slam_type::icp);
+    auto request  = upload_slam_config_file(config, noos::cloud::slam_type::icp);
     auto config_callback = [](bool success) {
         std::cout << "Success uploading the config file: " << std::boolalpha << success << std::endl;
     };
@@ -50,7 +50,7 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<upload_config_file> config_callable(request, config_callback);
+    callable<upload_slam_config_file> config_callable(request, config_callback);
     config_callable.send();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     /*
@@ -88,9 +88,9 @@ int main()
      * and we send the information to the platform.
      * For more information \see noos::cloud::qr_recognition
      */
-    callable<icp_slam,true> cb(icp_request, callback);
+    callable<icp_slam,true> callable_icp(icp_request, callback);
     for (auto i = 0; i < 1500; i++) {
-        cb.send();
+        callable_icp.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 

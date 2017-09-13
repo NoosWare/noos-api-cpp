@@ -137,6 +137,33 @@ TEST_CASE("Json test for face", "[face]")
 }
 
 /**
+ * \brief check noos::object::face_recognition_obj for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+TEST_CASE("Json test for face_recognition_obj", "[face_recognition_obj]")
+{
+    std::string string = read_json_file("tests/data/json_classes_face_recognition.json");
+    REQUIRE(!string.empty());
+
+    const auto json = nlohmann::json::parse(string);
+    const auto face_it = json.find("faces");
+    REQUIRE(face_it != json.end());
+
+    auto face_obj = noos::object::face_recognition_obj(face_it);
+    nlohmann::json out = {{"faces", face_obj.to_json()}};
+    REQUIRE(json == out);
+
+    //Copy and assignment
+    auto face1 = face_obj;
+    auto face2(face_obj);
+    REQUIRE(face1 == face_obj);
+    REQUIRE(face2 == face_obj);
+
+}
+
+/**
  * \brief check noos::object::orientation for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON

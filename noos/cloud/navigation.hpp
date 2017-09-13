@@ -88,12 +88,12 @@ struct upload_map
 };
 
 /**
- * @struct upload_config_file
- * @brief upload a config file to the platform
+ * @struct upload_slam_config_file
+ * @brief upload a config file with slam parameters to the platform
  * @version 0.8.0
  * @date 01.09.2017
  */
-struct upload_config_file 
+struct upload_slam_config_file 
 : public http_request, 
   public cloud_base<bool>
 {
@@ -102,7 +102,7 @@ struct upload_config_file
     static std::map<slam_type, std::string> config_type;
 
     /// @param laser_data is the laser reading
-    upload_config_file(noos::object::config_file & file,
+    upload_slam_config_file(noos::object::config_file & file,
                        slam_type type);
 };
 
