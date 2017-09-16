@@ -70,6 +70,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/laser.cpp
              ${INCLUDES}/objects/config_file.cpp
              ${INCLUDES}/objects/face_recognition_obj.cpp
+             ${INCLUDES}/objects/odometry.cpp
              )
 
 # Begin searching for packgages we use in NOOS API

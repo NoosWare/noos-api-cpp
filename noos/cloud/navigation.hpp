@@ -42,12 +42,42 @@ struct icp_slam
      *        is going to be saved. 
      * @Warning DON'T WRITE THE EXTENSION. All the maps will 
      *          be .png 
-     * @param iteration is when the map is going to be saved
-     *        (every 10 iterations, 100, 200, etc.)
+     * @param config_file_name is the name of the config file
+     *        which is going to be loaded in the platform
      */
     icp_slam(const std::string map_name,
-             const int iteration,
+             const std::string config_file_name,
              const noos::object::laser & laser_data);
+
+    /// TODO:overload constructor with 3d data(pointcloud)
+};
+
+/**
+ * @struct rbpf_slam
+ * @brief send laser/pointcloud data to create a map
+ * @version 0.8.0
+ * @date 16.09.2017
+ */
+struct rbpf_slam 
+: public http_request, 
+  public cloud_base<noos::object::pose<float>>
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+
+    /**
+     * @param laser_data is the laser reading
+     * @param map_name is the name of the map where the data
+     *        is going to be saved. 
+     * @Warning DON'T WRITE THE EXTENSION. All the maps will 
+     *          be .png 
+     * @param config_file_name is the name of the config file
+     *        which is going to be loaded in the platform
+     */
+    rbpf_slam(const std::string map_name,
+              const std::string config_file_name,
+              const noos::object::laser & laser_data,
+              const noos::object::odometry & odometry);
 
     /// TODO:overload constructor with 3d data(pointcloud)
 };
@@ -82,7 +112,8 @@ struct upload_map
     using callback = std::function<void(data_type)>;
     static const std::string uri;
 
-    /// @param laser_data is the laser reading
+    /// @param the name of the map (without extension)
+    /// @param image the map
     upload_map(const std::string name,
                const noos::object::picture & image);
 };
@@ -101,9 +132,16 @@ struct upload_slam_config_file
     static const std::string uri;
     static std::map<slam_type, std::string> config_type;
 
-    /// @param laser_data is the laser reading
+
+    /**
+     * @param file is the config file to upload
+     * @param name is the name that the file will have in
+     *         the platform
+     * @param type the type of slam 
+     */
     upload_slam_config_file(noos::object::config_file & file,
-                       slam_type type);
+                            std::string name,
+                            slam_type type);
 };
 
 /**
@@ -120,7 +158,7 @@ struct get_map
     static const std::string uri;
     static std::map<slam_type, std::string> config_type;
 
-    /// @param laser_data is the laser reading
+    /// @param map_name is the name of the map (without extension)
     get_map(std::string map_name);
 };
 

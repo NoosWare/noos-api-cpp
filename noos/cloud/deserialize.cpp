@@ -17,6 +17,7 @@ struct age_detection;
 struct gender_detection;
 struct face_expression;
 struct icp_slam;
+struct rbpf_slam;
 struct delete_map;
 struct upload_map;
 struct upload_slam_config_file;
@@ -264,6 +265,23 @@ noos::object::orb_object
 // icp slam
 template<>
 noos::object::pose<float> deserialize<icp_slam,
+                                      noos::object::pose<float>
+                                     >::operator()(std::string json)
+{
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+           noos::object::pose<float>pose3d(json_f.find("pose")); 
+           return pose3d;
+        }
+    }
+    noos::object::pose<float> empty_pose;
+    return empty_pose;
+}
+
+// rbpf slam
+template<>
+noos::object::pose<float> deserialize<rbpf_slam,
                                       noos::object::pose<float>
                                      >::operator()(std::string json)
 {

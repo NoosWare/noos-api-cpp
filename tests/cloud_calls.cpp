@@ -514,24 +514,25 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
 TEST_CASE("Test navigation services", "[navigation]")
 {
     using namespace noos::cloud;
+
+    std::string string = read_json_file("tests/data/cloud_class_laser_data.json");
+    REQUIRE(!string.empty());
+
+    //Filling laser data
+    auto json = nlohmann::json::parse(string);
+    std::vector<float> laser_ranges = json["ranges"];
+    std::vector<int> laser_intensities = json["intensities"];
+    noos::object::laser laser;
+    laser.ranges = laser_ranges;
+    laser.intensities = laser_intensities;
+    laser.aperture = 4.71239;
+    laser.max_range = 10.0f;
+    laser.std_error = 0.02;
+    laser.right_to_left = true;
+    laser.pose3d = noos::object::pose<float>(); 
+
     SECTION("Icp slam") {
-        std::string string = read_json_file("tests/data/cloud_class_laser_data.json");
-        REQUIRE(!string.empty());
-
-        //Filling laser data
-        auto json = nlohmann::json::parse(string);
-        std::vector<float> laser_ranges = json["ranges"];
-        std::vector<int> laser_intensities = json["intensities"];
-        noos::object::laser laser;
-        laser.ranges = laser_ranges;
-        laser.intensities = laser_intensities;
-        laser.aperture = 4.71239;
-        laser.max_range = 10.0f;
-        laser.std_error = 0.02;
-        laser.right_to_left = true;
-        laser.pose3d = noos::object::pose<float>(); 
-
-        auto icp = icp_slam("new_map", 10, laser);
+        auto icp = icp_slam("new_map", "icp.ini", laser);
         REQUIRE(icp.uri == "slam");
         REQUIRE(icp.is_single_callable() == true);
 
@@ -554,6 +555,42 @@ TEST_CASE("Test navigation services", "[navigation]")
         std::string j1_string = j1.dump(-1);
         auto pose_obj = deserialize<icp_slam,
                                         typename icp_slam::data_type>()(j1_string);
+        REQUIRE(pose_obj.coordinates.x == 0.99991f);
+        REQUIRE(pose_obj.coordinates.y == 0.99992f);
+        REQUIRE(pose_obj.coordinates.z == 0.0f);
+        REQUIRE(pose_obj.angles.roll  == 0.001f);
+        REQUIRE(pose_obj.angles.pitch == 0.002f);
+        REQUIRE(pose_obj.angles.yaw   == 0.175763f);
+    }
+
+    SECTION("Rbpf slam") {
+        noos::object::odometry increase_od;
+        increase_od.inc_x = 0;
+        increase_od.inc_y = 0;
+        increase_od.inc_yaw = 0;
+        auto rbpf = rbpf_slam("new_map", "rbpf.ini", laser, increase_od);
+        REQUIRE(rbpf.uri == "slam");
+        REQUIRE(rbpf.is_single_callable() == true);
+
+        auto j1 = R"(
+                    {
+                        "pose": {
+                                    "position": {
+                                                    "x": 0.99991,
+                                                    "y": 0.99992,
+                                                    "z": 0.0
+                                                },
+                                    "orientation": {
+                                                    "roll"  : 0.001,
+                                                    "pitch" : 0.002,
+                                                    "yaw"   : 0.175763
+                                                   }
+                                },
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto pose_obj = deserialize<rbpf_slam,
+                                        typename rbpf_slam::data_type>()(j1_string);
         REQUIRE(pose_obj.coordinates.x == 0.99991f);
         REQUIRE(pose_obj.coordinates.y == 0.99992f);
         REQUIRE(pose_obj.coordinates.z == 0.0f);
@@ -595,7 +632,7 @@ TEST_CASE("Test navigation services", "[navigation]")
 
     SECTION("Upload a config_file") {
         auto file = noos::object::config_file("tests/data/config_file.ini");
-        upload_slam_config_file new_file(file, slam_type::icp);
+        upload_slam_config_file new_file(file, "example.ini", slam_type::icp);
         REQUIRE(new_file.uri == "upload_slam_config_file");
         REQUIRE(new_file.is_single_callable());
         auto j1 = R"(
@@ -619,7 +656,7 @@ TEST_CASE("Test navigation services", "[navigation]")
         std::stringstream buffer;
         buffer << f.rdbuf();
         f.close();
-        json j1 = json::parse(buffer.str());
+        nlohmann::json j1 = json::parse(buffer.str());
 
         std::string j1_string = j1.dump(-1);
         auto success = deserialize<get_map,

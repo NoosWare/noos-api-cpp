@@ -37,7 +37,7 @@ int main()
      */
     auto config = noos::object::config_file("data/config_file.ini");
 
-    auto request  = upload_slam_config_file(config, noos::cloud::slam_type::icp);
+    auto request  = upload_slam_config_file(config, "icp.ini", noos::cloud::slam_type::icp);
     auto config_callback = [](bool success) {
         std::cout << "Success uploading the config file: " << std::boolalpha << success << std::endl;
     };
@@ -78,7 +78,7 @@ int main()
      * All it does is receive a noos::object::pose with the position
      * of the robot
      */
-    auto icp_request = icp_slam("map_name", 100, laser);
+    auto icp_request = icp_slam("map_name", "icp.ini", laser);
     auto callback = [&](noos::object::pose<float> pose3d) {
         std::cout << pose3d;
     };
