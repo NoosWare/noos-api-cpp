@@ -240,3 +240,30 @@ TEST_CASE("Json test for pose", "[pose]")
     REQUIRE(pose3.angles.pitch == 0);
     REQUIRE(pose3.angles.yaw == 0);
 }
+
+/**
+ * \brief check noos::object::odometry for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+TEST_CASE("Json test for odometry", "[odometry]")
+{
+    std::string string = read_json_file("tests/data/json_classes_odometry.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string); 
+    const auto odometry_inc = json.find("odometry");
+    REQUIRE(odometry_inc != json.end());
+
+    noos::object::odometry odometry_obj;
+    odometry_obj.inc_x = 0;
+    odometry_obj.inc_y = 0;
+    odometry_obj.inc_yaw = 0;
+
+    nlohmann::json::object_t out = {{"odometry", odometry_obj.to_json()}};
+    REQUIRE(json == out);
+    REQUIRE(odometry_obj.inc_x == 0);
+    REQUIRE(odometry_obj.inc_y == 0);
+    REQUIRE(odometry_obj.inc_yaw == 0);
+}

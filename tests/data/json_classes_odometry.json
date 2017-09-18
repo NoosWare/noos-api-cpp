@@ -1,0 +1,7 @@
+{
+    "odometry":{ 
+                "inc_lin_x": 0,
+                "inc_lin_y": 0,
+                "inc_ang" : 0 
+               }
+}

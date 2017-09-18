@@ -86,7 +86,7 @@ int main()
     /*
      * We make a callable object of qr_recognition class to detect qr_codes in the file
      * and we send the information to the platform.
-     * For more information \see noos::cloud::qr_recognition
+     * For more information \see noos::cloud::icp_slam
      */
     callable<icp_slam,true> callable_icp(icp_request, callback);
     for (auto i = 0; i < 1500; i++) {
