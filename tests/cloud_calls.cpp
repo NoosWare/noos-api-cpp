@@ -362,18 +362,19 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
         REQUIRE(obj_recog_batch.uri == "object_recognition");
         REQUIRE(obj_recog_batch.is_single_callable() == false);
 
-        // TODO @alex: update to use the correct JSON format
-        /*
         auto j1 = R"(
                   {
-                    "object_class" : "something",
+                    "result" : [{ 
+                                "label" : "name",
+                                "probability" : 30
+                               }],
                     "error" : ""
                   })"_json;
         std::string j1_string = j1.dump(-1);
         auto reply = deserialize<object_recognition,
                                         typename object_recognition::data_type>()(j1_string);
-        //REQUIRE(reply == "something");
-        */
+        REQUIRE(reply.at(0).first == "name");
+        REQUIRE(reply.at(0).second == 30);
     }
 
     SECTION("Face recognition") {
