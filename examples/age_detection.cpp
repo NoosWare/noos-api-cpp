@@ -27,7 +27,7 @@ int main()
      * and construct the callable data in one go.
      * @see noos::cloud::age_detection
      */
-    callable<age_detection> callable_age(age_detection(pic), callback);
+    callable<age_detection> callable_age(pic, callback);
     callable_age.send();
     return 0;
 }

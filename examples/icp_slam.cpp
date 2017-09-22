@@ -26,7 +26,6 @@ std::string read_json_file(const std::string file)
 int main()
 {
     using namespace noos::cloud;
-    
     /*
      * Before starting slam, a configuration file has to be sent
      * to the platform. It's required only once.
@@ -36,12 +35,10 @@ int main()
      *                          for doing slam, it's needed to specify it.
      */
     auto config = noos::object::config_file("data/config_file.ini");
-
     auto request  = upload_slam_config_file(config, "icp.ini", noos::cloud::slam_type::icp);
     auto config_callback = [](bool success) {
         std::cout << "Success uploading the config file: " << std::boolalpha << success << std::endl;
     };
-
     /*
      * Finally we create a callable object and send the information to the platform
      * with a timeout of 2 seconds
@@ -71,7 +68,6 @@ int main()
     laser.right_to_left = true;
     laser.timestamp = 0;
     laser.pose3d = noos::object::pose<float>(); 
-
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
@@ -82,7 +78,6 @@ int main()
     auto callback = [&](noos::object::pose<float> pose3d) {
         std::cout << pose3d;
     };
-
     /*
      * We make a callable object of qr_recognition class to detect qr_codes in the file
      * and we send the information to the platform.
@@ -93,6 +88,5 @@ int main()
         callable_icp.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-
     return 0;
 }

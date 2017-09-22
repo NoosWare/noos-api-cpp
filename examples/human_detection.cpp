@@ -12,7 +12,6 @@ int main()
      * In other cases, you'll have to change it for a proper one.
      */
     auto pic = noos::object::picture("data/object_classes_picture_7.png");
-
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
@@ -24,7 +23,6 @@ int main()
     auto callback = [&](std::vector<noos::object::human> humans) {
         std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
-
     /*
      * We make a callable object of human_detection class  and we send
      * the information to the platform to detect humans in the file.

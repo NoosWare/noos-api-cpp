@@ -12,26 +12,17 @@ int main()
      * In other cases, you'll have to change it for a proper one.
      */
     auto pic = noos::object::picture("data/object_classes_picture_1.png");
-
-    /*
-     * Construct a lambda, std::function or bind your own functor.
-     * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a vector of noos::object::face and
-     * we show the size of the vector to know how many faces have 
-     * been found.
-     */
-    auto face_request = face_detection(pic);
-    auto callback = [&](std::vector<noos::object::face> faces) { 
-        std::cout << "Found " << faces.size() << " faces!" << std::endl;
-    };
-
     /*
      * We make a callable object of face_detection class 
      * and send the information to the platform to detect faces 
      * in the file.
-     * For more information \see noos::cloud::face_detection
+     * For more information @see noos::cloud::face_detection
      */
-    callable<face_detection,false>callable_face(face_request, callback);
+    callable<face_detection,false> 
+        callable_face(pic, 
+                      [&](std::vector<noos::object::face> faces) { 
+                            std::cout << "faced detected: " << faces.size() << std::endl;
+                      });
     callable_face.send();
     return 0;
 }

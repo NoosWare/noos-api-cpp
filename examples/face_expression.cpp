@@ -27,7 +27,7 @@ int main()
      * and construct the callable data in one go.
      * @see noos::cloud::face_expression
      */
-    callable<face_expression> callable_expression(face_expression(pic), callback);
+    callable<face_expression> callable_expression(pic, callback);
     callable_expression.send();
     return 0;
 }

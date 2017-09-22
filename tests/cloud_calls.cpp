@@ -39,22 +39,14 @@ SCENARIO("A service needs to be call")
             REQUIRE(callable_obj.object.uri == "face_detection");
         }
     }
-    GIVEN("A platform and a service known") {
-        THEN("A callable object can be done") {
-            auto callable_obj = std::make_unique<callable<face_detection>>(default_node);
-            REQUIRE(callable_obj);
-        }
-    }
     GIVEN("A vision batch service and its callback") {
         auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
         auto face_cb = [&](std::vector<noos::object::face> faces) {};
         auto human_cb = [&](std::vector<noos::object::human> humans) {};
-        vision_batch<std::pair<face_detection,face_detection::callback>,
-                 std::pair<human_detection,human_detection::callback>>
-                 batch(pic, 
-                       std::make_pair(face_detection(), face_cb), 
-                       std::make_pair(human_detection(), human_cb));        
-
+        vision_batch<tied<face_detection>,
+                     tied<human_detection>> batch(pic, 
+                                                  tied<face_detection>(face_cb), 
+                                                  tied<human_detection>(human_cb));
         THEN("A call can be made") {
             auto callable_obj = std::make_unique<callable<decltype(batch)>>(batch);
             REQUIRE(callable_obj);
@@ -471,15 +463,11 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
 
     };
 
-    vision_batch<std::pair<face_detection, face_detection::callback>,
-                 std::pair<qr_recognition, qr_recognition::callback>> 
-                                  vision_batch_obj( pic,
-                                                    std::make_pair(face_detection(), face_call),
-                                                    std::make_pair(qr_recognition(), qr_call)
-                                                  );    
+    vision_batch<tied<face_detection>,tied<qr_recognition>> 
+          vision_batch_obj(pic,
+                           tied<face_detection>(face_call),
+                           tied<qr_recognition>(qr_call));    
     REQUIRE(vision_batch_obj.is_single_callable() == true);
-
-
     auto j1 = R"(
               [{
                     "face_detection" : { "faces":[{ 
@@ -504,7 +492,6 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
               }])"_json;
     std::string j1_str = j1.dump(-1);
     vision_batch_obj.process(j1_str);
-
 }
 
 /**

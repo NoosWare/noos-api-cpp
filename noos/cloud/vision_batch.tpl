@@ -1,11 +1,15 @@
 namespace noos {
 namespace cloud {
 
+template <class cloud_type>
+tied<cloud_type>::tied(tied::callback functor)
+: object(cloud_type()),
+  functor(functor)
+{}
+
 template <class... cloud_pairs>
-vision_batch<cloud_pairs...>::vision_batch(
-                                         const noos::object::picture & image,
-                                         cloud_pairs... args
-                                       )
+vision_batch<cloud_pairs...>::vision_batch(const noos::object::picture & image,
+                                           cloud_pairs... args)
 : http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
   cloud_base<bool>(true),
   image__(image),
@@ -15,13 +19,14 @@ vision_batch<cloud_pairs...>::vision_batch(
     std::string fname = noos::misc::random_boundary() + "." + image__.type();
     http_request::add_content("file", fname, image.bytearray());
     misc::for_each_arg([&](const auto & pair) {
-        assert(!pair.first.is_single_callable());
-        if (pair.first.is_single_callable()) {
-            throw std::runtime_error("you can't use single callable objects in a vision batch");
+        assert(!pair.object.is_single_callable());
+        if (pair.object.is_single_callable()) {
+            throw std::runtime_error(
+                    "single callable objects aren't allowed in a vision batch");
         }
-        static_assert(std::is_base_of<vision_base, decltype(pair.first)>::value,
-                      "objects used in `vision_batch` must be derived from `vision_class`");
-        this->add_content(pair.first.uri, pair.first.json, true);
+        static_assert(std::is_base_of<vision_base, decltype(pair.object)>::value,
+        "template types used in `vision_batch` must be derived from `vision_class`");
+        this->add_content(pair.object.uri, pair.object.json, true);
     }, args...);
     http_request::close();
 }
@@ -69,10 +74,9 @@ void vision_batch<cloud_pairs...>::find_cloud_type(
                                                   )
 {
     misc::for_each_arg([&](const auto & pair){
-        auto first = std::get<0>(pair);
+        auto first = pair.object;
         if (first.uri == key) {
-            auto second = std::get<1>(pair);
-            second(deserialize<decltype(first), typename decltype(first)::data_type>()(json));
+            pair.functor(deserialize<decltype(first), typename decltype(first)::data_type>()(json));
         }
     }, args...);
 }

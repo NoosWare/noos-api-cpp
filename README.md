@@ -29,6 +29,31 @@ by *daisy-chanining* delegates via subsequent callbacks.
 All callback schemes use the `std::function` therefore you can pass 
 *lambdas, function pointers, class members and struct functors* as callbacks.
 
+This API allows you to start multiple connections and queries (named `callables`),
+which template the actual data being sent and received.
+You are free to inherit from `callable`, define your own `error_handler`,
+or compose objects of those classes internally.
+
+The basic design is as follows:
+- you construct `callables` 
+- you control when and how often you call them (method `send`)
+- your own callback receives the reply.
+
+The callback must be defined by you, and you pass it to a callable at construction:
+- whereas you can update and change the data (e.g., `cloud_type`)
+- you cannot change the functor
+- the only exception is `vision_batch<...>` which has its own internal functor
+- however `vision_batch<...>` requires that you pass pairs of cloud data and functors (see example)
+
+In general, you can chain calls (.e.g, one after another), parallelise them (call them at the same time)
+and in the case of vision calls, you can batch them (see `vision_batch<...>`).
+
+Because certain scenarios require you to send frequent cloud queries, class `callable`
+keeps a connection open (for up to 2 seconds) with the cloud platform, thus
+all you need to do is keep a callable object active (but please don't spam too frequently or you will get blacklisted).
+
+Non-continuous calls (e.g., a one-off query) can be controlled by the lifetime of the callble object.
+
 ## Dependencies
 
 The following dependencies are **required** to build the C++ API:
@@ -43,13 +68,17 @@ On a Ubuntu/Debian machine you can install all dependencies using (you milage ma
 sudo apt-get install cmake gcc-4.9 libboost-all-dev
 ```
 
-The API internally uses and ships with [Nlohmann's JSON](https://github.com/nlohmann/json) library,
-which you can find under `noos-api/cpp/noos/misc/json.hpp`
+The API internally uses [Nlohmann's JSON](https://github.com/nlohmann/json) header library.
+You have to manually init the submodule:
+
+```shell
+git submodule init
+git submodule update
+```
 
 ## Building
 
-For the C++ NOOS API, please note you need to satisfy these *dependencies*.
-To build:
+To build simply do:
 
 ```shell
 mkdir build
@@ -84,7 +113,7 @@ using i386 architecture.
 You may install if you wish to (as root or using `sudo`):
 
 ```shell
-make install
+sudo make install
 ```
 
 The produced library will be installed in `/usr/local/lib/` whereas the headers are installed in `/usr/local/include/` by default.
@@ -135,10 +164,10 @@ You can run them individually, or use them as templates.
 ## Old Compilers
 
 Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
-A requirement for version 0.7.0 is to have gcc/g++ >= 4.9, therefore if you are targetting an older platform you have two options:
+A requirement for version 0.8.0 is to have gcc/g++ >= 4.9, therefore if you are targetting an older platform you have two options:
 
 * build a gcc 4.9 [from source](https://gcc.gnu.org/wiki/InstallingGCC)
-* build your apps using a static noos library
+* build your apps using a static noos library and static libstdc++
 
 Because the noos library relies only on `libstdc++` a static link with it increases the executable size,
 but allows you to target older systems.
@@ -146,19 +175,22 @@ To do so use the cmake flag `-DNOOS_STATIC=ON` by building on a modern machine w
 However, the boost dependencies also require a somewhat new version of the C runtime libraries.
 For further details please see the advanced tutorials.
 
-## Tutorials
-
-We have created two repositories with extensive tutorials and examples, ranging from simple use to advanced projects.
-Those tutorials go through every single cloud and object class, and describe how to build applications for Aldebaran's NAO.
-
-* https://github.com/ortelio/noos_beginner_tutorials.git
-
 ## Documentation
 
 For a complete list of the cloud classes and the object classes used by the C++ API,
-please read the [Documentation](DOCUMENTATION.md) file.
+execute:
+
+```shell
+doxygen doxy.conf
+```
+
+A folder `docs` will be created, with HTML doxygen files.
 
 ## Help
 
 If you run into any bugs or issues, please report them on github. 
 Alternatively, hit us up on Gitter: [![Join the chat at https://gitter.im/noos-project/noos-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/noos-project/noos-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+## Contributing
+
+If you would like to contribute (thanks btw :-), please read `CONTRIBUTING.md` beforehand.

@@ -29,7 +29,7 @@ public:
 	 * @brief `error_function` is the handler which may receive the errors
 	 * @brief `io_service` is the ASIO service controller
 	 * @brief `request` is a stream buffer containing the request
-	 * @TODO (0.7.3) take as param a PEM filename to evaluate CA - currently the server CE is not evaluated!!!
+	 * @TODO (0.8.0) load certificate from a system-wide location (e.g., /opt/noos/cert/public.noos.cloud) 
 	 */
     asio_https(
                 std::function<void(std::string)> cloud_callback,
