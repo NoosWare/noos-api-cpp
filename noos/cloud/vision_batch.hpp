@@ -23,7 +23,11 @@ struct tied
     callback functor;
     /// @brief constructor requires only the functor
     tied(callback functor);
+    tied(callback functor, cloud_type object);
 };
+
+template <class cloud_type>
+tied<cloud_type> make_tie(typename cloud_type::callback functor);
 
 /**
  * @brief vision_batch

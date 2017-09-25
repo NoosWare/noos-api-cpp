@@ -11,7 +11,9 @@ public:
      * \brief constructor passing the information of the platform
      */
     reactor()
-    :callable_obj_(std::bind(&reactor::handle_face, this, std::placeholders::_1))
+    : callable_obj_(std::bind(&reactor::handle_face, 
+                             this, 
+                             std::placeholders::_1))
     {}
 
     /*

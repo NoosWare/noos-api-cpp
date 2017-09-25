@@ -7,6 +7,12 @@ tied<cloud_type>::tied(tied::callback functor)
   functor(functor)
 {}
 
+template <class cloud_type>
+tied<cloud_type> make_tie(typename cloud_type::callback functor)
+{
+    return tied<cloud_type>(functor);
+}
+
 template <class... cloud_pairs>
 vision_batch<cloud_pairs...>::vision_batch(const noos::object::picture & image,
                                            cloud_pairs... args)

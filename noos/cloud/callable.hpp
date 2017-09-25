@@ -31,6 +31,7 @@ class callable
 public:
     using callback = typename cloud_type::callback;
     using cloud_class = cloud_type;
+
     /// the actual `cloud_type` object
     /// you may change this between calls
     cloud_type object;
@@ -68,7 +69,6 @@ protected:
     void socket(std::function<void(std::string)> cloud_function);
     /// @brief the callback functor - hidden from others
     callback functor;
-private:
     platform endpoint;
     std::unique_ptr<socket_type> socket_;
     std::unique_ptr<boost::asio::streambuf> buffer_;
