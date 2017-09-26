@@ -12,6 +12,27 @@
 namespace noos {
 namespace cloud {
 /**
+ * @struct age_detection
+ * @brief detect age range of person in an image
+ * @note data type passed back is `std::vector<std::pair<std::string,float>>`
+ */
+struct age_detection 
+: public http_request, 
+  public cloud_base<std::vector<std::pair<std::string,float>>>,
+  public vision_base
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+    /**
+     * @param image is a picture object 
+     * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
+     */
+    age_detection(const noos::object::picture & image);
+
+    /// @brief Constructor without image
+    age_detection();
+};
+/**
  * @struct face_detection
  * @brief detect faces in the image
  */
@@ -29,29 +50,6 @@ struct face_detection
     /// @brief construct without an image - part of a vision batch
     face_detection();
 };
-
-/**
- * @struct human_detection
- * @brief detect humans in an image
- */
-struct human_detection 
-: public http_request, 
-  public cloud_base<std::vector<noos::object::human>>,
-  public vision_base
-{
-    using callback = std::function<void(data_type)>;
-    static const std::string uri;
-
-    /**
-     * @param image is a picture object 
-     * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
-     */
-    human_detection(const noos::object::picture & image);
-
-    /// @brief Constructor without image
-    human_detection();
-};
-
 /**
  * @struct gender_detection
  * @brief detect gender of person in an image
@@ -73,29 +71,27 @@ struct gender_detection
     /// @brief Constructor without image
     gender_detection();
 };
-
 /**
- * @struct age_detection
- * @brief detect age range of person in an image
- * @note data type passed back is `std::vector<std::pair<std::string,float>>`
+ * @struct human_detection
+ * @brief detect humans in an image
  */
-struct age_detection 
+struct human_detection 
 : public http_request, 
-  public cloud_base<std::vector<std::pair<std::string,float>>>,
+  public cloud_base<std::vector<noos::object::human>>,
   public vision_base
 {
     using callback = std::function<void(data_type)>;
     static const std::string uri;
+
     /**
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    age_detection(const noos::object::picture & image);
+    human_detection(const noos::object::picture & image);
 
     /// @brief Constructor without image
-    age_detection();
+    human_detection();
 };
-
 /**
  * @struct orb_learn_object
  * @brief learn object gives by the user

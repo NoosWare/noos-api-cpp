@@ -59,6 +59,7 @@ public:
     template <typename... parameters>
     callable(vision_batch<parameters...> arg,
              platform = default_node);
+
     /// @brief send the cloud_type data once to the cloud endpoint
     /// @note the default 2 second timeout value should suffice
     void send(unsigned int timeout = 2);
@@ -77,19 +78,41 @@ protected:
     std::unique_ptr<boost::asio::ip::tcp::resolver> resol_;
 };
 
-/// @brief make a callable (movable) object - simple wrapper function
+/// @brief make a callable object - helper wrapper function
 template <class cloud_type,
           bool  keep_alive   = true,
           class socket_type  = asio_http,
           class error_handle = default_error_handler,
-          class ...args>
-callable<cloud_type,
-         keep_alive,
-         socket_type,
-         error_handle>
-    make(typename cloud_type::callback functor,
-         args... params);
+          class ...args,
+          typename = 
+                typename std::enable_if<!std::is_same<cloud_type, 
+                                                      cloud_batch>::value, bool>>
+callable<cloud_type,keep_alive,socket_type,error_handle> 
+    call(typename cloud_type::callback functor, args... params)
+{
+    return callable<cloud_type,
+                    keep_alive,
+                    socket_type,
+                    error_handle>(params..., functor);
+}
 
+/// @brief make a callable - only used for batches (e.g., vision_batch)
+template <class cloud_type,
+          bool  keep_alive   = true,
+          class socket_type  = asio_http,
+          class error_handle = default_error_handler,
+          class ...args,
+          typename = typename std::enable_if<std::is_same<cloud_type,cloud_batch>::value,bool>>
+callable<cloud_type,keep_alive,socket_type,error_handle>
+    call(const noos::object::picture & image,
+         args... params)
+{
+    using temp = vision_batch<args...>;
+    return callable<cloud_type,
+                    keep_alive,
+                    socket_type,
+                    error_handle>(temp(image, (params)...));
+}
 #include "callable.tpl"
 }
 }

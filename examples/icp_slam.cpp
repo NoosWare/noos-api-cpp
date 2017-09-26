@@ -1,9 +1,9 @@
 #include <noos/noos>
 #include <iostream>
 #include <chrono>
-/*
- * \brief Example to do 2D mapping with laser data
- */
+
+// TODO: REMOVE THIS EXAMPLE
+
 /// \brief function to read a json file and it is converted 
 //  into a string param
 std::string read_json_file(const std::string file)
