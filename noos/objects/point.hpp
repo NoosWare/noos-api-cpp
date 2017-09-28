@@ -38,6 +38,36 @@ struct point
     /// @brief Equality operator
     bool operator==(const noos::object::point<value_type> & rhs) const;
 };
+
+/**
+ * @struct point2d
+ * @brief encapsulate point of 2 dimensions (x, y)
+ * @version 0.8.0
+ * @date 28.09.2017
+ */
+template <class value_type>
+struct point2d
+{
+    /// coordinates
+	value_type x = 0;
+    value_type y = 0;
+
+    /// @brief default constructor
+    point2d() = default;
+
+    /// @brief constructor taking parameters x, y and z
+    point2d(value_type x_data,
+          value_type y_data);
+
+    /// @brief Construct using library "json for modern c++"
+    point2d(const json::const_iterator & position);
+   
+    /// @return a JSON object
+    json::object_t to_json() const;
+   
+    /// @brief Equality operator
+    bool operator==(const noos::object::point<value_type> & rhs) const;
+};
 #include "point.tpl"
 }
 }

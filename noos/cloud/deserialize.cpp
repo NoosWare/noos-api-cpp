@@ -8,8 +8,7 @@ struct face_detection;
 struct light_detection;
 struct human_detection;
 struct orb_learn_object;
-struct orb_clear_models;
-struct orb_load_models;
+struct orb_clear_model;
 struct orb_find_objects;
 struct object_recognition;
 struct qr_recognition;
@@ -193,8 +192,8 @@ std::vector<noos::object::qr_code>
 
 // ORB learn models
 template <>
-int deserialize<orb_learn_object,
-                int
+bool deserialize<orb_learn_object,
+                bool 
                 >::operator()(std::string json) 
 {
     nlohmann::json json_f;
@@ -203,13 +202,13 @@ int deserialize<orb_learn_object,
             return(json_f["result"]);
         }
     }
-    return -1; 
+    return false; 
 }
 
 // ORB clear models
 template <>
-int deserialize<orb_clear_models,
-                int
+bool deserialize<orb_clear_model,
+                bool
                 >::operator()(std::string json) 
 {
     nlohmann::json json_f;
@@ -218,48 +217,27 @@ int deserialize<orb_clear_models,
             return(json_f["result"]);
         }
     }
-    return -1; 
-}
-
-// ORB load models
-template <>
-int deserialize<orb_load_models,
-                int
-                >::operator()(std::string json) 
-{
-    nlohmann::json json_f;
-    if (misc::check_json(json_f, json)) {
-        if (misc::check_error(json_f)) {
-            return(json_f["result"]);
-        }
-    }
-    return -1; 
+    return false; 
 }
 
 // ORB find objects
 template <>
-noos::object::orb_object 
+std::vector<noos::object::point2d<float>> 
     deserialize<orb_find_objects,
-                noos::object::orb_object
+                std::vector<noos::object::point2d<float>>
                >::operator()(std::string json) 
 {
-    std::vector<noos::object::point<double>> points;
+    std::vector<noos::object::point2d<float>> points;
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
-            auto it_center = json_f.find("found_centers");
+            auto it_center = json_f.find("keypoints");
             for (auto it = it_center->begin(); it != it_center->end(); it++) {
-                points.push_back(noos::object::point<double>(it));
+                points.push_back(noos::object::point2d<float>(it));
             }
-            return noos::object::orb_object {
-                                              json_f["found_names"],
-                                              points, 
-                                              json_f["found_scores"],
-                                              json_f["result"]
-                                            };
         }
     }
-    return noos::object::orb_object{};
+    return points;
 }
 
 // icp slam

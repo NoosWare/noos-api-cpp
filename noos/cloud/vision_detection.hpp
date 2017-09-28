@@ -98,10 +98,10 @@ struct human_detection
  */
 struct orb_learn_object 
 : public http_request, 
-  public cloud_base<int>,
+  public cloud_base<bool>,
   public vision_base
 {
-    using callback = std::function<void(int)>;
+    using callback = std::function<void(bool)>;
     static const std::string uri;
 
     /**
@@ -121,30 +121,15 @@ struct orb_learn_object
  * @struct orb_clear_models
  * @brief Clears operational memory for selected user
  */
-struct orb_clear_models 
+struct orb_clear_model
 : public http_request, 
-  public cloud_base<int>
+  public cloud_base<bool>
 {
-    using callback = std::function<void(int)>;
+    using callback = std::function<void(bool)>;
     static const std::string uri;
 
     /// @param user is the user name
-    orb_clear_models(const std::string user);
-};
-
-/**
- * @struct object_detection_load_models
- * @brief Load one or more models to operational memory
- */
-struct orb_load_models 
-: public http_request, 
-  public cloud_base<int>
-{
-    using callback = std::function<void(int)>;
-    static const std::string uri;
-
-    /// @param names is the object names to load
-    orb_load_models(const std::vector<std::string> names);
+    orb_clear_model(const std::string model);
 };
 
 /**
@@ -153,23 +138,27 @@ struct orb_load_models
  */
 struct orb_find_objects 
 : public http_request, 
-  public cloud_base<noos::object::orb_object>,
+  public cloud_base<std::vector<noos::object::point2d<float>>>,
   public vision_base
 {
-    using callback = std::function<void(noos::object::orb_object)>;
+    using callback = std::function<void(
+                            std::vector<noos::object::point2d<float>>)>;
     static const std::string uri;
 
     /**
      * @param image will be used to find objects
-     * @param limit is the limit search to N best matches
+     * @param model is the filename of the model 
+     *        which is going to be loaded
      */
     orb_find_objects(
                       const noos::object::picture & image,
-                      const int limit
+                      const std::string model,
+                      const float threshold
                     );
 
     /// @param limit is the limit search to N best matches
-    orb_find_objects(const int limit);
+    orb_find_objects(const std::string model,
+                     const float threshold);
 };
 
 }

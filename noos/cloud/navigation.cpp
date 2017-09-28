@@ -23,7 +23,6 @@ icp_slam::icp_slam(const std::string map_name,
   cloud_base(true)
 {
     http_request::make_multipart_form();
-    std::cout << map_name << "  " << config_file_name << " " << laser_data.intensities.size() << std::endl;
     nlohmann::json json_doc = { {"map_name", map_name},
                                 {"config_file", config_file_name},
                                 {"laser", laser_data.to_json()}
