@@ -1,8 +1,6 @@
 #include <noos/noos>
 #include <iostream>
-/*
- * \brief Example to load, learn and find objects of a picture
- */
+// TODO: REMOVE AND PUT INTO THE ROS NODE STUFF
 int main()
 {
     using namespace noos::cloud;

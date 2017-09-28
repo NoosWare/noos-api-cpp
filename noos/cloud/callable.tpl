@@ -162,18 +162,3 @@ void callable<cloud_type,
     assert(io_);
     io_->stop();
 }
-
-template <class cloud_type,
-          bool  keep_alive,
-          class socket_type,
-          class error_handle,
-          class ...args>
-callable<cloud_type,keep_alive,socket_type,error_handle>
-    make(typename cloud_type::callback functor,
-         args... params)
-{
-    return std::move(callable<cloud_type,
-                     keep_alive,
-                     socket_type,
-                     error_handle>(params..., functor));
-}

@@ -1,8 +1,6 @@
 #include <noos/noos>
 #include <iostream>
-/*
- * Example which shows how a upload and delete a map
- */
+// TODO: REMOVE and PLACE IN ROS TUTORIAL
 int main()
 {
     using namespace noos::cloud;

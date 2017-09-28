@@ -23,7 +23,12 @@ struct tied
     callback functor;
     /// @brief constructor requires only the functor
     tied(callback functor);
+    tied(callback functor, cloud_type object);
 };
+
+/// @brief simple helper - not really needed
+template <class cloud_type>
+tied<cloud_type> make_tie(typename cloud_type::callback functor);
 
 /**
  * @brief vision_batch
@@ -33,7 +38,7 @@ struct tied
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
  * @note you can only using this class with `vision_base` derived classes
  */
-template <class... cloud_pairs>
+template <class... ties>
 class vision_batch 
 : public http_request, 
   public cloud_base<bool>,
@@ -41,36 +46,36 @@ class vision_batch
 {
 public:
     using callback = std::function<void(std::string)>;
-    typedef typename vision_batch<cloud_pairs...>::data_type data_types;
+    typedef typename vision_batch<ties...>::data_type data_types;
     /**
      * @brief construct a vision_batch using a list of `tied` wrappers
      * @param image is a noos::object::picture 
      * @note args will be called in a sequential manner
      */
     vision_batch(const noos::object::picture & image,
-                 cloud_pairs... args);
+                 ties... args);
     /** 
      * @brief process the JSON reply and delegate to services
      * This method becomes the specialisation of `deserialize<vision_batch<...>>`,
-     * @note this is the callback for `callable` and calls the cloud_pairs functors
+     * @note this is the callback for `callable` and calls the ties functors
      * using a fold expression and tuple unpacking
      */
     void process(std::string json);
 
 protected:
-    // expand the tuple of cloud_pairs
+    // expand the tuple of ties
     template<std::size_t... batch_size>
     void expand_batch(std::string json, 
                       std::string key,
                       std::index_sequence<batch_size...>);
 
     // find the cloud_pair (cloud_class and callack and pass the data)
-    void find_cloud_type(cloud_pairs... args, 
+    void find_cloud_type(ties... args, 
                           std::string json,
                           std::string key);
    
     const noos::object::picture & image__;
-    std::tuple<cloud_pairs...> batch__;
+    std::tuple<ties...> batch__;
 };
 }
 }

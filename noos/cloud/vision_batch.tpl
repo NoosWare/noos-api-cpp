@@ -7,9 +7,15 @@ tied<cloud_type>::tied(tied::callback functor)
   functor(functor)
 {}
 
-template <class... cloud_pairs>
-vision_batch<cloud_pairs...>::vision_batch(const noos::object::picture & image,
-                                           cloud_pairs... args)
+template <class cloud_type>
+tied<cloud_type> make_tie(typename cloud_type::callback functor)
+{
+    return tied<cloud_type>(functor);
+}
+
+template <class... ties>
+vision_batch<ties...>::vision_batch(const noos::object::picture & image,
+                                           ties... args)
 : http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
   cloud_base<bool>(true),
   image__(image),
@@ -31,8 +37,8 @@ vision_batch<cloud_pairs...>::vision_batch(const noos::object::picture & image,
     http_request::close();
 }
 
-template <class... cloud_pairs>
-void vision_batch<cloud_pairs...>::process(std::string json)
+template <class... ties>
+void vision_batch<ties...>::process(std::string json)
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -55,9 +61,9 @@ void vision_batch<cloud_pairs...>::process(std::string json)
     }
 }
 
-template<class... cloud_pairs>
+template<class... ties>
 template<std::size_t... batch_size>
-void vision_batch<cloud_pairs...>::expand_batch(
+void vision_batch<ties...>::expand_batch(
                                                  std::string json, 
                                                  std::string key,
                                                  std::index_sequence<batch_size...>
@@ -66,9 +72,9 @@ void vision_batch<cloud_pairs...>::expand_batch(
     find_cloud_type(std::get<batch_size>(batch__)..., json, key);
 }
 
-template <class... cloud_pairs>
-void vision_batch<cloud_pairs...>::find_cloud_type(
-                                                    cloud_pairs... args, 
+template <class... ties>
+void vision_batch<ties...>::find_cloud_type(
+                                                    ties... args, 
                                                     std::string json, 
                                                     std::string key
                                                   )

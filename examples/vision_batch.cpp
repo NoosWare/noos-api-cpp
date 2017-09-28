@@ -1,47 +1,47 @@
 #include <noos/noos>
-#include <iostream>
-#include <tuple>
-
-/**
- * @brief example to detect faces in a picture
- */
+// 
+// Example of a vision batch,
+// which detects faces and humans in a picture
+// 
 int main()
 {
     using namespace noos::cloud;
-    /**
-     * The image is loaded from its path to a picture class.
-     * If you run the example inside examples folder, this path is valid.
-     * In other cases, you'll have to change it for a proper one.
-     */
+    //
+    // An image is loaded from disk
+    //
     auto pic = noos::object::picture("data/object_classes_picture_1.png");
-    /**
-     * Construct a lambda, std::function or bind your own functor.
-     * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a vector of noos::object::face and
-     * we show the size of the vector to know how many faces have 
-     * been found.
-     */
+    //
+    // This lambda will print the amount of detected faces
+    //
     auto face_cb = [&](std::vector<noos::object::face> faces) { 
         std::cout << "Found " << faces.size() << " faces!" << std::endl;
     };
+    //
+    // This lambda will print the amount of detected human bodies
+    //
     auto human_cb = [&](std::vector<noos::object::human> humans) { 
         std::cout << "Found " << humans.size() << " humans!" << std::endl;
     };
-    /**
-     * Now lets create the callable object which will be used for subsequent calls.
-     * This object wraps around the vision_batch data and image, as well as the socket
-     * used to connect.
-     * For more information @see noos::cloud::vision_batch.hpp
-     */
-    vision_batch<tied<face_detection>,tied<human_detection>>
-    batch(pic, 
-          tied<face_detection>(face_cb), 
-          tied<human_detection>(human_cb));
-
-    // then the callable
-    callable<decltype(batch)> callable_batch(batch);
-    // Last but not least, we'll call the noos service for 
-    // a vision batch of face and human detection
-    callable_batch.send(2);
+    //
+    // we alias the `vision_batch` template arguments.
+    // NOTE: vision_batch ties a `cloud_type` (e.g., face_detection or human_detection)
+    //       to a callback.
+    //       Therefore you have to wrap them using `tied` (or `make_tie`) in order
+    //       to identify which callback belongs to which cloud query.
+    //       In this instance, we tie `face_detection` to the `face_cb` lambda,
+    //       and similarly, we tie `human_detection` to the `human_cb` lambda.
+    //
+    using vbatch = vision_batch<tied<face_detection>,tied<human_detection>>;
+    //
+    // construct a `callable` object of the aliased vision_batch.
+    // NOTE: in this example we pass the picture first, and then the tied objects.
+    //
+    auto cb = call<vbatch,false>(pic,
+                                 tied<face_detection>(face_cb), 
+                                 tied<human_detection>(human_cb));
+    //
+    // we increate the time-out to 3 seconds on purpose.
+    //
+    cb.send(3);
     return 0;
 }

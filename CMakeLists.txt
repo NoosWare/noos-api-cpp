@@ -209,7 +209,6 @@ endif()
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
                   vision_batch.cpp
-                  class_reactor.cpp
                   age_detection.cpp
                   face_detection.cpp
                   face_expression.cpp
