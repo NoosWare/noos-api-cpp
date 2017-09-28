@@ -47,7 +47,7 @@ struct icp_slam
      */
     icp_slam(const std::string map_name,
              const std::string config_file_name,
-             const noos::object::laser & laser_data);
+             const noos::object::laser laser_data);
 
     /// TODO:overload constructor with 3d data(pointcloud)
 };
@@ -76,7 +76,7 @@ struct rbpf_slam
      */
     rbpf_slam(const std::string map_name,
               const std::string config_file_name,
-              const noos::object::laser & laser_data,
+              const noos::object::laser laser_data,
               const noos::object::odometry & odometry);
 
     /// TODO:overload constructor with 3d data(pointcloud)

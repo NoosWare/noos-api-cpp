@@ -267,3 +267,34 @@ TEST_CASE("Json test for odometry", "[odometry]")
     REQUIRE(odometry_obj.inc_y == 0);
     REQUIRE(odometry_obj.inc_yaw == 0);
 }
+
+/**
+ * \brief check noos::object::laser for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+TEST_CASE("Json test for laser", "[laser]")
+{
+    std::string string = read_json_file("tests/data/json_classes_laser.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string); 
+    const auto laser = json.find("laser");
+    REQUIRE(laser != json.end());
+
+    noos::object::laser laser_obj;
+
+    nlohmann::json::object_t out = {{"laser", laser_obj.to_json()}};
+    REQUIRE(json == out);
+    REQUIRE(laser_obj.max_range == 0);
+    REQUIRE(laser_obj.aperture == 0);
+    REQUIRE(laser_obj.timestamp == 0);
+    REQUIRE(laser_obj.std_error == 0);
+    REQUIRE(laser_obj.right_to_left == true);
+    REQUIRE(laser_obj.ranges == std::vector<float>{0.0});
+    REQUIRE(laser_obj.intensities == std::vector<int>{0});
+
+    noos::object::laser laser2;
+    REQUIRE(laser2 == laser_obj);
+}

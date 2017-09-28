@@ -3,8 +3,17 @@
 namespace noos {
 namespace object {
 
+
 json::object_t laser::to_json() const
 {
+    assert(!ranges.empty());
+    assert(!intensities.empty());
+    if (ranges.size() <= 0) {
+        throw std::runtime_error("invalid ranges");
+    }
+    if (intensities.size() <= 0) {
+        throw std::runtime_error("invalid intensities");
+    }
     json::object_t scan_data = {{"aperture", aperture}, 
                                 {"timestamp", timestamp},
                                 {"max_range", max_range},

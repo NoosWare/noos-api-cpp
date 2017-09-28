@@ -503,6 +503,10 @@ TEST_CASE("Test navigation services", "[navigation]")
 {
     using namespace noos::cloud;
 
+    SECTION("Empty laser data") {
+        noos::object::laser empty;
+        REQUIRE_NOTHROW(icp_slam("new_map", "icp.ini", empty));
+    }
     std::string string = read_json_file("tests/data/cloud_class_laser_data.json");
     REQUIRE(!string.empty());
 

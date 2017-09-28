@@ -40,7 +40,7 @@ struct platform
  *  @date 05.07.2017
  */
 ///TODO: change uri to "free.noos.io" or "free.noos.cloud"
-const platform default_node = {"127.0.0.1", "8080", "test_token", "test"};
+const platform default_node = {"10.130.3.21", "8080", "test_token", "test"};
 
 /**
  *  @brief european platform

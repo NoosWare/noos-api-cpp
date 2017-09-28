@@ -18,11 +18,12 @@ std::map<slam_type, std::string>
 //Class icp_slam 
 icp_slam::icp_slam(const std::string map_name,
                    const std::string config_file_name,
-                   const noos::object::laser & laser_data)
+                   const noos::object::laser laser_data)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
     http_request::make_multipart_form();
+    std::cout << map_name << "  " << config_file_name << " " << laser_data.intensities.size() << std::endl;
     nlohmann::json json_doc = { {"map_name", map_name},
                                 {"config_file", config_file_name},
                                 {"laser", laser_data.to_json()}
@@ -34,7 +35,7 @@ icp_slam::icp_slam(const std::string map_name,
 //Class rbpf_slam 
 rbpf_slam::rbpf_slam(const std::string map_name,
                      const std::string config_file_name,
-                     const noos::object::laser & laser_data,
+                     const noos::object::laser laser_data,
                      const noos::object::odometry & odometry)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
