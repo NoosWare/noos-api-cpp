@@ -34,7 +34,7 @@ int main()
      * and send the information to the platform.
      * For more information \see noos::cloud::orb_learn_object
      */
-    callable<orb_learn_object> callable_learn(orb_learn_object(pic, "cat.jpg"), callback);
+    callable<orb_learn_object,false> callable_learn(orb_learn_object(pic, "cat.jpg"), callback);
     callable_learn.send();
 
     /*
@@ -42,7 +42,7 @@ int main()
      * for the images learnt previously in the new image.
      * For more information \see noos::cloud::orb_find_objects
      */
-    callable<orb_find_objects> callable_find(orb_find_objects(pic, "cat.jpg", 200), find_cb);
+    callable<orb_find_objects, false> callable_find(orb_find_objects(pic, "cat.jpg", 200), find_cb);
     callable_find.send();
 
     /*
@@ -50,7 +50,7 @@ int main()
      * class to clear the memory.
      * For more information \see noos::cloud::orb_clear_models
      */
-    callable<orb_clear_model> callable_clear(orb_clear_model("cat.jpg"), callback);
+    callable<orb_clear_model,false> callable_clear(orb_clear_model("cat.jpg"), callback);
     callable_clear.send();
     return 0;
 }
