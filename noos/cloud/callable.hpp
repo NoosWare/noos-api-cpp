@@ -66,7 +66,7 @@ public:
     /// @brief stop calls and shutdown socket
     void stop();
 protected:
-    /// @brief set the @param socket - used by `rapp::cloud::node`
+    /// @brief set the @param socket - used by `noos::cloud::node`
     void socket(std::function<void(std::string)> cloud_function);
     /// @brief the callback functor - hidden from others
     callback functor;

@@ -11,6 +11,7 @@
 							}
 						 },
 				"confidence" : 100,
-				"label" : "label"
+				"label" : 1,
+                "name" : "name"
 	 }
 }

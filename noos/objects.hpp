@@ -9,5 +9,5 @@
 #include <noos/objects/laser.hpp>
 #include <noos/objects/orientation.hpp>
 #include <noos/objects/config_file.hpp>
-#include <noos/objects/face_recognition_obj.hpp>
+#include <noos/objects/person.hpp>
 #include <noos/objects/odometry.hpp>

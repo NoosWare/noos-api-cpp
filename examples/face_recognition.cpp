@@ -15,11 +15,12 @@ int main()
     // we show the size of the vector to know how many faces have 
     // been found.
     // 
-    auto callback = [&](std::vector<noos::object::face_recognition_obj> faces) { 
+    auto callback = [&](std::vector<noos::object::person> faces) { 
         if (faces.size() > 0) { 
             for (auto face : faces) {
                 // Coordinates?
                 std::cout << "Label: " <<face.label << std::endl;
+                std::cout << "Name: " <<face.name << std::endl;
                 std::cout << "Confidence: " << face.confidence << std::endl; 
             }
         }

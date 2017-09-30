@@ -83,10 +83,10 @@ struct qr_recognition
  */
 struct face_recognition 
 : public http_request, 
-  public cloud_base<std::vector<noos::object::face_recognition_obj>>,
+  public cloud_base<std::vector<noos::object::person>>,
   public vision_base
 {
-    using callback = std::function<void(std::vector<noos::object::face_recognition_obj>)>;
+    using callback = std::function<void(std::vector<noos::object::person>)>;
     static const std::string uri;
 
     /// @param image is a picture object reference

@@ -368,12 +368,13 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
                                             }
                                          },
                                 "confidence" : 100,
-                                "label" : "label" 
+                                "label" : 2,
+                                "name" : "name" 
                      }],
                      "error" : ""
                    })"_json;
         std::string j1_string = j1.dump(-1);
-        std::vector<noos::object::face_recognition_obj> faces;
+        std::vector<noos::object::person> faces;
         faces = deserialize<face_recognition,
                             typename face_recognition::data_type>()(j1_string);
         REQUIRE(faces.at(0).face_rect.top_left_x == 1);
@@ -381,7 +382,8 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
         REQUIRE(faces.at(0).face_rect.bottom_right_x == 3);
         REQUIRE(faces.at(0).face_rect.bottom_right_y == 4);
         REQUIRE(faces.at(0).confidence == 100);
-        REQUIRE(faces.at(0).label == "label");
+        REQUIRE(faces.at(0).label == 2);
+        REQUIRE(faces.at(0).name == "name");
     }
 
     SECTION("Face expression") {

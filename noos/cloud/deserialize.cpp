@@ -333,18 +333,18 @@ bool deserialize<get_map,
 
 // face recognition
 template <>
-std::vector<noos::object::face_recognition_obj> 
+std::vector<noos::object::person> 
     deserialize<face_recognition,
-                std::vector<noos::object::face_recognition_obj>
+                std::vector<noos::object::person>
                >::operator()(std::string json)
 {
-    std::vector<noos::object::face_recognition_obj> faces;
+    std::vector<noos::object::person> faces;
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             auto it_faces = json_f.find("faces");
             for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
-                faces.push_back(noos::object::face_recognition_obj(it));
+                faces.push_back(noos::object::person(it));
             }
         }
     }

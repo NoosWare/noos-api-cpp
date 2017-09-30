@@ -19,6 +19,8 @@ namespace cloud {
 struct default_error_handler
 {
     void operator()(boost::system::error_code & error) const;
+
+    static const std::string error_message;
 };
 
 }

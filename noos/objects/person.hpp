@@ -9,30 +9,32 @@ namespace noos {
 /// @brief common object namespace
 namespace object {
 /**
- * @class face_recognition_obj
+ * @class person
  * @brief describes a face coordinate,
  *        the label and the confidence of 
  *        the result
  * @version 0.8.0
  * @date 13.09.2017
  */
-struct face_recognition_obj
+struct person
 {
     /// @brief rectangle which contains the face
     face face_rect;
     /// @brief confidence of the result
-    double confidence;
+    float confidence;
+    /// @brief name
+    std::string name;
     /// @brief label
-    std::string label;
+    int label;
 
     /// @brief Constructor using `json for modern C++`
-    face_recognition_obj(const json::const_iterator & face_it);
+    person(const json::const_iterator & face_it);
    
     /// @return json object
     json::object_t to_json() const;
 
     /// @brief Equality operator
-    bool operator==(const face_recognition_obj & rhs) const;
+    bool operator==(const person & rhs) const;
 
 };
 }
