@@ -19,10 +19,10 @@ int main()
     // We also specify that we won't keep alive the connection, using `false`
     // as the second template parameter.
     // 
-    auto query = call<face_detection,false>( 
+    callable<face_detection,false> query(face_detection(pic), 
                  [&](std::vector<noos::object::face> faces) { 
                         std::cout << "faced detected: " << faces.size() << std::endl;
-                 }, pic);
+                 });
     query.send();
     return 0;
 }

@@ -138,7 +138,7 @@ template <class socket_type,
           class child_class> 
 void asio_handler<socket_type,child_class>::end(const boost::system::error_code & err)
 {
-    if (err) {
+    if (err && err != boost::asio::error::operation_aborted) {
         static_cast<child_class*>(this)->error_(err);
     }
     http_response::flush_data();

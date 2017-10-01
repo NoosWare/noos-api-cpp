@@ -47,7 +47,7 @@ int main()
      * The actual parameter depends on the cloud class you're using,
      * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<upload_slam_config_file> config_callable(request, config_callback);
+    callable<upload_slam_config_file,false> config_callable(request, config_callback);
     config_callable.send();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     /*

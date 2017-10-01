@@ -11,12 +11,22 @@ void default_error_handler::operator()(boost::system::error_code & error) const
         case 2:
             //End of file
             std::cerr << error_message 
-                      << "The platform has closed the connection." << std::endl;
+                      << " The platform has closed the connection." << std::endl;
             break;
         case 31:
             //Protocol error
             std::cerr << error_message 
-                      << "The service called is not available in the platform." << std::endl;
+                      << " Protocol error has been received (timeout, uri not found, bad request, etc)." << std::endl;
+            break;
+        case 32:
+            //Broken pipe
+            std::cerr << error_message 
+                      << " The platform has closed the connection without closing API connection." << std::endl;
+            break;
+        case 110:
+            //Timeout
+            std::cerr << error_message 
+                      << " Connection time out." << std::endl;
             break;
         case 111:
             std::cerr << error_message 
@@ -26,6 +36,9 @@ void default_error_handler::operator()(boost::system::error_code & error) const
         case 103:
             std::cout << error_message << " Connection aborted. Socket shutdown." 
                       << "Create a different connection." << std::endl;
+            break;
+        case 125:
+            std::cout << error_message << " Operation canceled." << std::endl;
             break;
         default:
             std::cout << error_message << error.message() 
