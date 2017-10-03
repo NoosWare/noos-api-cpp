@@ -20,10 +20,10 @@ It is portable on Linuxes and relies on cross-platform libraries:
 [lib BOOST](http://www.boost.org) and [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library).
 
 It uses asynchronous execution, inspired (and supported) by BOOST ASIO.
-It has been designed this way on purpose: you can send one or many *jobs* (e.g., service calls)
+It has been designed this way on purpose: you can send one or many *queries* (e.g., service calls)
 to the cloud platform, and in the meantime keep the Robot busy with other local processing.
 
-This enables you to write both asynchronous and multithreading robot controllers,
+This enables you to write both asynchronous and multithreaded robot controllers,
 by *daisy-chanining* delegates via subsequent callbacks.
 
 All callback schemes use the `std::function` therefore you can pass 
@@ -32,20 +32,20 @@ All callback schemes use the `std::function` therefore you can pass
 This API allows you to start multiple connections and queries (named `callables`),
 which template the actual data being sent and received.
 You are free to inherit from `callable`, define your own `error_handler`,
-or compose objects of those classes internally.
+or even compose objects for those classes internally.
 
 The basic design is as follows:
 - you construct `callables` 
 - you control when and how often you call them (method `send`)
 - your own callback receives the reply.
 
-The callback must be defined by you, and you pass it to a callable at construction:
+The callback must be defined by you and you pass it to a callable at construction:
 - whereas you can update and change the data (e.g., `cloud_type`)
 - you cannot change the functor
 - the only exception is `vision_batch<...>` which has its own internal functor
-- however `vision_batch<...>` requires that you pass pairs of cloud data and functors (see example)
+- however `vision_batch<...>` requires that you pass tied pairs of cloud data and functors (see example)
 
-In general, you can chain calls (.e.g, one after another), parallelise them (call them at the same time)
+In general, you can chain calls (e.g., one after another), parallelise them (call them at the same time)
 and in the case of vision calls, you can batch them (see `vision_batch<...>`).
 
 Because certain scenarios require you to send frequent cloud queries, class `callable`
@@ -54,6 +54,8 @@ all you need to do is keep a callable object active (but please don't spam too f
 
 Non-continuous calls (e.g., a one-off query) can be controlled by the lifetime of the callble object.
 
+_NOTE_: current version 0.8.0 is **under developlment**!
+
 ## Dependencies
 
 The following dependencies are **required** to build the C++ API:
@@ -61,20 +63,41 @@ The following dependencies are **required** to build the C++ API:
 * gcc/g++ >= 4.9
 * boost >= 1.49
 * cmake >= 2.8
+* libssl-deva>= 1.0
 
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
 ```shell
-sudo apt-get install cmake gcc-4.9 libboost-all-dev
+sudo apt-get install cmake gcc-4.9 libboost-all-dev libssl-dev
 ```
 
 The API internally uses [Nlohmann's JSON](https://github.com/nlohmann/json) header library.
-You have to manually init the submodule:
+If building the tests, the [Catch](https://github.com/philsquared/Catch/tree/master) header library.
+You have to manually init submodules:
 
 ```shell
 git submodule init
 git submodule update
 ```
+
+## CMake Options
+
+*Note* that you can pass a variety of CMake arguments to suit your needs:
+
+* `-DNOOS_SHARED=ON`		                        (Default: compile a shared libnoos)
+* `-DNOOS_STATIC=ON`		                        (Optional: compile a static libnoos)
+* `-DBUILD_TESTS=ON`                                (Optional: compile various tests - run with `make test`)
+* `-DBUILD_EXAMPLES=ON`                             (Optional: compile various examples)
+* `-DCMAKE_BUILD_TYPE=Debug`                        (Optional: enable debug symbols)
+* `-DSTATIC_LIBSTD=ON`                              (Optional: compile statically against libstdc++)
+* `-DOPEN_NAO=ON`                                   (Optional: compiling on OpenNAO builds binaries for ATOM CPU)
+* `-DCMAKE_INSTALL_PREFIX=/usr`	                    (Optional: specify the library install directory
+* `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`       (Optional: specify OpenSSL root directory)
+* `-DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/` (Optional: specify OpenSSL library directory)
+
+All of those arguments are optional, however depending on your scenario you may have to adjust.
+For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
+using i386 architecture.
 
 ## Building
 
@@ -88,25 +111,6 @@ make
 ```
 
 You should end up with a library and/or tests and examples under your build directory.
-
-## CMake Options
-
-*Note* that you can pass a variety of CMake arguments to suit your needs:
-
-* `-DNOOS_SHARED=ON`		                        (Default: compile a shared libnoos)
-* `-DNOOS_STATIC=ON`		                        (Optional: compile a static libnoos)
-* `-DBUILD_TESTS=ON`                                (Optional: compile various tests - run with `make test`)
-* `-DBUILD_EXAMPLES=ON`                             (Optional: compile various examples)
-* `-DCMAKE_BUILD_TYPE=Debug`                        (Optional: enable debug symbols)
-* `-DSTATIC_LIBSTD=ON`                              (Optional: compile statically against libstdc++)
-* `-DOPEN_NAO=ON`                                   (Optional: compiling on OpenNAO requires additional CXX flags)
-* `-DCMAKE_INSTALL_PREFIX=/usr`	                    (Optional: specify the library install directory
-* `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`       (Optional: specify OpenSSL root directory)
-* `-DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/` (Optional: specify OpenSSL library directory)
-
-All of those arguments are optional, however depending on your scenario you may have to adjust.
-For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
-using i386 architecture.
 
 ## Installing
 
@@ -149,7 +153,7 @@ make test
 
 *_Warning_*: do not run individual tests from within the `/noos-api/cpp/build/tests` directory!
 
-*_Note_*: all examples and test have been checked with `valgrind --leak-check=full` under Ubuntu 14.04 and found
+*_Note_*: all examples and test have been checked with `valgrind --leak-check=full` under Ubuntu 16.04 and found
 to have no memory leaks or segfaults.
 
 If you do happen to run across such issues, please open an issue on GitHub.
