@@ -29,22 +29,23 @@ template <class cloud_type,
           bool  keep_alive,
           class socket_type,
           class error_handle
-          >
+         >
+template <typename... parameters>
 callable<cloud_type,
          keep_alive,
          socket_type,
-         error_handle>
-         ::callable(cloud_type object,
-                    callback functor,
-                    noos::cloud::platform info)
-: object(object), 
-  functor(functor), 
+         error_handle
+        >::callable(callback functor,
+                    platform info,
+                    parameters... args)
+: object(args...), 
+  functor(functor),
   endpoint(info),
   buffer_(std::make_unique<boost::asio::streambuf>()),
   query_(std::make_unique<boost::asio::ip::tcp::resolver::query>(info.address, info.port)),
   io_(std::make_unique<boost::asio::io_service>()),
   resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
-{ 
+{
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
     "template parameter `cloud_type` can't be `cloud_batch` derived class in this context");
     socket([&](auto reply){
@@ -73,35 +74,6 @@ callable<cloud_type,
   resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
 {
     socket([&](auto reply){ object.process(reply); });
-    assert(socket_ && query_ && resol_ && io_);
-}
-
-template <class cloud_type,
-          bool  keep_alive,
-          class socket_type,
-          class error_handle
-         >
-template <typename... parameters>
-callable<cloud_type,
-         keep_alive,
-         socket_type,
-         error_handle
-        >::callable(parameters... args,
-                    callback functor,
-                    noos::cloud::platform info)
-: object(args...), 
-  functor(functor),
-  endpoint(info),
-  buffer_(std::make_unique<boost::asio::streambuf>()),
-  query_(std::make_unique<boost::asio::ip::tcp::resolver::query>(info.address, info.port)),
-  io_(std::make_unique<boost::asio::io_service>()),
-  resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
-{
-    static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
-    "template parameter `cloud_type` can't be `cloud_batch` derived class in this context");
-    socket([&](auto reply){
-            functor(deserialize<cloud_type, 
-                                typename cloud_type::data_type>()(reply)); });
     assert(socket_ && query_ && resol_ && io_);
 }
 

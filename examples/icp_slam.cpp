@@ -29,10 +29,6 @@ int main()
     /*
      * Before starting slam, a configuration file has to be sent
      * to the platform. It's required only once.
-     * The next parameters are needed:
-     * @param noos::object::config_file is the configuration file
-     * @param noos::cloud::slam_type. Due to there are different methods
-     *                          for doing slam, it's needed to specify it.
      */
     auto config = noos::object::config_file("data/config_file.ini");
     auto request  = upload_slam_config_file(config, "icp.ini", noos::cloud::slam_type::icp);
@@ -43,11 +39,11 @@ int main()
      * Finally we create a callable object and send the information to the platform
      * with a timeout of 2 seconds
      * For more information /see noos::cloud::callable
-     *
-     * The actual parameter depends on the cloud class you're using,
-     * so for a complete list, you need to read and understand how each cloud class functions.
      */
-    callable<upload_slam_config_file,false> config_callable(request, config_callback);
+    auto config_callable = call<upload_slam_config_file,false>(config_callback, 
+                                                               config,
+                                                               "icp.ini",
+                                                               slam_type::icp);
     config_callable.send();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     /*
@@ -70,9 +66,6 @@ int main()
     laser.pose3d = noos::object::pose<float>(); 
     /*
      * Construct a lambda, std::function or bind your own functor.
-     * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a noos::object::pose with the position
-     * of the robot
      */
     auto icp_request = icp_slam("map_name", "icp.ini", laser);
     auto callback = [&](noos::object::pose<float> pose3d) {
@@ -83,7 +76,7 @@ int main()
      * and we send the information to the platform.
      * For more information \see noos::cloud::icp_slam
      */
-    callable<icp_slam,true> callable_icp(icp_request, callback);
+    auto callable_icp = call<icp_slam,false>(callback, "map_name", "icp.ini", laser);
     for (auto i = 0; i < 1500; i++) {
         callable_icp.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

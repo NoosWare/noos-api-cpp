@@ -19,10 +19,10 @@ int main()
     // We also specify that we won't keep alive the connection, using `false`
     // as the second template parameter.
     // 
-    callable<face_detection,false> query(face_detection(pic), 
-                 [&](std::vector<noos::object::face> faces) { 
+    auto callback = [&](std::vector<noos::object::face> faces) { 
                         std::cout << "faced detected: " << faces.size() << std::endl;
-                 });
+                    };
+    callable<face_detection> query(callback, default_node, pic);
     query.send();
     return 0;
 }

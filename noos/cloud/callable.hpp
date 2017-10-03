@@ -35,25 +35,25 @@ public:
     /// the actual `cloud_type` object
     /// you may change this between calls
     cloud_type object;
+
     /// @brief no empty constructor allowed
     callable() = delete;
+
     /// @brief construct a callable using a noos::cloud::platform object
     callable(callback functor,
              platform = default_node);
-    /// @brief convenience constructor 
-    callable(cloud_type, 
-             callback,
-             platform = default_node);
+
     /**
      * @brief construct a callable object wrapper
-     * @param `args` is the variadic `cloud_type` constructor arguments
+     * @param `args` are the `cloud_type` constructor arguments
      * @param `functor` is the callback receiving the reply
      * @see `cloud_type::callback` for callback signature
      */
     template <typename... parameters>
-    callable(parameters... args, 
-             callback functor,
-             platform = default_node);
+    callable(callback functor,
+             platform info = default_node,
+             parameters... args);
+
     /// @brief overloaded constructor for `vision_batch` template `cloud_type`
     /// @warning a `vision_batch` does not require a callback!
     template <typename... parameters>
@@ -88,12 +88,13 @@ template <class cloud_type,
                 typename std::enable_if<!std::is_same<cloud_type, 
                                                       cloud_batch>::value, bool>>
 callable<cloud_type,keep_alive,socket_type,error_handle> 
-    call(typename cloud_type::callback functor, args... params)
+    call(typename cloud_type::callback functor,
+         args... params)
 {
     return callable<cloud_type,
                     keep_alive,
                     socket_type,
-                    error_handle>(params..., functor);
+                    error_handle>(functor, default_node, params...);
 }
 
 /// @brief make a callable - only used for batches (e.g., vision_batch)

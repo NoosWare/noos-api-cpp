@@ -30,12 +30,11 @@ SCENARIO("A service needs to be call")
     using namespace noos::cloud;
     GIVEN("A service and its callback") {
         auto pic = noos::object::picture("tests/data/object_classes_picture_1.png");
-        auto face_request = face_detection(pic);
         auto callback = [&](std::vector<noos::object::face> faces) { 
             REQUIRE(faces.size() == 1);
         };
         THEN("A call can be made") {
-            callable<face_detection,false>callable_obj(face_request, callback);
+            callable<face_detection,false>callable_obj(callback, default_node, pic);
             REQUIRE(callable_obj.object.uri == "face_detection");
         }
     }
