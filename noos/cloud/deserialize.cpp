@@ -22,6 +22,7 @@ struct upload_map;
 struct upload_slam_config_file;
 struct get_map;
 struct face_recognition;
+struct path_planning;
 
 // available services
 template<>
@@ -350,5 +351,26 @@ std::vector<noos::object::person>
     }
     return faces;
 }
+
+// path_planning
+template <>
+std::deque<noos::object::point2d<float>> 
+    deserialize<path_planning,
+                std::deque<noos::object::point2d<float>>
+               >::operator()(std::string json)
+{
+    std::deque<noos::object::point2d<float>> points;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            auto it_points = json_f.find("points");
+            for (auto it = it_points->begin(); it != it_points->end(); it++ ) {
+                points.push_back(noos::object::point2d<float>(it));
+            }
+        }
+    }
+    return points;
+}
+
 }
 }

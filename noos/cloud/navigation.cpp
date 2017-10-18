@@ -9,6 +9,7 @@ const std::string delete_map::uri = "delete_map";
 const std::string upload_map::uri = "upload_map";
 const std::string upload_slam_config_file::uri = "upload_slam_config_file";
 const std::string get_map::uri = "get_map";
+const std::string path_planning::uri = "path_planning";
 
 std::map<slam_type, std::string> 
       upload_slam_config_file::config_type {{slam_type::icp, "icp"},
@@ -99,6 +100,24 @@ get_map::get_map(std::string map_name)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = {{"map_name", map_name}};
+    http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::close();
+}
+
+path_planning::path_planning(const noos::object::pose2d<float> start,
+                             const noos::object::pose2d<float> goal,
+                             const float robot_radius,
+                             const float resolution,
+                             const std::string map_name)
+: http_request(make_http_uri(uri)),
+  cloud_base(true)
+{
+    http_request::make_multipart_form();
+    nlohmann::json json_doc = {{"start", start.to_json()},
+                               {"goal", goal.to_json()},
+                               {"radius", robot_radius},
+                               {"resolution", resolution},
+                               {"map_name", map_name}};
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
 }

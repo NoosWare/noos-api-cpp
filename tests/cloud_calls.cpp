@@ -630,4 +630,36 @@ TEST_CASE("Test navigation services", "[navigation]")
                                    typename get_map::data_type>()(j1_string);
         REQUIRE(success);
     }
+
+    SECTION("Path planning") {
+        noos::object::pose2d<float> point = {0.0f, 0.0f, 0.0f};
+        float resolution = 0.05;
+        float robot_radius = 0.2;
+        path_planning new_path(point,
+                               point,
+                               robot_radius,
+                               resolution,
+                               "map_name");
+        REQUIRE(new_path.uri == "path_planning");
+        REQUIRE(new_path.is_single_callable());
+        auto j1 = R"(
+                    {
+                        "points": [{
+                                      "x" : 1,
+                                      "y" : 2
+                                   },
+                                   { 
+                                     "x" : 2,
+                                     "y" : 3
+                                   }],
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto path = deserialize<path_planning,
+                                typename path_planning::data_type>()(j1_string);
+        REQUIRE(path.at(0).x == 1);
+        REQUIRE(path.at(1).x == 2);
+        REQUIRE(path.at(0).y == 2);
+        REQUIRE(path.at(1).y == 3);
+    }
 }

@@ -9,7 +9,7 @@ int main()
     //
     // A picture with humans
     //
-    auto pic = noos::object::picture("data/object_classes_picture_7.png");
+    auto pic = noos::object::picture("data/object_classes_picture_7.jpg");
     // 
     // We make a callable object of human_detection class and we send
     // the information to the platform to detect humans in the file.

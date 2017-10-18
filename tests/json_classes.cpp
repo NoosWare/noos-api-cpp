@@ -301,3 +301,61 @@ TEST_CASE("Json test for laser", "[laser]")
     noos::object::laser laser2;
     REQUIRE(laser2 == laser_obj);
 }
+
+TEST_CASE("Json test for point2d", "[point2d]")
+{
+    std::string string = read_json_file("tests/data/json_classes_point2d.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto position = json.find("keypoints");
+    REQUIRE(position != json.end());
+
+    noos::object::point2d<double> point_obj = noos::object::point2d<double>(position);
+    REQUIRE(point_obj.x == 0.1);
+    REQUIRE(point_obj.y == 0.2);
+
+    nlohmann::json::object_t out = {{"keypoints", point_obj.to_json()}};
+    REQUIRE(json == out);
+
+    //Copy and assignment
+    auto point1 = point_obj;
+    REQUIRE(point1 == point_obj);
+    auto point2(point_obj);
+    REQUIRE(point2 == point_obj);
+
+    //Default constructor
+    noos::object::point2d<float> point3;
+    REQUIRE(point3.x == 0);
+    REQUIRE(point3.y == 0);
+}
+
+TEST_CASE("Json test for pose2d", "[pose2d]")
+{
+    std::string string = read_json_file("tests/data/json_classes_pose2d.json");
+    REQUIRE(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto position = json.find("pose2d");
+    REQUIRE(position != json.end());
+
+    noos::object::pose2d<double> point_obj = noos::object::pose2d<double>(position);
+    REQUIRE(point_obj.x == 0.1);
+    REQUIRE(point_obj.y == 0.2);
+    REQUIRE(point_obj.theta == 0.3);
+
+    nlohmann::json::object_t out = {{"pose2d", point_obj.to_json()}};
+    REQUIRE(json == out);
+
+    //Copy and assignment
+    auto point1 = point_obj;
+    REQUIRE(point1 == point_obj);
+    auto point2(point_obj);
+    REQUIRE(point2 == point_obj);
+
+    //Default constructor
+    noos::object::pose2d<float> point3;
+    REQUIRE(point3.x == 0);
+    REQUIRE(point3.y == 0);
+    REQUIRE(point3.theta == 0);
+}

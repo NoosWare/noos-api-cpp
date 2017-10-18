@@ -76,10 +76,30 @@ int main()
      * and we send the information to the platform.
      * For more information \see noos::cloud::icp_slam
      */
-    auto callable_icp = call<icp_slam,false>(callback, "map_name", "icp.ini", laser);
-    for (auto i = 0; i < 1500; i++) {
+    auto callable_icp = call<icp_slam, true>(callback, "map_name", "icp.ini", laser);
+    for (auto i = 0; i < 10; i++) {
         callable_icp.send();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    noos::object::pose2d<float> start = {0.2f, 0.0f, 0.0f};
+    noos::object::pose2d<float> goal = {0.7f, 0.0f, 0.0f};
+    float resolution = 0.05f;
+    float radius = 0.1f;
+
+    auto path_callback = [&](std::deque<noos::object::point2d<float>> path) {
+        if (path.size() == 0) {
+            std::cout << "Path not found" << std::endl;
+        }
+        for (auto point : path) {
+            std::cout << "Point : x = " << point.x << " ,y = " << point.y << std::endl;
+        }
+    };
+
+    auto callable_path = call<path_planning, false>(path_callback, start, goal, radius, resolution, "map_name");
+    callable_path.send();
+
     return 0;
 }

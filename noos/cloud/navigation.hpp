@@ -162,6 +162,30 @@ struct get_map
     get_map(std::string map_name);
 };
 
+/**
+ * @struct path planning
+ * @brief calculate a path between two points given
+ * @version 0.8.0
+ * @date 17.10.2017
+ */
+struct path_planning 
+: public http_request, 
+  public cloud_base<std::deque<noos::object::point2d<float>>>
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+
+    /// @param start is the start point of the robot
+    /// @param goal is the goal pose where you need to go
+    /// @param robot_radius is the radius in meters of the robot
+    /// @param resolution is the resolution that the map has
+    /// @param map_name is the name of the map (without extension)
+    path_planning(const noos::object::pose2d<float> start,
+                  const noos::object::pose2d<float> goal,
+                  const float robot_radius,
+                  const float resolution,
+                  const std::string map_name);
+};
 }
 }
 #endif
