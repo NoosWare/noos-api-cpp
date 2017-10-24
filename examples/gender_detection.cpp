@@ -25,7 +25,7 @@ int main()
     // and construct the callable data in one go.
     // @see noos::cloud::gender_detection
     // 
-    auto query = call<gender_detection,false>(callback, pic);
+    callable<gender_detection,false> query(callback, default_node, pic);
     query.send();
     return 0;
 }

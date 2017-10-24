@@ -25,7 +25,7 @@ int main()
     // and we send the information to the platform.
     // For more information @see noos::cloud::qr_recognition
     // 
-    auto query = call<qr_recognition,false>(callback, pic);
+    callable<qr_recognition,false> query(callback, default_node, pic);
     //callable<qr_recognition, false> query(qr_recognition(pic), callback);
     query.send();
     return 0;

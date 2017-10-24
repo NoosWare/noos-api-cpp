@@ -18,10 +18,11 @@ int main()
     //
     // For more information @see noos::cloud::human_detection
     // 
-    auto query = call<human_detection,false>(
-                 [&](std::vector<noos::object::human> humans) {
+	callable<human_detection,false> 
+	query([&](std::vector<noos::object::human> humans) {
                     std::cout << "Found " << humans.size() << " humans!" << std::endl;
-                 }, pic);
+          }, default_node, pic);
     query.send();
+
     return 0;
 }

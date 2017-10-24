@@ -34,7 +34,7 @@ int main()
     // in the file.
     // For more information @see noos::cloud::face_detection
     // 
-    auto query = call<face_recognition,false>(callback, pic);
+    callable<face_recognition,false> query(callback, default_node, pic);
     query.send();
     return 0;
 }

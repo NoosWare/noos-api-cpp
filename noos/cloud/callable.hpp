@@ -38,6 +38,15 @@ public:
 
     /// @brief no empty constructor allowed
     callable() = delete;
+    
+    /// @warning you cannot copy a callable
+    callable(callable const &) = delete;
+
+	/// @warning you cannot assign a callable
+    callable & operator=(const callable &) = delete;
+    
+    /// @warning move assignment
+    callable & operator=(callable &&) = delete;
 
     /// @brief construct a callable using a noos::cloud::platform object
     callable(callback functor,
@@ -49,9 +58,10 @@ public:
      * @param `functor` is the callback receiving the reply
      * @see `cloud_type::callback` for callback signature
      */
-    template <typename... parameters>
+    template <typename... parameters,
+              typename = typename std::enable_if<!std::is_same<cloud_type,cloud_batch>::value,bool>>
     callable(callback functor,
-             platform info = default_node,
+             platform info,
              parameters... args);
 
     /// @brief overloaded constructor for `vision_batch` template `cloud_type`
@@ -59,6 +69,13 @@ public:
     template <typename... parameters>
     callable(vision_batch<parameters...> arg,
              platform = default_node);
+
+    /// @brief convenience constructor for `vision_batch` classes will construct the object internally
+    template <typename... parameters,
+              typename = typename std::enable_if<std::is_same<cloud_type,cloud_batch>::value,bool>>
+    callable(const noos::object::picture & image,
+             platform info,
+             parameters... args);
 
     /// @brief send the cloud_type data once to the cloud endpoint
     /// @note the default 2 second timeout value should suffice
@@ -78,7 +95,6 @@ protected:
     std::unique_ptr<boost::asio::ip::tcp::resolver> resol_;
 };
 
-/// @brief make a callable object - helper wrapper function
 template <class cloud_type,
           bool  keep_alive   = true,
           class socket_type  = asio_http,
@@ -97,23 +113,6 @@ callable<cloud_type,keep_alive,socket_type,error_handle>
                     error_handle>(functor, default_node, params...);
 }
 
-/// @brief make a callable - only used for batches (e.g., vision_batch)
-template <class cloud_type,
-          bool  keep_alive   = true,
-          class socket_type  = asio_http,
-          class error_handle = default_error_handler,
-          class ...args,
-          typename = typename std::enable_if<std::is_same<cloud_type,cloud_batch>::value,bool>>
-callable<cloud_type,keep_alive,socket_type,error_handle>
-    call(const noos::object::picture & image,
-         args... params)
-{
-    using temp = vision_batch<args...>;
-    return callable<cloud_type,
-                    keep_alive,
-                    socket_type,
-                    error_handle>(temp(image, (params)...));
-}
 #include "callable.tpl"
 }
 }

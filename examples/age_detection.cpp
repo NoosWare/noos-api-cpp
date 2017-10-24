@@ -28,8 +28,7 @@ int main()
     // The second template parameter (false) specifies that we won't keep alive the connection
     // For ino on age detection @see noos::cloud::age_detection
     // 
-    auto query  = call<age_detection,false>(callback, pic);
-    //
+    callable<age_detection,false> query(callback, default_node, pic);
     // we send the query - after we receive a reply at our callback, the connection will close.
     //
     query.send();

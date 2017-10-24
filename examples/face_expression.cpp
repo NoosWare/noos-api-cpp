@@ -26,7 +26,7 @@ int main()
     // and construct the callable data in one go. This connection won't be kept alive (false)
     // @see noos::cloud::face_expression
     // 
-    auto query = call<face_expression,false>(callback, pic);
+    callable<face_expression,false> query(callback, default_node, pic);
     query.send();
     return 0;
 }

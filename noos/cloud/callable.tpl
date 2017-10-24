@@ -30,7 +30,8 @@ template <class cloud_type,
           class socket_type,
           class error_handle
          >
-template <typename... parameters>
+template <typename... parameters,
+          typename>
 callable<cloud_type,
          keep_alive,
          socket_type,
@@ -82,6 +83,32 @@ template <class cloud_type,
           class socket_type,
           class error_handle
          >
+template <typename... parameters,
+          typename>
+callable<cloud_type,
+         keep_alive,
+         socket_type,
+         error_handle
+        >::
+callable(const noos::object::picture & image,
+         platform info,
+         parameters... args)
+: object(vision_batch<parameters...>(image, args...)), 
+  endpoint(info),
+  buffer_(std::make_unique<boost::asio::streambuf>()),
+  query_(std::make_unique<boost::asio::ip::tcp::resolver::query>(info.address, info.port)),
+  io_(std::make_unique<boost::asio::io_service>()),
+  resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
+{
+    socket([&](auto reply){ object.process(reply); });
+    assert(socket_ && query_ && resol_ && io_);
+}
+
+template <class cloud_type,
+          bool  keep_alive,
+          class socket_type,
+          class error_handle
+         >
 void callable<cloud_type,
               keep_alive,
               socket_type,
@@ -107,6 +134,7 @@ void callable<cloud_type,
               error_handle
              >::send(unsigned int timeout)
 {
+	assert(this != 0);
     assert(socket_ && query_ && resol_ && io_);
     if (!socket_)
         throw std::runtime_error("socket not set");

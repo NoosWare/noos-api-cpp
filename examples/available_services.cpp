@@ -28,7 +28,7 @@ int main()
     //
     // For more information @see noos::cloud::callable
     // 
-    auto query = call<available_services,false>(callback);
+    callable<available_services,false> query(callback);
     query.send(2);
     return 0;
 }

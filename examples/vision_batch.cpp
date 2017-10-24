@@ -32,16 +32,14 @@ int main()
     //       and similarly, we tie `human_detection` to the `human_cb` lambda.
     //
     using vbatch = vision_batch<tied<face_detection>,tied<human_detection>>;
-    //
-    // construct a `callable` object of the aliased vision_batch.
-    // NOTE: in this example we pass the picture first, and then the tied objects.
-    //
-    auto cb = call<vbatch,false>(pic,
-                                 tied<face_detection>(face_cb), 
-                                 tied<human_detection>(human_cb));
+    callable<vbatch> query(pic,
+                           default_node,
+                           tied<face_detection>(face_cb), 
+                           tied<human_detection>(human_cb));
+
     //
     // we increate the time-out to 3 seconds on purpose.
     //
-    cb.send(3);
+    query.send(3);
     return 0;
 }

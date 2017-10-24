@@ -28,7 +28,7 @@ int main()
     // and we send it to the platform.
     // For more information @see noos::cloud::object_recognition
     // 
-    auto query = call<object_recognition,false>(callback, pic);
+    callable<object_recognition,false> query(callback, default_node, pic);
     query.send();
     return 0;
 }
