@@ -50,14 +50,19 @@ void vision_batch<ties...>::process(std::string json)
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;
     }
-    constexpr auto tuple_size = std::tuple_size<decltype(batch__)>::value;
-    for (auto json_object : nlohmann_json) {
-		for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
-            std::string json = it.value().dump(-1);
-            expand_batch(json, 
-                         it.key(), 
-                         std::make_index_sequence<tuple_size>());
+    if (nlohmann_json.is_array()) {
+        constexpr auto tuple_size = std::tuple_size<decltype(batch__)>::value;
+        for (auto json_object : nlohmann_json) {
+            for (json::iterator it = json_object.begin(); it != json_object.end(); ++it) {
+                std::string json = it.value().dump(-1);
+                expand_batch(json,
+                             it.key(),
+                             std::make_index_sequence<tuple_size>());
+            }
         }
+    }
+    else {
+        misc::check_error(nlohmann_json);
     }
 }
 

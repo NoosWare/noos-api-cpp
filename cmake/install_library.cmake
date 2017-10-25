@@ -27,6 +27,6 @@ function(install_library)
     # Headers go under /usr/loca/include
     #
     install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" 
-                      FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
+                      FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl" PATTERN "*.tpl")
     message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
 endfunction(install_library)

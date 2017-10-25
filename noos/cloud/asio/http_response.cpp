@@ -3,6 +3,28 @@
 namespace noos {
 namespace cloud {
 
+error_code protocol_errors::operator()(unsigned int status_code)
+{
+    switch(status_code) {
+        case 400:
+            return boost::system::errc::make_error_code(boost::system::errc::bad_message);
+            break;
+        case 401:
+            return boost::system::errc::make_error_code(boost::system::errc::permission_denied);
+            break;
+        case 404:
+            return boost::system::errc::make_error_code(boost::system::errc::address_not_available);
+            break;
+        case 408:
+            return boost::asio::error::timed_out;
+            break;
+        default:
+            std::cerr << "HTTP error : " << status_code << std::endl;
+            return boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+            break;
+    }
+}
+
 http_response::http_response(std::function<void(error_code error)> callback)
 : error_cb_(callback)
 {}
@@ -80,7 +102,7 @@ bool http_response::check_http_header()
 	std::string status_message;
 	std::getline(buffer_stream, status_message);
 
-	// did not receive a reply
+    // did not receive a reply
 	if (!buffer_stream) {
 		auto err = boost::system::errc::make_error_code(boost::system::errc::no_message);
         error_cb_(err);
@@ -98,7 +120,7 @@ bool http_response::check_http_header()
     // HTTP 401: Unauthorized Acces (noos token)
     // HTTP reply is not 200
 	else if (status_code != 200) {
-		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+		auto err = protocol_errors()(status_code);
         #if (!NDEBUG)
         std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
         #endif

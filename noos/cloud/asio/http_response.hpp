@@ -8,6 +8,18 @@
 namespace noos {
 namespace cloud {
 typedef boost::system::error_code error_code;
+
+/**
+ * @brief show the specific error due to a protocol error
+ * @struct protocol_errors
+ * @version 0.8.1
+ * @date 25.10.2017
+ */
+struct protocol_errors
+{
+    error_code operator()(unsigned int status_code);
+};
+
 /**
  * @class http_response
  * @version 0.7.0

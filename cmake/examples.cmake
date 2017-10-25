@@ -17,7 +17,6 @@ function(build_examples)
                   object_recognition.cpp
                   qr_recognition.cpp
                   orb.cpp
-                  icp_slam.cpp
                   upload_delete_maps.cpp
                   face_recognition.cpp
                  )
