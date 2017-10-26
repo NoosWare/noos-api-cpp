@@ -13,6 +13,11 @@ void default_error_handler::operator()(boost::system::error_code & error) const
             std::cerr << error_message 
                       << " The platform has closed the connection." << std::endl;
             break;
+        case 13:
+            //Permission denied
+            std::cerr << error_message 
+                      << " Permission denied. Check user and password." << std::endl;
+            break;
         case 31:
             //Protocol error
             std::cerr << error_message 
@@ -46,7 +51,7 @@ void default_error_handler::operator()(boost::system::error_code & error) const
             break;
         case 111:
             std::cerr << error_message 
-                      << " Impossible connect with the platform." <<
+                      << " Impossible to connect with the platform." <<
                          " Check the IP and try again. " << std::endl;
             break;
         case 103:

@@ -19,6 +19,6 @@ if(EXISTS ${CMAKE_INSTALL_PREFIX}/lib/libnoos.so)
 endif()
 
 set(NOOS_INCLUDE_DIRS
-    ${CMAKE_INSTALL_PREFIX}/include
+    ${CMAKE_INSTALL_PREFIX}/include/noos
     CACHE INTERNAL "" FORCE
 )

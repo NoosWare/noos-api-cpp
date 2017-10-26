@@ -47,7 +47,7 @@ include_directories(".")
 
 ###
 # Set library sources
-#
+###
 add_library(lnoos OBJECT ${SOURCES})
 
 ###
@@ -104,7 +104,7 @@ elseif(${OPEN_NAO})
 else()
     #
     # use shared boost - build shared libs - set correct flags
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -D_GLIBCXX_DEBUG")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
@@ -144,7 +144,7 @@ endif()
 # Install library 
 #
 install_library()
-#
+###
 # Install rapp-config.cmake
 #
 install_config()
