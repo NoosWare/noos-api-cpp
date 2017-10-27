@@ -19,7 +19,8 @@ callable<cloud_type,
   io_(std::make_unique<boost::asio::io_service>()),
   resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
 {
-    socket([&](auto reply){
+    socket([=](auto reply){
+            assert(functor);
             functor(deserialize<cloud_type, 
                                 typename cloud_type::data_type>()(reply)); });
     assert(socket_ && query_ && resol_ && io_);
@@ -49,7 +50,8 @@ callable<cloud_type,
 {
     static_assert(!std::is_base_of<cloud_batch, cloud_type>::value,
     "template parameter `cloud_type` can't be `cloud_batch` derived class in this context");
-    socket([&](auto reply){
+    socket([=](auto reply){
+            assert(functor);
             functor(deserialize<cloud_type, 
                                 typename cloud_type::data_type>()(reply)); });
     assert(socket_ && query_ && resol_ && io_);
@@ -74,7 +76,7 @@ callable<cloud_type,
   io_(std::make_unique<boost::asio::io_service>()),
   resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
 {
-    socket([&](auto reply){ object.process(reply); });
+    socket([=](auto reply){ object.process(reply); });
     assert(socket_ && query_ && resol_ && io_);
 }
 
@@ -100,7 +102,7 @@ callable(const noos::object::picture & image,
   io_(std::make_unique<boost::asio::io_service>()),
   resol_(std::make_unique<boost::asio::ip::tcp::resolver>(*io_.get()))
 {
-    socket([&](auto reply){ object.process(reply); });
+    socket([=](auto reply){ object.process(reply); });
     assert(socket_ && query_ && resol_ && io_);
 }
 
@@ -116,7 +118,7 @@ void callable<cloud_type,
              >::socket(std::function<void(std::string)> cloud_functor)
 {
     socket_ = std::make_unique<socket_type>(cloud_functor, 
-                                            [&](auto e){ error_handle()(e); }, 
+                                            [=](auto e){ error_handle()(e); }, 
                                             *io_.get(), 
                                             keep_alive,
                                             *buffer_.get());

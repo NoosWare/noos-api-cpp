@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 ###
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_BUILD_TYPE Debug)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     message(STATUS "${BoldGreen}Building: ${CMAKE_BUILD_TYPE}. Ommit flag to change to `Release`${ColourReset}")
 else()
     set(CMAKE_BUILD_TYPE Release)

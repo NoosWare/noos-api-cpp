@@ -19,6 +19,7 @@ function(build_examples)
                   orb.cpp
                   upload_delete_maps.cpp
                   face_recognition.cpp
+                  class.cpp
                  )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "${BoldGreen}Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}` ${ColourReset}")
