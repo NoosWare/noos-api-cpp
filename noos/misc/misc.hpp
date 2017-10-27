@@ -93,7 +93,7 @@ void for_each_arg(F&& f, Args&&... args)
 }
 
 /**
- * @brief TODO: MARIA
+ * @brief method to check if the string exists in the actual json
  */
 template<typename T>
 T get_json_value(const std::string key, const nlohmann::json & json_f)
@@ -121,6 +121,8 @@ inline bool check_json(
     return true;
 } 
 
+/// \brief function to check if an error has been received from
+//         the platform
 inline bool check_error(
                          const nlohmann::json json,
                          const std::string error_str = "error"
@@ -128,9 +130,7 @@ inline bool check_error(
 {
     auto error = misc::get_json_value<std::string>(error_str, json);
     if (!error.empty()) {
-    #if (!NDEBUG)
         std::cerr << "error JSON: " << error <<std::endl;
-    #endif
         return false;
     }
     return true;
