@@ -238,7 +238,7 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         auto j1 = R"(
                   {
                       "result":[{ 
-                                  "label": "male", 
+                                  "gender": "male", 
                                   "probability" : 10
                                    
                                  }],
@@ -267,7 +267,7 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         auto j1 = R"(
                   {
                       "result":[{ 
-                                  "label": "male", 
+                                  "age_range": "20-30", 
                                   "probability" : 10
                                    
                                  }],
@@ -277,7 +277,7 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         std::vector<std::pair<std::string,float>> age;
         age = deserialize<age_detection,
                              typename age_detection::data_type>()(j1_string);
-        REQUIRE(age.at(0).first == "male");
+        REQUIRE(age.at(0).first == "20-30");
         REQUIRE(age.at(0).second == 10);
     }
 }
@@ -398,7 +398,7 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
         auto j1 = R"(
                   {
                     "result":[{ 
-                                "label": "happy", 
+                                "emotion": "happy", 
                                 "probability": 50
                               }], 
                     "error" : ""

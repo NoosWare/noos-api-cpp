@@ -119,7 +119,7 @@ std::vector<std::pair<std::string,float>>
             auto results = json_f.find("result");
             for (auto it = results->begin(); it != results->end(); it++) {
                 result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
+                        std::make_pair(it->find("gender")->get<std::string>(),
                                        it->find("probability")->get<float>()));            
             }
         }
@@ -141,7 +141,7 @@ std::vector<std::pair<std::string,float>>
             auto results = json_f.find("result");
             for (auto it = results->begin(); it != results->end(); it++) {
                 result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
+                        std::make_pair(it->find("age_range")->get<std::string>(),
                                        it->find("probability")->get<float>()));            
             }
         }
@@ -163,7 +163,7 @@ std::vector<std::pair<std::string,float>>
             auto results = json_f.find("result");
             for (auto it = results->begin(); it != results->end(); it++) {
                 result.push_back(
-                        std::make_pair(it->find("label")->get<std::string>(),
+                        std::make_pair(it->find("emotion")->get<std::string>(),
                                        it->find("probability")->get<float>()));            
             }
         }
