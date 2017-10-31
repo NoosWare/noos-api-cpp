@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 2.8)
 ###
 function(build_examples)
     set (EXAMPLES available_services.cpp
-                  vision_batch.cpp
                   age_detection.cpp
                   face_detection.cpp
                   face_expression.cpp
@@ -20,6 +19,7 @@ function(build_examples)
                   upload_delete_maps.cpp
                   face_recognition.cpp
                   class.cpp
+                  custom_error_handler.cpp
                  )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "${BoldGreen}Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}` ${ColourReset}")
