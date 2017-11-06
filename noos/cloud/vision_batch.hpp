@@ -52,7 +52,7 @@ public:
      * @param image is a noos::object::picture 
      * @note args will be called in a sequential manner
      */
-    vision_batch(const noos::object::picture & image,
+    vision_batch(noos::object::picture image,
                  ties... args);
     /** 
      * @brief process the JSON reply and delegate to services
@@ -74,7 +74,7 @@ protected:
                           std::string json,
                           std::string key);
    
-    const noos::object::picture & image__;
+    noos::object::picture image__;
     std::tuple<ties...> batch__;
 };
 }

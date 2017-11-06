@@ -14,7 +14,7 @@ tied<cloud_type> make_tie(typename cloud_type::callback functor)
 }
 
 template <class... ties>
-vision_batch<ties...>::vision_batch(const noos::object::picture & image,
+vision_batch<ties...>::vision_batch(noos::object::picture image,
                                            ties... args)
 : http_request(cloud_base<bool>::make_http_uri("vision_batch")), 
   cloud_base<bool>(true),
