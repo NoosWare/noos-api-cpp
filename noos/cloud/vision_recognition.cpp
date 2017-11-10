@@ -9,7 +9,7 @@ const std::string face_expression::uri = "face_expression";
 const std::string face_recognition::uri = "face_recognition";
 
 /// Class object_recognition
-object_recognition::object_recognition(const noos::object::picture & image)
+object_recognition::object_recognition(noos::object::picture image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
@@ -29,7 +29,7 @@ object_recognition::object_recognition()
 }
 
 /// CLass qr_recognition
-qr_recognition::qr_recognition(const noos::object::picture & image)
+qr_recognition::qr_recognition(noos::object::picture image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
@@ -47,7 +47,7 @@ qr_recognition::qr_recognition()
     vision_base::json = json_doc.dump(-1);
 }
 
-face_expression::face_expression(const noos::object::picture & image)
+face_expression::face_expression(noos::object::picture image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
@@ -66,7 +66,7 @@ face_expression::face_expression()
     vision_base::json = json_doc.dump(-1);
 }
 
-face_recognition::face_recognition(const noos::object::picture & image)
+face_recognition::face_recognition(noos::object::picture image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {

@@ -11,7 +11,7 @@ const std::string orb_learn_object::uri = "orb_learn_object";
 const std::string orb_clear_model::uri = "orb_clear_model";
 const std::string orb_find_objects::uri = "orb_find_objects";
 
-face_detection::face_detection(const noos::object::picture & image)
+face_detection::face_detection(noos::object::picture image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
@@ -31,7 +31,7 @@ face_detection::face_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-human_detection::human_detection(const noos::object::picture & image)
+human_detection::human_detection(noos::object::picture image)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
@@ -49,7 +49,7 @@ human_detection::human_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-gender_detection::gender_detection(const noos::object::picture & image)
+gender_detection::gender_detection(noos::object::picture image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
@@ -67,7 +67,7 @@ gender_detection::gender_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-age_detection::age_detection(const noos::object::picture & image)
+age_detection::age_detection(noos::object::picture image)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
@@ -85,7 +85,7 @@ age_detection::age_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-orb_learn_object::orb_learn_object(const noos::object::picture & image,
+orb_learn_object::orb_learn_object(noos::object::picture image,
                                    const std::string name)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
@@ -117,7 +117,7 @@ orb_clear_model::orb_clear_model(const std::string model)
 }
 
 /// Class orb_find_objects
-orb_find_objects::orb_find_objects(const noos::object::picture & image,
+orb_find_objects::orb_find_objects(noos::object::picture image,
                                    const std::string model,
                                    const float threshold)
 : http_request(make_http_uri(uri)), 

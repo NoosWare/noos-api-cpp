@@ -27,7 +27,7 @@ struct age_detection
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    age_detection(const noos::object::picture & image);
+    age_detection(noos::object::picture image);
 
     /// @brief Constructor without image
     age_detection();
@@ -45,7 +45,7 @@ struct face_detection
     static const std::string uri;
 
     /// @param image is the input image 
-    face_detection(const noos::object::picture & image);
+    face_detection(noos::object::picture image);
 
     /// @brief construct without an image - part of a vision batch
     face_detection();
@@ -66,7 +66,7 @@ struct gender_detection
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    gender_detection(const noos::object::picture & image);
+    gender_detection(noos::object::picture image);
 
     /// @brief Constructor without image
     gender_detection();
@@ -87,7 +87,7 @@ struct human_detection
      * @param image is a picture object 
      * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
      */
-    human_detection(const noos::object::picture & image);
+    human_detection(noos::object::picture image);
 
     /// @brief Constructor without image
     human_detection();
@@ -109,7 +109,7 @@ struct orb_learn_object
      * @param name is the name of the object
      */
     orb_learn_object(
-                       const noos::object::picture & image,
+                       noos::object::picture image,
                        const std::string name
                      );
 
@@ -151,7 +151,7 @@ struct orb_find_objects
      *        which is going to be loaded
      */
     orb_find_objects(
-                      const noos::object::picture & image,
+                      noos::object::picture image,
                       const std::string model,
                       const float threshold
                     );

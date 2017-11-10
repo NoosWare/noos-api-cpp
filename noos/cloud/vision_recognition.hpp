@@ -27,7 +27,7 @@ struct object_recognition
     static const std::string uri;
 
     /// @param image is a picture object reference
-    object_recognition(const noos::object::picture & image);
+    object_recognition(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch
     object_recognition();
@@ -50,7 +50,7 @@ struct face_expression
     static const std::string uri;
 
     /// @param image is a picture 
-    face_expression(const noos::object::picture & image);
+    face_expression(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch
     face_expression();
@@ -69,7 +69,7 @@ struct qr_recognition
     static const std::string uri;
 
     /// @param image is a picture object reference
-    qr_recognition(const noos::object::picture & image);
+    qr_recognition(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch
     qr_recognition();
@@ -90,7 +90,7 @@ struct face_recognition
     static const std::string uri;
 
     /// @param image is a picture object reference
-    face_recognition(const noos::object::picture & image);
+    face_recognition(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch
     face_recognition();
