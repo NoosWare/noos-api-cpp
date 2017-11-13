@@ -7,6 +7,7 @@
 #include <boost/asio.hpp>
 #include <noos/cloud/asio/asio_handler.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class asio_http
@@ -15,8 +16,8 @@ namespace cloud {
  * @date 15 December 2016
  * @author Alex Giokas  <a.gkiokas@ortelio.co.uk>
  * @see asio_handler
- * @see request
- * @see response
+ * @see http_request
+ * @see http_response
  */
 class asio_http 
 : public asio_handler<http_socket, asio_http>

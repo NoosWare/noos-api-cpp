@@ -6,6 +6,7 @@
 #include <string>
 #include "includes.ihh"
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @struct platform

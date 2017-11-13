@@ -6,6 +6,7 @@
 #include <noos/cloud/asio/includes.ihh>
 #include <boost/asio.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 typedef boost::system::error_code error_code;
 
@@ -17,6 +18,8 @@ typedef boost::system::error_code error_code;
  */
 struct protocol_errors
 {
+    /// @brief operator which translates HTTP code errors
+    //         to boost::system::error_code
     error_code operator()(unsigned int status_code);
 };
 
@@ -24,14 +27,13 @@ struct protocol_errors
  * @class http_response
  * @version 0.7.0
  * @date 12 August 2016 
- * @author Maria Ramos <m.ramos@ortelio.co.uk>
  * @brief class for taking the body of the streambuf , in other case
- * 
- * The defined error callback may receive the following errors:
- *    - boost::system::errc::bad_message if the header is not followed by a double return carriage
- *    - boost::system::errc::no_message if the platform does not respond with any data
- *    - boost::system::errc::protocol_not_supported if the reply does not conform to HTTP 1.1
- *    - boost::system::errc::protocol_error if HTTP header does not respond with 200 status code
+ *        it will return an error
+ * @note The defined error callback may receive the following errors:
+ *          - boost::system::errc::bad_message if the header is not followed by a double return carriage
+ *          - boost::system::errc::no_message if the platform does not respond with any data
+ *          - boost::system::errc::protocol_not_supported if the reply does not conform to HTTP 1.1
+ *          - boost::system::errc::protocol_error if HTTP header does not respond with 200 status code
  */
 class http_response
 {

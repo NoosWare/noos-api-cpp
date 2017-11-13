@@ -6,6 +6,7 @@
 #include <noos/cloud/asio/includes.ihh>
 #include <noos/cloud/asio/platform.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class http_header

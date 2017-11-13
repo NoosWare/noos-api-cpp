@@ -23,6 +23,8 @@ struct tied
     callback functor;
     /// @brief constructor requires only the functor
     tied(callback functor);
+    /// @brief constructor using the callback and 
+    ///        the object
     tied(callback functor, cloud_type object);
 };
 

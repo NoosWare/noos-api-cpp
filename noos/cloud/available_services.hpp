@@ -11,6 +11,8 @@ namespace cloud {
 /**
  * @class available_services
  * @brief requests available services from platform
+ * @version 0.8.0
+ * @note data type passed back is `std::vector<std::string>`
  */
 class available_services 
 : public http_request,

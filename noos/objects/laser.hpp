@@ -9,14 +9,13 @@ namespace noos {
 /// @brief common object namespace
 namespace object {
 /**
- * @class laser
+ * @struct laser
  * @brief describes a laser scan data 
  * @version 0.7.3
  * @date 27 June 2017
  */
 struct laser
 {
-    /// members
     /// Aperture of the laser in radians
     float aperture = 0.0;
     /// Time
@@ -33,6 +32,9 @@ struct laser
     std::vector<int> intensities = {0};
     /// Sensor pose
     noos::object::pose<float> pose3d;
+
+    /// @brief Constructor
+    laser() = default;
 
     /// @return json object
     json::object_t to_json() const;

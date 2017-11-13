@@ -16,9 +16,11 @@ namespace object {
 template <class value_type>
 struct point
 {
-    /// coordinates
+    /// coordinate x
 	value_type x = 0;
+    /// coordinate y
     value_type y = 0;
+    /// coordinate z
     value_type z = 0;
 
     /// @brief default constructor
@@ -48,8 +50,9 @@ struct point
 template <class value_type>
 struct point2d
 {
-    /// coordinates
+    /// coordinate x
 	value_type x = 0;
+    /// coordinate y
     value_type y = 0;
 
     /// @brief default constructor
@@ -57,7 +60,7 @@ struct point2d
 
     /// @brief constructor taking parameters x and y
     point2d(value_type x_data,
-          value_type y_data);
+            value_type y_data);
 
     /// @brief Construct using library "json for modern c++"
     point2d(const json::const_iterator & position);
@@ -78,9 +81,11 @@ struct point2d
 template <class value_type>
 struct pose2d
 {
-    /// coordinates
+    /// coordinate x
 	value_type x = 0;
+    /// coordinate y
     value_type y = 0;
+    /// angle theta
     value_type theta = 0;
 
     /// @brief default constructor

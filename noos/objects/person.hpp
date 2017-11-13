@@ -9,7 +9,7 @@ namespace noos {
 /// @brief common object namespace
 namespace object {
 /**
- * @class person
+ * @struct person
  * @brief describes a face coordinate,
  *        the label and the confidence of 
  *        the result

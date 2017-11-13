@@ -8,6 +8,7 @@
 #include <boost/asio/ssl.hpp>
 #include <noos/cloud/asio/asio_handler.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class asio_https
@@ -16,8 +17,8 @@ namespace cloud {
  * @date 15 December 2016
  * @author Alex Giokas  <a.gkiokas@ortelio.co.uk>
  * @see asio_handler
- * @see request
- * @see response
+ * @see http_request
+ * @see http_response
  */
 class asio_https 
 : public asio_handler<tls_socket, asio_https>

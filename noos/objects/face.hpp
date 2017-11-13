@@ -16,10 +16,13 @@ namespace object {
  */
 struct face
 {
-    /// members
+    /// coordinate x of the top left corner
     float top_left_x;
+    /// coordinate y of the top left corner
     float top_left_y;
+    /// coordinate x of the bottom right corner
     float bottom_right_x;
+    /// coordinate y of the bottom right corner
     float bottom_right_y;
 
     /// @brief Constructor using `json for modern C++`

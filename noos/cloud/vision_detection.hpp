@@ -14,6 +14,7 @@ namespace cloud {
 /**
  * @struct age_detection
  * @brief detect age range of person in an image
+ * @version 0.8.0
  * @note data type passed back is `std::vector<std::pair<std::string,float>>`
  */
 struct age_detection 
@@ -35,6 +36,8 @@ struct age_detection
 /**
  * @struct face_detection
  * @brief detect faces in the image
+ * @version 0.7.0
+ * @note data type passed back is `std::vector<noos::object::face>`
  */
 struct face_detection 
 : public http_request, 
@@ -44,7 +47,7 @@ struct face_detection
     using callback = std::function<void(data_type)>;
     static const std::string uri;
 
-    /// @param image is the input image 
+    /// @param image is the input picture object 
     face_detection(noos::object::picture image);
 
     /// @brief construct without an image - part of a vision batch
@@ -53,6 +56,7 @@ struct face_detection
 /**
  * @struct gender_detection
  * @brief detect gender of person in an image
+ * @version 0.8.0
  * @note data type passed back is an `std::string`
  */
 struct gender_detection 
@@ -74,6 +78,8 @@ struct gender_detection
 /**
  * @struct human_detection
  * @brief detect humans in an image
+ * @version 0.7.0
+ * @note data type passed back is an `std::vector<noos::object::human>`
  */
 struct human_detection 
 : public http_request, 
@@ -95,6 +101,8 @@ struct human_detection
 /**
  * @struct orb_learn_object
  * @brief learn object gives by the user
+ * @version 0.8.0
+ * @note data type passed back is an `bool`
  */
 struct orb_learn_object 
 : public http_request, 
@@ -120,6 +128,8 @@ struct orb_learn_object
 /**
  * @struct orb_clear_models
  * @brief Clears operational memory for selected user
+ * @version 0.8.0
+ * @note data type passed back is an `bool`
  */
 struct orb_clear_model
 : public http_request, 
@@ -135,6 +145,8 @@ struct orb_clear_model
 /**
  * @struct object_detection_find_objects
  * @brief user can provide query image to detect objects
+ * @version 0.8.0
+ * @note data type passed back is an `std::vector<noos::object::point2d<float>>`
  */
 struct orb_find_objects 
 : public http_request, 
@@ -146,9 +158,13 @@ struct orb_find_objects
     static const std::string uri;
 
     /**
+     * @brief constructor using an image, a model
+     *        and a threshold
      * @param image will be used to find objects
      * @param model is the filename of the model 
      *        which is going to be loaded
+     * @param threshold is the minimum distance between 
+     *        keypoints
      */
     orb_find_objects(
                       noos::object::picture image,
@@ -156,7 +172,11 @@ struct orb_find_objects
                       const float threshold
                     );
 
-    /// @param limit is the limit search to N best matches
+    /// @brief constructor without image for using it
+    ///        with vision_batch
+    /// @param model is the filename of the model
+    /// @param threshold is teh minimun distance between 
+    ///         keypoints
     orb_find_objects(const std::string model,
                      const float threshold);
 };

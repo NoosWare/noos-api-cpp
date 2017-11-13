@@ -4,7 +4,7 @@
 namespace noos {
 namespace cloud {
 /**
- * @brief default error handler will output on stderr only if NDEBUG macro is used
+ * @brief default error handler will output on stderr 
  * @struct default_error_handler
  * @version 0.7.3
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -18,6 +18,7 @@ namespace cloud {
  */
 struct default_error_handler
 {
+    /// @brief operator which will show an output with the error obtained
     void operator()(boost::system::error_code & error) const;
 
     static const std::string error_message;

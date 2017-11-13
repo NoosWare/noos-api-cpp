@@ -59,6 +59,8 @@ struct face_expression
 /**
  * @struct qr_recognition
  * @brief service request to detect QR codes
+ * @version 0.7.0
+ * @note data type passed back is `std::vector<noos::object::qr_code>`
  */
 struct qr_recognition 
 : public http_request, 
@@ -68,7 +70,7 @@ struct qr_recognition
     using callback = std::function<void(std::vector<noos::object::qr_code>)>;
     static const std::string uri;
 
-    /// @param image is a picture object reference
+    /// @param image is a picture object
     qr_recognition(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch
@@ -80,6 +82,7 @@ struct qr_recognition
  * @brief recognise faces
  * @version 0.8.0
  * @date 13.09.2017
+ * @note data type passed back is `std::vector<noos::object::person>`
  */
 struct face_recognition 
 : public http_request, 
@@ -89,7 +92,7 @@ struct face_recognition
     using callback = std::function<void(std::vector<noos::object::person>)>;
     static const std::string uri;
 
-    /// @param image is a picture object reference
+    /// @param image is a picture object
     face_recognition(noos::object::picture image);
 
     /// @brief empty ctor used by vision batch

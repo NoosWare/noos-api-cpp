@@ -179,6 +179,12 @@ To do so use the cmake flag `-DNOOS_STATIC=ON` by building on a modern machine w
 However, the boost dependencies also require a somewhat new version of the C runtime libraries.
 For further details please see the advanced tutorials.
 
+## Tutorials
+
+We have created a repository with tutorials and examples, ranging from simple use to advanced projects.
+
+* [noos_tutorials](https://github.com/ortelio/noos_ros_tutorials)
+
 ## Documentation
 
 For a complete list of the cloud classes and the object classes used by the C++ API,
@@ -193,7 +199,6 @@ A folder `docs` will be created, with HTML doxygen files.
 ## Help
 
 If you run into any bugs or issues, please report them on github. 
-Alternatively, hit us up on Gitter: [![Join the chat at https://gitter.im/noos-project/noos-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/noos-project/noos-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Contributing
 

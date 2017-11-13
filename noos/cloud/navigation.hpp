@@ -11,9 +11,9 @@ namespace noos {
 namespace cloud {
 
 /**
- * @brief class to clasify types of slam
+ * @brief class to clasify types of slam (icp or rbpf)
  * @class slam_type
- * @version 0.2.0
+ * @version 0.8.0
  * date 1.09.2017
  */
 enum class slam_type
@@ -28,6 +28,7 @@ enum class slam_type
  * @brief send laser/pointcloud data to create a map
  * @version 0.8.0
  * @date 30.08.2017
+ * @note data type passed back is `noos::object::pose<float>`
  */
 struct icp_slam 
 : public http_request, 
@@ -57,6 +58,7 @@ struct icp_slam
  * @brief send laser/pointcloud data to create a map
  * @version 0.8.0
  * @date 16.09.2017
+ * @note data type passed back is `noos::object::pose<float>`
  */
 struct rbpf_slam 
 : public http_request, 
@@ -83,10 +85,11 @@ struct rbpf_slam
 };
 
 /**
- * @struct delete map
+ * @struct delete_map
  * @brief delete a map saved in the platform
  * @version 0.8.0
  * @date 30.08.2017
+ * @note data type passed back is `bool`
  */
 struct delete_map 
 : public http_request, 
@@ -95,7 +98,8 @@ struct delete_map
     using callback = std::function<void(data_type)>;
     static const std::string uri;
 
-    /// @param laser_data is the laser reading
+    /// @param name is the name of the map
+    /// @warning the name must not contain any extension
     delete_map(const std::string name);
 };
 
@@ -104,6 +108,7 @@ struct delete_map
  * @brief upload a map to the platform
  * @version 0.8.0
  * @date 30.08.2017
+ * @note data type passed back is `bool`
  */
 struct upload_map 
 : public http_request, 
@@ -112,7 +117,7 @@ struct upload_map
     using callback = std::function<void(data_type)>;
     static const std::string uri;
 
-    /// @param the name of the map (without extension)
+    /// @param name of the map (without extension)
     /// @param image the map
     upload_map(const std::string name,
                const noos::object::picture & image);
@@ -123,6 +128,7 @@ struct upload_map
  * @brief upload a config file with slam parameters to the platform
  * @version 0.8.0
  * @date 01.09.2017
+ * @note data type passed back is `bool`
  */
 struct upload_slam_config_file 
 : public http_request, 
@@ -149,6 +155,7 @@ struct upload_slam_config_file
  * @brief get the image of the map name asked for
  * @version 0.8.0
  * @date 04.09.2017
+ * @note data type passed back is `bool`
  */
 struct get_map 
 : public http_request, 
@@ -163,10 +170,11 @@ struct get_map
 };
 
 /**
- * @struct path planning
+ * @struct path_planning
  * @brief calculate a path between two points given
  * @version 0.8.0
  * @date 17.10.2017
+ * @note data type passed back is `std::deque<noos::object::point2d<float>>`
  */
 struct path_planning 
 : public http_request, 
