@@ -23,6 +23,6 @@ int main()
                         std::cout << "faced detected: " << faces.size() << std::endl;
                     };
     callable<face_detection> query(callback, default_node, pic);
-    query.send();
+    query.send(2);
     return 0;
 }
