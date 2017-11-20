@@ -7,6 +7,15 @@ cmake_minimum_required(VERSION 2.8)
 #
 ###
 function(build_tests)
+		if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/catch.hpp")
+			message(STATUS "${BoldWhite}header `catch.hpp` already exists, not downloading.${ColourReset}")
+		else()
+			set(wget_command "wget")
+			set(wget_arg "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp")
+			message(STATUS "${BoldGreen}fetching catch.hpp single header.${ColourReset}")
+			execute_process(COMMAND ${wget_command} ${wget_arg}
+							WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/)
+		endif()
         set(TESTS ${TESTS} tests)
         set(TESTFILES ${TESTFILES} asio_classes.cpp 
                                    json_classes.cpp 

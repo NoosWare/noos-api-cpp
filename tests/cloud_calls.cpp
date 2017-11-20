@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include <tests/Catch/single_include/catch.hpp>
+#include <tests/catch.hpp>
 #include <fstream>
 #include <noos/misc/json/src/json.hpp>
 #include <noos/noos>

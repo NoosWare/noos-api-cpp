@@ -2,3 +2,7 @@ build/
 *.swp
 *.swo
 docs/
+
+# ignore this header - we fetch it from github
+noos/misc/json.hpp
+tests/catch.hpp

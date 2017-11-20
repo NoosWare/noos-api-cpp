@@ -1,4 +1,4 @@
-# NOOS API [0.8.1]
+# NOOS API [0.8.2]
 -----------------------
 
 ## Contents
@@ -54,7 +54,7 @@ all you need to do is keep a callable object active (but please don't spam too f
 
 Non-continuous calls (e.g., a one-off query) can be controlled by the lifetime of the callble object.
 
-_NOTE_: current version 0.8.0 is **under developlment**!
+_NOTE_: current version 0.8.2 is **under developlment**!
 
 ## Dependencies
 
@@ -63,7 +63,7 @@ The following dependencies are **required** to build the C++ API:
 * gcc/g++ >= 4.9
 * boost >= 1.49
 * cmake >= 2.8
-* libssl-deva>= 1.0
+* libssl-dev >= 1.0
 
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
@@ -73,12 +73,7 @@ sudo apt-get install cmake gcc-4.9 libboost-all-dev libssl-dev
 
 The API internally uses [Nlohmann's JSON](https://github.com/nlohmann/json) header library.
 If building the tests, the [Catch](https://github.com/philsquared/Catch/tree/master) header library.
-You have to manually init submodules:
-
-```shell
-git submodule init
-git submodule update
-```
+Both will download automatically in the case the files don't exist.
 
 ## CMake Options
 
