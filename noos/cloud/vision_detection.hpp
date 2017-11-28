@@ -99,12 +99,12 @@ struct human_detection
     human_detection();
 };
 /**
- * @struct orb_learn_object
+ * @struct orb_add_model
  * @brief learn object gives by the user
  * @version 0.8.0
  * @note data type passed back is an `bool`
  */
-struct orb_learn_object 
+struct orb_add_model 
 : public http_request, 
   public cloud_base<bool>,
   public vision_base
@@ -116,22 +116,22 @@ struct orb_learn_object
      * @param image is the actual object used to be learnt
      * @param name is the name of the object
      */
-    orb_learn_object(
+    orb_add_model(
                        noos::object::picture image,
                        const std::string name
                      );
 
     /// @param name is the name of the object
-    orb_learn_object(const std::string name);
+    orb_add_model(const std::string name);
 };
 
 /**
- * @struct orb_clear_models
+ * @struct orb_del_models
  * @brief Clears operational memory for selected user
  * @version 0.8.0
  * @note data type passed back is an `bool`
  */
-struct orb_clear_model
+struct orb_del_model
 : public http_request, 
   public cloud_base<bool>
 {
@@ -139,7 +139,7 @@ struct orb_clear_model
     static const std::string uri;
 
     /// @param user is the user name
-    orb_clear_model(const std::string model);
+    orb_del_model(const std::string model);
 };
 
 /**
@@ -148,7 +148,7 @@ struct orb_clear_model
  * @version 0.8.0
  * @note data type passed back is an `std::vector<noos::object::point2d<float>>`
  */
-struct orb_find_objects 
+struct orb_query 
 : public http_request, 
   public cloud_base<std::vector<noos::object::point2d<float>>>,
   public vision_base
@@ -166,7 +166,7 @@ struct orb_find_objects
      * @param threshold is the minimum distance between 
      *        keypoints
      */
-    orb_find_objects(
+    orb_query(
                       noos::object::picture image,
                       const std::string model,
                       const float threshold
@@ -177,7 +177,7 @@ struct orb_find_objects
     /// @param model is the filename of the model
     /// @param threshold is teh minimun distance between 
     ///         keypoints
-    orb_find_objects(const std::string model,
+    orb_query(const std::string model,
                      const float threshold);
 };
 

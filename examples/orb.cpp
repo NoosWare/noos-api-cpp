@@ -21,24 +21,24 @@ int main()
      * We make a callable object of learn_object class to learn objects from the file
      * and send the information to the platform.
      */
-    callable<orb_learn_object,false> callable_learn(
+    callable<orb_add_model,false> callable_learn(
             [](bool result) {
                 std::cout << "learnt: " << std::boolalpha << result << std::endl;
             }, default_node, pic, "cat.jpg");
     callable_learn.send();
 
     /*
-     * We make another callable object, now of orb_find_objects to look
+     * We make another callable object, now of orb_query to look
      * for the images learnt previously in the new image.
      */
-    callable<orb_find_objects,false> callable_find(find_cb, default_node, pic, "cat.jpg", 200);
+    callable<orb_query,false> callable_find(find_cb, default_node, pic, "cat.jpg", 200);
     callable_find.send();
 
     /*
-     * Finally, we create the last callable object, in this case of orb_clear_models
+     * Finally, we create the last callable object, in this case of orb_del_models
      * class to clear the memory.
      */
-    callable<orb_clear_model,false>
+    callable<orb_del_model,false>
     callable_clear(
             [](bool result){
                 std::cout << "cleared: " << result << std::endl;

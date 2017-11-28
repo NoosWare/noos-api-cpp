@@ -7,9 +7,9 @@ const std::string face_detection::uri   = "face_detection";
 const std::string human_detection::uri  = "human_detection";
 const std::string gender_detection::uri = "gender_detection";
 const std::string age_detection::uri    = "age_detection";
-const std::string orb_learn_object::uri = "orb_learn_object";
-const std::string orb_clear_model::uri = "orb_clear_model";
-const std::string orb_find_objects::uri = "orb_find_objects";
+const std::string orb_add_model::uri = "orb_add_model";
+const std::string orb_del_model::uri = "orb_del_model";
+const std::string orb_query::uri = "orb_query";
 
 face_detection::face_detection(noos::object::picture image)
 : http_request(make_http_uri(uri)),
@@ -85,7 +85,7 @@ age_detection::age_detection()
     vision_base::json = json_doc.dump(-1);
 }
 
-orb_learn_object::orb_learn_object(noos::object::picture image,
+orb_add_model::orb_add_model(noos::object::picture image,
                                    const std::string name)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
@@ -98,7 +98,7 @@ orb_learn_object::orb_learn_object(noos::object::picture image,
     http_request::close();
 }
     
-orb_learn_object::orb_learn_object(const std::string name)
+orb_add_model::orb_add_model(const std::string name)
 : http_request(make_http_uri(uri)), 
   cloud_base(false)
 {
@@ -106,7 +106,7 @@ orb_learn_object::orb_learn_object(const std::string name)
     vision_base::json = json_doc.dump(-1);
 }
 
-orb_clear_model::orb_clear_model(const std::string model)
+orb_del_model::orb_del_model(const std::string model)
 : http_request(make_http_uri(uri)), 
   cloud_base(true)
 {
@@ -116,8 +116,8 @@ orb_clear_model::orb_clear_model(const std::string model)
     http_request::close();
 }
 
-/// Class orb_find_objects
-orb_find_objects::orb_find_objects(noos::object::picture image,
+/// Class orb_query
+orb_query::orb_query(noos::object::picture image,
                                    const std::string model,
                                    const float threshold)
 : http_request(make_http_uri(uri)), 
@@ -132,7 +132,7 @@ orb_find_objects::orb_find_objects(noos::object::picture image,
     http_request::close();
 }
 
-orb_find_objects::orb_find_objects(const std::string model,
+orb_query::orb_query(const std::string model,
                                    const float threshold)
 : http_request(make_http_uri(uri)), 
   cloud_base(false)

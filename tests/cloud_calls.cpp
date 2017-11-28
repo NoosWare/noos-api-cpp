@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <tests/catch.hpp>
 #include <fstream>
-#include <noos/misc/json/src/json.hpp>
+#include <noos/misc/json.hpp>
 #include <noos/noos>
 
 /// \brief function to read a json file and it is converted 
@@ -158,12 +158,12 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
     SECTION("ORB algorithm") 
     {
         auto pic = noos::object::picture("tests/data/object_classes_picture_2.jpg");
-        auto orb_learn_obj = orb_learn_object(pic, "cat");
-        REQUIRE(orb_learn_obj.uri == "orb_learn_object"); 
+        auto orb_learn_obj = orb_add_model(pic, "cat");
+        REQUIRE(orb_learn_obj.uri == "orb_add_model"); 
         REQUIRE(orb_learn_obj.is_single_callable() == true);
 
-        auto orb_learn_obj_batch = orb_learn_object("cat");
-        REQUIRE(orb_learn_obj_batch.uri == "orb_learn_object");
+        auto orb_learn_obj_batch = orb_add_model("cat");
+        REQUIRE(orb_learn_obj_batch.uri == "orb_add_model");
         REQUIRE(orb_learn_obj_batch.is_single_callable() == false);
 
         //Deserialize
@@ -173,13 +173,13 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
                       "error" : ""
                   })"_json;
         std::string j1_string = j1.dump(-1);
-        bool learn_reply = deserialize<orb_learn_object,
-                                      typename orb_learn_object::data_type>()(j1_string);
+        bool learn_reply = deserialize<orb_add_model,
+                                      typename orb_add_model::data_type>()(j1_string);
         REQUIRE(learn_reply);
 
         //Class object_detection_clear_models
-        orb_clear_model orb_clear("user");
-        REQUIRE(orb_clear.uri == "orb_clear_model"); 
+        orb_del_model orb_clear("user");
+        REQUIRE(orb_clear.uri == "orb_del_model"); 
         REQUIRE(orb_clear.is_single_callable() == true);
 
         //Deserialize
@@ -189,17 +189,17 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
                       "error" : ""
                   })"_json;
         std::string j2_string = j2.dump(-1);
-        bool clear_reply = deserialize<orb_clear_model,
-                                      typename orb_clear_model::data_type>()(j2_string);
+        bool clear_reply = deserialize<orb_del_model,
+                                      typename orb_del_model::data_type>()(j2_string);
         REQUIRE(clear_reply);
 
         //Class object_detection_find_objects 
-        auto orb_find_obj = orb_find_objects(pic, "cat", 200);
-        REQUIRE(orb_find_obj.uri == "orb_find_objects"); 
+        auto orb_find_obj = orb_query(pic, "cat", 200);
+        REQUIRE(orb_find_obj.uri == "orb_query"); 
         REQUIRE(orb_find_obj.is_single_callable() == true);
 
-        auto orb_find_obj_batch = orb_find_objects("cat", 200);
-        REQUIRE(orb_find_obj_batch.uri == "orb_find_objects");
+        auto orb_find_obj_batch = orb_query("cat", 200);
+        REQUIRE(orb_find_obj_batch.uri == "orb_query");
         REQUIRE(orb_find_obj_batch.is_single_callable() == false);
         auto j4 = R"(
                   {
@@ -215,8 +215,8 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
                   })"_json;
         std::string j4_string = j4.dump(-1);
         std::vector<noos::object::point2d<float>> orb_reply;
-        orb_reply = deserialize<orb_find_objects,
-                                typename orb_find_objects::data_type>()(j4_string);
+        orb_reply = deserialize<orb_query,
+                                typename orb_query::data_type>()(j4_string);
         REQUIRE(orb_reply.at(0).x == 0.999f);
         REQUIRE(orb_reply.at(0).y == 0.999f);
         REQUIRE(orb_reply.at(1).x == 0.899f);

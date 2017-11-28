@@ -2,7 +2,7 @@
 #include <tests/catch.hpp>
 #include <iostream>
 #include <fstream>
-#include <noos/misc/json/src/json.hpp>
+#include <noos/misc/json.hpp>
 #include <noos/objects.hpp>
 
 /// \brief function to read a json file and it is converted 

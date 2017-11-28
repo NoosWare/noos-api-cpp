@@ -7,9 +7,9 @@ struct available_services;
 struct face_detection;
 struct light_detection;
 struct human_detection;
-struct orb_learn_object;
-struct orb_clear_model;
-struct orb_find_objects;
+struct orb_add_model;
+struct orb_del_model;
+struct orb_query;
 struct object_recognition;
 struct qr_recognition;
 struct age_detection;
@@ -193,7 +193,7 @@ std::vector<noos::object::qr_code>
 
 // ORB learn models
 template <>
-bool deserialize<orb_learn_object,
+bool deserialize<orb_add_model,
                 bool 
                 >::operator()(std::string json) 
 {
@@ -208,7 +208,7 @@ bool deserialize<orb_learn_object,
 
 // ORB clear models
 template <>
-bool deserialize<orb_clear_model,
+bool deserialize<orb_del_model,
                 bool
                 >::operator()(std::string json) 
 {
@@ -224,7 +224,7 @@ bool deserialize<orb_clear_model,
 // ORB find objects
 template <>
 std::vector<noos::object::point2d<float>> 
-    deserialize<orb_find_objects,
+    deserialize<orb_query,
                 std::vector<noos::object::point2d<float>>
                >::operator()(std::string json) 
 {
