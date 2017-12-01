@@ -12,6 +12,6 @@ function(install_config)
                    COPYONLY
                   )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/noos-config.cmake
-            DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake")
-    message(STATUS "Installing noos-config.cmake in ${CMAKE_INSTALL_PREFIX}/lib/cmake")
+            DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/noos/")
+    message(STATUS "Installing noos-config.cmake in ${CMAKE_INSTALL_PREFIX}/lib/cmake/noos/")
 endfunction(install_config)
