@@ -36,8 +36,8 @@ public:
                 std::function<void(std::string)> cloud_callback,
                 std::function<void(error_code error)> error_callback,
                 boost::asio::io_service & io_service,
-                boost::asio::streambuf & request,
-                bool keep_alive
+                const bool keep_alive,
+                boost::asio::streambuf & request
              );
 
     /**
@@ -53,11 +53,27 @@ public:
                 unsigned int timeout
               );
 
+	/**
+	 * @brief send data in an existing connection
+	 * @param query defines the URL/URI
+	 * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
+	 */
+    void send(
+                boost::asio::ip::tcp::resolver::query & query,
+                boost::asio::ip::tcp::resolver & resolver,
+                unsigned int timeout,
+                boost::asio::streambuf & request
+             );
+
     /// \brief shutdown handler
     void shutdown(const boost::system::error_code);
 
     /// @brie stop timeout timer
     void stop_timeout();
+
+    /// @return if socket is connected
+    bool is_connected() const;
 
 private:
     friend asio_handler<tls_socket,asio_https>;
@@ -72,7 +88,7 @@ private:
     void handshake(const boost::system::error_code err);
 
     /// \brief check if we have timed out
-    void time_check();
+    void time_check(const boost::system::error_code & ec);
 
     std::function<void(boost::system::error_code err)> error_;
     std::function<void(std::string)> callback_;
@@ -80,6 +96,7 @@ private:
     std::shared_ptr<tls_socket> socket_;
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
+    std::atomic<bool> connected_ = { false };
 };
 }
 }

@@ -22,7 +22,7 @@ int main()
     auto callback = [&](std::vector<noos::object::face> faces) { 
                         std::cout << "faced detected: " << faces.size() << std::endl;
                     };
-    callable<face_detection> query(callback, default_node, pic);
-    query.send(2);
+    callable<face_detection, false> query(callback, default_node, pic);
+    query.send();
     return 0;
 }

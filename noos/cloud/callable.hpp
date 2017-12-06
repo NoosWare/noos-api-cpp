@@ -6,6 +6,7 @@
 #include "includes.ihh"
 #include <noos/cloud/asio/platform.hpp>
 #include <noos/cloud/default_error_handler.hpp>
+#include <noos/cloud/asio/asio_https.hpp>
 #include <noos/cloud/asio/asio_http.hpp>
 #include <noos/cloud/asio/platform.hpp>
 #include <noos/cloud/cloud_base.hpp>
@@ -24,7 +25,7 @@ namespace cloud {
  */
 template <class cloud_type,
           bool  keep_alive   = true,
-          class socket_type  = asio_http,
+          class socket_type  = asio_https,
           class error_handle = default_error_handler>
 class callable
 {
@@ -97,7 +98,7 @@ protected:
 
 template <class cloud_type,
           bool  keep_alive   = true,
-          class socket_type  = asio_http,
+          class socket_type  = asio_https,
           class error_handle = default_error_handler,
           class ...args,
           typename = 

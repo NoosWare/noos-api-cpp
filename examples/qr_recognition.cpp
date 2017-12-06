@@ -26,7 +26,6 @@ int main()
     // For more information @see noos::cloud::qr_recognition
     // 
     callable<qr_recognition,false> query(callback, default_node, pic);
-    //callable<qr_recognition, false> query(qr_recognition(pic), callback);
     query.send();
     return 0;
 } 

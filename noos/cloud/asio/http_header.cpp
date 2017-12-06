@@ -15,7 +15,7 @@ http_header::http_header(std::string uri,
   boundary_(noos::misc::random_boundary()),
   keep_alive_(keep_alive)
 {
-        connection_ = "Connection: close\r\n";
+    connection_ = "Connection: close\r\n";
     user_agent_ = "User-Agent: noos_api-cpp-0.7.3\r\n";
 }
 
