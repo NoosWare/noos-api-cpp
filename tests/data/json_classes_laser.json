@@ -1,0 +1,23 @@
+{
+    "laser" : {
+                "sensor_pose": {
+                                    "position": {
+                                                    "x": 0.0,
+                                                    "y": 0.0,
+                                                    "z": 0.0
+                                                },
+                                    "orientation": {
+                                                    "roll"  : 0.0,
+                                                    "pitch" : 0.0,
+                                                    "yaw"   : 0.0
+                                                   }
+                                },
+                 "max_range" : 0.0,
+                 "aperture" : 0.0,
+                 "timestamp" : 0,
+                 "std_error" : 0.0,
+                 "ranges" : [0.0],
+                 "intensities" : [0],
+                 "right_to_left" : true
+    }
+}

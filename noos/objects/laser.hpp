@@ -9,39 +9,39 @@ namespace noos {
 /// @brief common object namespace
 namespace object {
 /**
- * @class laser
+ * @struct laser
  * @brief describes a laser scan data 
  * @version 0.7.3
  * @date 27 June 2017
  */
 struct laser
 {
-    /// members
     /// Aperture of the laser in radians
-    float aperture;
+    float aperture = 0.0;
     /// Time
-    uint64_t timestamp;
+    uint64_t timestamp = 0;
     /// Maximum distance of laser measurements in meters
-    float max_range;
+    float max_range = 0.0;
     /// Statistical error of laser
-    float std_error;
+    float std_error = 0.0;
     /// The direction in which the laser rotates
-    bool right_to_left;
+    bool right_to_left = true;
     /// Measurements of distance
-    std::vector<float> ranges;
+    std::vector<float> ranges  = {0.0};
     /// Intensity values of the scan
-    std::vector<int> intensities;
+    std::vector<int> intensities = {0};
     /// Sensor pose
     noos::object::pose<float> pose3d;
 
-    /// @brief Constructor 
+    /// @brief Constructor
     laser() = default;
-   
+
     /// @return json object
     json::object_t to_json() const;
 
     /// @brief Equality operator
-    bool operator==(const noos::object::laser & rhs) const;
+	bool operator==(const noos::object::laser & rhs) const;
+
 };
 }
 }

@@ -1,9 +1,10 @@
 #ifndef NOOS_CLOUD_DEFAULT_ERROR_HANDLER
 #define NOOS_CLOUD_DEFAULT_ERROR_HANDLER
+#include "includes.ihh"
 namespace noos {
 namespace cloud {
 /**
- * @brief default error handler will output on stderr only if NDEBUG macro is used
+ * @brief default error handler will output on stderr 
  * @struct default_error_handler
  * @version 0.7.3
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -17,20 +18,10 @@ namespace cloud {
  */
 struct default_error_handler
 {
-    void operator()(boost::system::error_code & error) const
-    {
-        #if (!NDEBUG)
-        switch(error.value()) { 
-            case 103:
-                std::cerr << "[error-message]: Connection aborted. Socket shutdown. Create a different connection." << std::endl;
-                break;
-            default:
-                std::cerr << "[error-message]: " << error.message() 
-                          << " [error-value]: " << error.value() << std::endl;
-                break;
-        }
-        #endif
-    }
+    /// @brief operator which will show an output with the error obtained
+    void operator()(boost::system::error_code & error) const;
+
+    static const std::string error_message;
 };
 
 }

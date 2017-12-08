@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include <tests/Catch/single_include/catch.hpp>
+#include <tests/catch.hpp>
 #include <fstream>
 #include <chrono>
 #include <iostream>
@@ -115,4 +115,26 @@ TEST_CASE("object_audio_test", "[audio]")
     noos::object::audio audio2_cpy = audio2;
 
     REQUIRE(audio2 == audio2_cpy);
+}
+
+/**
+ * @brief TEST for config_file
+ */
+TEST_CASE("object config_file", "[config_file]")
+{
+    std::string filepath = "tests/data/config_test.ini";
+    noos::object::config_file file1(filepath);
+    noos::object::config_file file2(filepath);
+    REQUIRE(file1.get_data() == file2.get_data());
+
+    auto file3 = noos::object::config_file(filepath);
+    REQUIRE(file1.get_data() == file3.get_data());
+    REQUIRE(file1.get_data().size() == 28);
+
+    auto file4 = file3;
+    REQUIRE(file4.get_data() == file3.get_data());
+
+    noos::object::config_file file5("tests/data/config_file.ini");
+    REQUIRE(file5.get_data().size() == 5155);
+
 }

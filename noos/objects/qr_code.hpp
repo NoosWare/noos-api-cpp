@@ -15,8 +15,11 @@ namespace object {
  */
 struct qr_code
 {
+    /// coordinate x of the center of the QR position
     float centre_x;
+    /// coordinate y of the center of the QR position
     float centre_y;
+    /// message of the QR found
     std::string message;
 
     /// @brief construct a qr object from a json iterator

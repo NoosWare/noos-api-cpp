@@ -9,13 +9,13 @@
 #include <noos/cloud/asio/http_post.hpp>
 #include <noos/cloud/asio/platform.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class http_request
- * @brief wnooser for the classes `http_header` &`http_post` used for cloud requests
+ * @brief nooser for the classes `http_header` &`http_post` used for cloud requests
  * @version 0.7.3
  * @date 12 August 2016
- * @author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 class http_request 
 {

@@ -10,7 +10,9 @@ typedef boost::asio::ip::tcp::socket http_socket;
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
 typedef boost::system::error_code error_code;
 typedef boost::asio::ip::tcp::resolver resolver;
+
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class asio_handler

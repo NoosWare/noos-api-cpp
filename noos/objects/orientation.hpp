@@ -15,12 +15,14 @@ namespace object {
 template <class value_type>
 struct orientation
 {
-    /// coordinates
+    /// roll angle in radians
 	value_type roll = 0;
+    /// pitch angle in radians
     value_type pitch = 0;
+    /// yaw angle in radians
     value_type yaw = 0;
 
-    /// @brief default constructor
+    /// @brief Default constructor
     orientation() = default;
 
     /// @brief Constructor taking roll, pitch and yaw (in radians)

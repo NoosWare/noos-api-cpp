@@ -16,9 +16,11 @@ namespace object {
 template <class value_type>
 struct point
 {
-    /// coordinates
+    /// coordinate x
 	value_type x = 0;
+    /// coordinate y
     value_type y = 0;
+    /// coordinate z
     value_type z = 0;
 
     /// @brief default constructor
@@ -37,6 +39,71 @@ struct point
    
     /// @brief Equality operator
     bool operator==(const noos::object::point<value_type> & rhs) const;
+};
+
+/**
+ * @struct point2d
+ * @brief encapsulate point of 2 dimensions (x, y)
+ * @version 0.8.0
+ * @date 28.09.2017
+ */
+template <class value_type>
+struct point2d
+{
+    /// coordinate x
+	value_type x = 0;
+    /// coordinate y
+    value_type y = 0;
+
+    /// @brief default constructor
+    point2d() = default;
+
+    /// @brief constructor taking parameters x and y
+    point2d(value_type x_data,
+            value_type y_data);
+
+    /// @brief Construct using library "json for modern c++"
+    point2d(const json::const_iterator & position);
+   
+    /// @return a JSON object
+    json::object_t to_json() const;
+   
+    /// @brief Equality operator
+    bool operator==(const noos::object::point2d<value_type> & rhs) const;
+};
+
+/**
+ * @struct pose2d
+ * @brief encapsulate point of 2 dimensions (x, y) with an angle
+ * @version 0.8.0
+ * @date 18.10.2017
+ */
+template <class value_type>
+struct pose2d
+{
+    /// coordinate x
+	value_type x = 0;
+    /// coordinate y
+    value_type y = 0;
+    /// angle theta
+    value_type theta = 0;
+
+    /// @brief default constructor
+    pose2d() = default;
+
+    /// @brief constructor taking parameters x, y and theta
+    pose2d(value_type x_data,
+           value_type y_data,
+           value_type theta_data);
+
+    /// @brief Construct using library "json for modern c++"
+    pose2d(const json::const_iterator & position);
+   
+    /// @return a JSON object
+    json::object_t to_json() const;
+   
+    /// @brief Equality operator
+    bool operator==(const noos::object::pose2d<value_type> & rhs) const;
 };
 #include "point.tpl"
 }

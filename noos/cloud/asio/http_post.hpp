@@ -6,6 +6,7 @@
 #include "includes.ihh"
 #include <noos/objects/globals.hpp>
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @class http_post 

@@ -6,6 +6,7 @@
 #include <string>
 #include "includes.ihh"
 namespace noos {
+/// @brief common cloud namespace
 namespace cloud {
 /**
  * @struct platform
@@ -39,14 +40,14 @@ struct platform
  *  @version 0.7.3
  *  @date 05.07.2017
  */
-const platform default_node = {"10.130.3.17", "8080", "mysecret", "alex"};
+const platform default_node = {"demo.noos.cloud", "9001", "test_token", "test"};
 
 /**
  *  @brief european platform
  *  @version 0.7.3
  *  @date 05.07.2017
  */
-const platform eu_node = {"10.130.3.17", "8080", "mysecret", "alex"};
+const platform eu_node = {"localhost", "9001", "test_token", "test"};
 
 }
 }

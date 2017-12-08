@@ -29,19 +29,19 @@ public:
     /// @param bytearray should contain the audio data
     audio(std::vector<noos::types::byte> bytearray);
 
-    /// @brief copy constructor
+    /// @brief Copy constructor
     audio(const audio &) = default;
 
-    /// @brief get audio as array of bytes
+    /// @brief Get audio as array of bytes
     std::vector<noos::types::byte> bytearray() const;
 
-    /// @brief equality operator
+    /// @brief Equality operator
     bool operator==(const audio & rhs) const;
 
-    /// @brief inequality operator
+    /// @brief Inequality operator
     bool operator!=(const audio & rhs) const;
 
-    /// @brief assignment operator
+    /// @brief Assignment operator
     audio & operator=(const audio &) = default;
 
     /// @brief Save audio to filepath

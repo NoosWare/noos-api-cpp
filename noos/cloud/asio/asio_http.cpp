@@ -97,8 +97,8 @@ void asio_http::send(
                     )
 {
     if (connected_) {
-        deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1)); 
         deadline_->expires_from_now(boost::posix_time::seconds(timeout));
+        deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1)); 
         boost::asio::async_write(*socket_.get(),
                                  request,
                                  boost::bind(&asio_handler<http_socket,asio_http>::write_request, 
@@ -138,25 +138,15 @@ void asio_http::time_check(const boost::system::error_code & ec)
     if (!deadline_) {
         return;
     }
-    if (!ec) { 
-        if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-            #if (!NDEBUG)
-            std::cerr << "[time-out]: closing socket" << std::endl;
-            #endif
-            socket_->close();
-            deadline_->cancel();
-            connected_ = false;
-        }
-        else {
-            deadline_->async_wait(boost::bind(&asio_http::time_check, this, _1));
-        }
+    if (ec != boost::asio::error::operation_aborted) { 
+        #if (!NDEBUG)
+        std::cerr << "[time-out]: closing socket" << std::endl;
+        #endif
+        error_(boost::asio::error::timed_out);
+        shutdown(boost::asio::error::timed_out);
     }
     else {
-        if (ec != boost::asio::error::operation_aborted) {
-            socket_->close();
-            deadline_->cancel();
-            connected_ = false;
-        }
+        return;
     }
 }
 

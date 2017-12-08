@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include <tests/Catch/single_include/catch.hpp>
+#include <tests/catch.hpp>
 #include <noos/cloud/asio/http_response.hpp>
 #include <noos/cloud/asio/http_header.hpp>
 #include <noos/cloud/asio/http_post.hpp>

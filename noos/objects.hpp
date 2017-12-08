@@ -5,7 +5,9 @@
 #include <noos/objects/point.hpp>
 #include <noos/objects/time.hpp>
 #include <noos/objects/qr_code.hpp>
-#include <noos/objects/orb_object.hpp>
 #include <noos/objects/pose.hpp>
 #include <noos/objects/laser.hpp>
 #include <noos/objects/orientation.hpp>
+#include <noos/objects/config_file.hpp>
+#include <noos/objects/person.hpp>
+#include <noos/objects/odometry.hpp>

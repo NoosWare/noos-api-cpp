@@ -6,8 +6,8 @@ asio_https::asio_https(
                         std::function<void(std::string)> cloud_callback,
                         std::function<void(error_code error)> error_callback,
                         boost::asio::io_service & io_service,
-                        boost::asio::streambuf & request,
-                        bool keep_alive
+                        const bool keep_alive,
+						boost::asio::streambuf & request
 					  )
 :  asio_handler<tls_socket,asio_https>(keep_alive, error_callback),
    error_(error_callback), 
@@ -19,7 +19,7 @@ asio_https::asio_https(
     deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
     assert(callback_ && error_ && socket_);
     asio_handler::set_socket(socket_);
-    deadline_->async_wait(boost::bind(&asio_https::time_check, this)); 
+    deadline_->async_wait(boost::bind(&asio_https::time_check, this, _1)); 
     // set context option for TLS - allow only TLS v1.2 and later
     ctx_.set_options(boost::asio::ssl::context::default_workarounds
                     | boost::asio::ssl::context::no_sslv2
@@ -36,7 +36,7 @@ void asio_https::begin(
 {
 	// if using a self-signed certificate the only way to pass verification
 	// is to "install" it locally and use it for comparison
-	ctx_.load_verify_file("ca.pem"); // WARNING/BUG: what is this hardcoded???
+	ctx_.load_verify_file("cert.pem"); // WARNING/BUG: what is this hardcoded???
 	socket_->set_verify_mode(boost::asio::ssl::verify_peer | 
                              boost::asio::ssl::verify_fail_if_no_peer_cert);
 	socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
@@ -46,8 +46,7 @@ void asio_https::begin(
     boost::asio::ip::tcp::resolver::iterator end;
     boost::system::error_code error = boost::asio::error::host_not_found;
 
-	while (error && endpoint_iterator != end) {
-        socket_->lowest_layer().close();
+	if (endpoint_iterator != end) {
         deadline_->expires_from_now(boost::posix_time::seconds(timeout));
 		boost::asio::async_connect(socket_->lowest_layer(), 
 								   endpoint_iterator,
@@ -55,7 +54,7 @@ void asio_https::begin(
                                                this, 
                                                boost::asio::placeholders::error));
 	}
-	if (error) {
+    else {
         asio_handler::end(error);
 	}
 }
@@ -65,7 +64,7 @@ bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_c
     char subject_name[256];
     X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
     X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-    return preverified;
+    return true;
 }
 
 void asio_https::connect(const boost::system::error_code err)
@@ -74,6 +73,7 @@ void asio_https::connect(const boost::system::error_code err)
         asio_handler::end(err);
         return;
     }
+	connected_ = true;
     socket_->async_handshake(boost::asio::ssl::stream_base::client,
                              boost::bind(&asio_https::handshake, 
                                          this, 
@@ -84,9 +84,9 @@ void asio_https::handshake(const boost::system::error_code err)
 {
     if (err) {
         asio_handler::end(err);
-        #if (!NDEBUG)
+#if(DEBUG)
         std::cerr << "[Handshake failed]: " << err.message() << "\n";
-        #endif
+#endif
         return;
     }
 	boost::asio::async_write(*socket_,
@@ -97,30 +97,66 @@ void asio_https::handshake(const boost::system::error_code err)
                                          boost::asio::placeholders::bytes_transferred));
 }
 
+void asio_https::send(boost::asio::ip::tcp::resolver::query & query,
+                      boost::asio::ip::tcp::resolver & resolver,
+                      unsigned int timeout,
+                      boost::asio::streambuf & request)
+{
+    if (connected_) {
+        deadline_->expires_from_now(boost::posix_time::seconds(timeout));
+        deadline_->async_wait(boost::bind(&asio_https::time_check, this, _1)); 
+        boost::asio::async_write(*socket_.get(),
+                                 request,
+                                 boost::bind(&asio_handler::write_request, 
+                                             this,
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred));
+    }
+    else {
+        auto err = boost::asio::error::eof;
+        shutdown(err);
+    }
+}
+
 void asio_https::shutdown(const boost::system::error_code err)
 {
+    connected_ = false;
     socket_->lowest_layer().close();
-    deadline_->cancel();
-    deadline_.reset();
+	if (deadline_) { 
+		deadline_->cancel();
+		deadline_.reset();
+	}
+    if (err.value() != 0) 
+        error_(err); 
 }
 
 void asio_https::stop_timeout()
 {
+    assert(deadline_);
     deadline_->cancel();
 }
 
-void asio_https::time_check()
+void asio_https::time_check(const boost::system::error_code & ec)
 {
     if (!deadline_) {
         return;
     }
-    if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-        socket_->lowest_layer().close();
-        deadline_->cancel();   
+    if (ec != boost::asio::error::operation_aborted) { 
+        #if (!NDEBUG)
+        std::cerr << "[time-out]: closing socket" << std::endl;
+        #endif
+        error_(boost::asio::error::timed_out);
+        shutdown(boost::asio::error::timed_out);
     }
     else {
-        deadline_->async_wait(boost::bind(&asio_https::time_check, this));
+        return;
     }
+
+}
+
+bool asio_https::is_connected() const
+{
+    return connected_;
 }
 
 }

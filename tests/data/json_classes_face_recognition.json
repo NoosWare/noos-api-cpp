@@ -1,0 +1,17 @@
+{
+	"faces":{
+				"rect" : {
+							"up_left_point":{
+												"x": 1,
+												"y": 2
+							},
+							"down_right_point":{
+												"x": 3,
+												"y": 4
+							}
+						 },
+				"confidence" : 100,
+				"label" : 1,
+                "name" : "name"
+	 }
+}

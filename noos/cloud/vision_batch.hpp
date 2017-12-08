@@ -9,19 +9,38 @@
 namespace noos {
 namespace cloud {
 /**
+ * @brief tied is a convenience pair struct for object + functors used by `vision_batch`
+ * @struct tied
+ * @version 0.8.0
+ * @date 21.09.2017
+ * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ */
+template <class cloud_type>
+struct tied
+{
+    typedef typename cloud_type::callback callback;
+    cloud_type object;
+    callback functor;
+    /// @brief constructor requires only the functor
+    tied(callback functor);
+    /// @brief constructor using the callback and 
+    ///        the object
+    tied(callback functor, cloud_type object);
+};
+
+/// @brief simple helper - not really needed
+template <class cloud_type>
+tied<cloud_type> make_tie(typename cloud_type::callback functor);
+
+/**
  * @brief vision_batch
  * @note creates a call with multiple vision services
- * @version 0.7.3
- * @date 09.02.0217
+ * @version 0.8.0
+ * @date 21.09.2017
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
- *
- * @note the variadic template parameter `cloud_pairs` expects
- *       a sequence of `std::pair<cloud_class, callback>`.
- *       anything else won't compile
- *
  * @note you can only using this class with `vision_base` derived classes
  */
-template <class... cloud_pairs>
+template <class... ties>
 class vision_batch 
 : public http_request, 
   public cloud_base<bool>,
@@ -29,43 +48,36 @@ class vision_batch
 {
 public:
     using callback = std::function<void(std::string)>;
-    typedef typename vision_batch<cloud_pairs...>::data_type data_types;
+    typedef typename vision_batch<ties...>::data_type data_types;
     /**
-     * @brief construct a vision_batch using a list of std::pair<cloud_type,callback>
+     * @brief construct a vision_batch using a list of `tied` wrappers
      * @param image is a noos::object::picture 
-     * @param args are the std::pair<cloud_type, callback> services which are
-     *        going to be called in a sequential manner (in the order of variadic arguments)
+     * @note args will be called in a sequential manner
      */
-    vision_batch(const noos::object::picture & image,
-                  cloud_pairs... args);
-   
+    vision_batch(noos::object::picture image,
+                 ties... args);
     /** 
      * @brief process the JSON reply and delegate to services
-     * This method becomes the specialisation of deserialize<vision_batch, 
-     * @note this is the callback for `callable` and calls the cloud_pairs functors
+     * This method becomes the specialisation of `deserialize<vision_batch<...>>`,
+     * @note this is the callback for `callable` and calls the ties functors
      * using a fold expression and tuple unpacking
      */
     void process(std::string json);
 
-private:
-
-    // expand the tuple of cloud_pairs
+protected:
+    // expand the tuple of ties
     template<std::size_t... batch_size>
-    void expand_batch(
-                      std::string json, 
+    void expand_batch(std::string json, 
                       std::string key,
-                      std::index_sequence<batch_size...>
-                     );
+                      std::index_sequence<batch_size...>);
 
     // find the cloud_pair (cloud_class and callack and pass the data)
-    void find_cloud_type(
-                          cloud_pairs... args, 
+    void find_cloud_type(ties... args, 
                           std::string json,
-                          std::string key
-                        );
+                          std::string key);
    
-    const noos::object::picture & image__;
-    std::tuple<cloud_pairs...> batch__;
+    noos::object::picture image__;
+    std::tuple<ties...> batch__;
 };
 }
 }
