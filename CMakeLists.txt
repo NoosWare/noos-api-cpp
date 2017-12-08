@@ -6,7 +6,6 @@
 #       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
-#       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
 #       -DOPEN_NAO=ON                                   (Optional: compiling for NAO requires additional CXX flags)
 #		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
 #       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
@@ -17,7 +16,7 @@
 PROJECT(noos)
 set (NOOS_VERSION_MAJOR 0)
 set (NOOS_VERSION_MINOR 8)
-set (NOOS_VERSION_PATCH 0)
+set (NOOS_VERSION_PATCH 3)
 set (NOOS_VERSION_STRING ${NOOS_VERSION_MAJOR}.${NOOS_VERSION_MINOR}.${NOOS_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 

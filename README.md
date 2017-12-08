@@ -82,7 +82,6 @@ sudo apt-get install cmake gcc-4.9 libboost-all-dev libssl-dev
 * `-DBUILD_TESTS=ON`                                (Optional: compile various tests - run with `make test`)
 * `-DBUILD_EXAMPLES=ON`                             (Optional: compile various examples)
 * `-DCMAKE_BUILD_TYPE=Debug`                        (Optional: enable debug symbols)
-* `-DSTATIC_LIBSTD=ON`                              (Optional: compile statically against libstdc++)
 * `-DOPEN_NAO=ON`                                   (Optional: compiling on OpenNAO builds binaries for ATOM CPU)
 * `-DCMAKE_INSTALL_PREFIX=/usr`	                    (Optional: specify the library install directory
 * `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`       (Optional: specify OpenSSL root directory)
@@ -177,9 +176,9 @@ For further details please see the advanced tutorials.
 
 ## Tutorials
 
-We have created a repository with tutorials and examples, ranging from simple use to advanced projects.
+We have created a repository with ROS tutorials and examples, ranging from simple use to advanced projects.
 
-* [noos_tutorials](https://github.com/ortelio/noos_ros_tutorials)
+* [noos_ros_tutorials](https://github.com/ortelio/noos_ros_tutorials)
 
 ## Documentation
 
