@@ -25,6 +25,7 @@ asio_https::asio_https(
                     | boost::asio::ssl::context::no_sslv2
                     | boost::asio::ssl::context::no_sslv3
                     | boost::asio::ssl::context::no_tlsv1
+                    | boost::asio::ssl::context::no_tlsv1_1
                     | boost::asio::ssl::context::single_dh_use);
 }
 
@@ -36,9 +37,9 @@ void asio_https::begin(
 {
 	// if using a self-signed certificate the only way to pass verification
 	// is to "install" it locally and use it for comparison
-	ctx_.load_verify_file("cert.pem"); // WARNING/BUG: what is this hardcoded???
-	socket_->set_verify_mode(boost::asio::ssl::verify_peer | 
-                             boost::asio::ssl::verify_fail_if_no_peer_cert);
+	//ctx_.load_verify_file("cert.pem"); // WARNING/BUG: what is this hardcoded???
+	socket_->set_verify_mode(boost::asio::ssl::verify_peer /*| 
+                             boost::asio::ssl::verify_fail_if_no_peer_cert*/);
 	socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
                                              this, _1, _2));
 	// resolve and connect

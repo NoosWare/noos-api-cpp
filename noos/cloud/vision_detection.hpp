@@ -126,7 +126,7 @@ struct orb_add_model
 };
 
 /**
- * @struct orb_del_models
+ * @struct orb_del_model
  * @brief Clears operational memory for selected user
  * @version 0.8.0
  * @note data type passed back is an `bool`
@@ -143,7 +143,7 @@ struct orb_del_model
 };
 
 /**
- * @struct object_detection_find_objects
+ * @struct orb_query
  * @brief user can provide query image to detect objects
  * @version 0.8.0
  * @note data type passed back is an `std::vector<noos::object::point2d<float>>`

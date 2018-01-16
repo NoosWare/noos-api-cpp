@@ -7,14 +7,15 @@
 #include <noos/objects.hpp>
 #include <noos/cloud/asio/http_request.hpp>
 #include <noos/cloud/cloud_base.hpp>
+
 namespace noos {
 namespace cloud {
 
 /**
  * @brief class to clasify types of slam (icp or rbpf)
- * @class slam_type
+ * @enum slam_type
  * @version 0.8.0
- * date 1.09.2017
+ * @date 1.09.2017
  */
 enum class slam_type
 {
