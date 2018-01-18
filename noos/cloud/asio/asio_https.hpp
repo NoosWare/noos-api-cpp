@@ -8,7 +8,7 @@
 #include <boost/asio/ssl.hpp>
 #include <noos/cloud/asio/asio_handler.hpp>
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class asio_https
@@ -25,12 +25,11 @@ class asio_https
 {
 public:
 	/**
-	 * @brief constructor
-	 * @brief `cloud_function` is the virtual `json_parser::deserialize` receiving the data
-	 * @brief `error_function` is the handler which may receive the errors
-	 * @brief `io_service` is the ASIO service controller
-	 * @brief `request` is a stream buffer containing the request
-	 * @TODO (0.8.0) load certificate from a system-wide location (e.g., /opt/noos/cert/public.noos.cloud) 
+	 * @brief Constructor
+	 * @param cloud_function is the virtual `json_parser::deserialize` receiving the data
+	 * @param error_function is the handler which may receive the errors
+	 * @param io_service is the ASIO service controller
+	 * @param request is a stream buffer containing the request
 	 */
     asio_https(
                 std::function<void(std::string)> cloud_callback,
@@ -41,11 +40,11 @@ public:
              );
 
     /**
-     * \brief begin connection
-     * \param query defines the URL/URI
-     * \param resolver resolves the URL/URI address
-     * \param io_service is the queue on which jobs are scheduled
-     * \warning only TLS 1.2 and later are allowed
+     * @brief Begin connection
+     * @param query defines the URL/URI
+     * @param resolver resolves the URL/URI address
+     * @param io_service is the queue on which jobs are scheduled
+     * @warning only TLS 1.2 and later are allowed
      */
 	void begin(
                 boost::asio::ip::tcp::resolver::query & query,
@@ -54,7 +53,7 @@ public:
               );
 
 	/**
-	 * @brief send data in an existing connection
+	 * @brief Send data in an existing connection
 	 * @param query defines the URL/URI
 	 * @param resolver resolves the URL/URI address
      * @param io_service is the queue on which jobs are scheduled
@@ -66,28 +65,28 @@ public:
                 boost::asio::streambuf & request
              );
 
-    /// \brief shutdown handler
+    /// @brief Shutdown handler
     void shutdown(const boost::system::error_code);
 
-    /// @brie stop timeout timer
+    /// @brief Stop timeout timer
     void stop_timeout();
 
-    /// @return if socket is connected
+    /// @return If socket is connected
     bool is_connected() const;
 
 private:
     friend asio_handler<tls_socket,asio_https>;
 
-    /// \brief verify TLS certificate
+    // \brief verify TLS certificate
     bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
 
-    /// \brief begin connection
+    // \brief begin connection
     void connect(const boost::system::error_code err);
 
-    /// \brief handle handshake
+    // \brief handle handshake
     void handshake(const boost::system::error_code err);
 
-    /// \brief check if we have timed out
+    // \brief check if we have timed out
     void time_check(const boost::system::error_code & ec);
 
     std::function<void(boost::system::error_code err)> error_;
@@ -97,6 +96,7 @@ private:
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
     std::atomic<bool> connected_ = { false };
+    static const std::string name_certificate__;
 };
 }
 }

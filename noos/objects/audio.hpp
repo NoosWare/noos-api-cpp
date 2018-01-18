@@ -6,11 +6,11 @@
  * LICENSE HERE
  */
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @class audio
- * @brief class which wraps around raw bytes of an audiofile
+ * @brief Class which wraps around raw bytes of an audiofile
  * @version 0.7.3
  * @date 10 June 2017
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>

@@ -3,14 +3,14 @@
 #include "includes.ihh"
 namespace noos {
 /**
- * @brief common misc helper functions
+ * @brief Common misc helper functions
  * @version 0.7.3
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * @date 10 June 2017
  */
 namespace misc {
 
-/// @brief decode base64
+/// @brief Decode base64
 /// @param val must be encoded using base64
 inline std::string decode64(const std::string &val)
 {
@@ -24,9 +24,9 @@ inline std::string decode64(const std::string &val)
                                                             [](char c) {return c == '\0';});
 }
 
-/// @brief encode base64
+/// @brief Encode base64
 /// @param val must be plain-text string
-/// @return a base64 encoded string
+/// @return A base64 encoded string
 inline std::string encode64(const std::string &val)
 {
 	if (val.empty()) {
@@ -56,7 +56,7 @@ inline std::string random_boundary()
     return uid;
 }
 
-/// @brief escape JSON strings when sending them over the socket
+/// @brief Escape JSON strings when sending them over the socket
 /// @param str will be escaped and returned
 inline std::string escape_string(const std::string & str)
 {
@@ -81,7 +81,7 @@ inline std::string escape_string(const std::string & str)
 } 
 
 /**
- * @brief expand variadic arguments using a fold expression
+ * @brief Expand variadic arguments using a fold expression
  * @param f of template parameter F is the function (a lambda) receiving the expanded object
  * @param args is the variadic list of args
  */
@@ -93,7 +93,7 @@ void for_each_arg(F&& f, Args&&... args)
 }
 
 /**
- * @brief method to check if the string exists in the actual json
+ * @brief Method to check if the string exists in the actual json
  */
 template<typename T>
 T get_json_value(const std::string key, const nlohmann::json & json_f)
@@ -105,7 +105,7 @@ T get_json_value(const std::string key, const nlohmann::json & json_f)
     return it->get<T>();
 }
 
-/// \brief method to check if JSON data is correct
+/// \brief Method to check if JSON data is correct
 inline bool check_json(
                          nlohmann::json & json,
                          const std::string json_str
@@ -121,7 +121,7 @@ inline bool check_json(
     return true;
 } 
 
-/// \brief function to check if an error has been received from
+/// \brief Function to check if an error has been received from
 //         the platform
 inline bool check_error(
                          const nlohmann::json json,
@@ -136,9 +136,9 @@ inline bool check_error(
     return true;
 }
 
-/// @brief take decoded data and save it into an image
-/// @param std::string data is the image data before decoding
-/// @param filename is path where to save the image
+/// @brief Take decoded data and save it into an image
+/// @param data is the image data before decoding
+/// @param filename is the path where to save the image
 inline bool save_dec_image(std::string data,
                            std::string filename)
 {

@@ -6,27 +6,26 @@
 #include "includes.ihh"
 #include <noos/objects/globals.hpp>
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class http_post 
- * @brief use to store and pass POST data and realted info  
+ * @brief Use to store and pass POST data and realted info  
  * @version 0.7.0
  * @date August 2016
- * @author Maria Ramos<m.ramos@ortelio.co.uk>
  */
 class http_post
 {
 public:
     /**
-     * @brief preferred constructor
+     * @brief Preferred constructor
      * @param boundary must be obtained from `http_header::get_boundary()` 
      * @see http_header
      */
     http_post(std::string boundary);
     
     /**
-     * @brief add multipart/form-data content to the POST data
+     * @brief Add multipart/form-data content to the POST data
      * @param name of the form
      * @param content is the value
      * @param newline adds newline return at the end of content
@@ -38,11 +37,12 @@ public:
                     );
 
     /**
-     * @brief adding content to the POST data
+     * @brief Adding content to the POST data
      * @param name is the name of the string variable
      * @param filename which want to use
      * @param vector contains the data of the file in binary type  
      * @warning it will add newline return after the bytes
+     * @see noos::types::byte
      */
     void add_content(
                       const std::string name,
@@ -50,13 +50,13 @@ public:
                       const std::vector<noos::types::byte> bytes
                     );
        
-    /// @brief call once, closes the POST boundary
+    /// @brief Call once, closes the POST boundary
     void end();
 
-    /// @brief get the POST
+    /// @brief Get the POST
     std::string to_string() const;
 
-    /// @brief get POST data `Content-Length`
+    /// @brief Get POST data `Content-Length`
     unsigned int size() const;
 
 private:

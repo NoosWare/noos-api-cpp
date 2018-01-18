@@ -8,26 +8,27 @@ namespace noos {
 namespace object {
 /**
  * @class human
- * @brief describes human coordinates
+ * @brief Describes human coordinates
  * @version 0.7.0
  * @date 25 August-2016
  * @author Maria Ramos  <m.ramos@ortelio.co.uk>
  */
 struct human
 {
-    /// coordinate x of the top left corner
+    /// Coordinate x of the top left corner
     float top_left_x;
-    /// coordinate y of the top left corner
+    /// Coordinate y of the top left corner
     float top_left_y;
-    /// coordinate x of the bottom right corner
+    /// Coordinate x of the bottom right corner
     float bottom_right_x;
-    /// coordinate y of the bottom right corner
+    /// Coordinate y of the bottom right corner
     float bottom_right_y;
 
     /// @brief Constructor using `json for modern C++`
     human(const json::const_iterator & human_it);
 
-    /// @return a json object
+    /// @brief Converts the data to a json format
+    /// @return A json object
     json::object_t to_json() const;
 
     /// @brief Equality operator

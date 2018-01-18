@@ -9,7 +9,7 @@ namespace noos {
 namespace object {
 /**
  * @class picture
- * @brief class which wraps around raw bytes of a picture
+ * @brief Class which wraps around raw bytes of a picture
  * @version 0.7.0
  * @date August 2016
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>

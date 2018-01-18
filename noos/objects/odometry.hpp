@@ -5,23 +5,24 @@
  */
 #include "includes.ihh"
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @struct odometry
- * @brief describes the increment of the odometry
+ * @brief Describes the increment of the odometry
  * @version 0.8.0
  * @date 16.09.2017
  */
 struct odometry
 {
-    /// increment in x coordinates(in meters)
+    /// Increment in x-coordinate(in meters)
     float inc_x;
-    /// increment in y coordinates(in meters)
+    /// Increment in y-coordinate(in meters)
     float inc_y;
-    /// increment in yaw(in degrees)
+    /// Increment in yaw angle(in degrees)
     float inc_yaw;
    
+    /// @brief Converts the data to a json format
     /// @return json object
     json::object_t to_json() const;
 

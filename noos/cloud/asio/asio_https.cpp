@@ -2,6 +2,7 @@
 namespace noos {
 namespace cloud {
 
+const std::string asio_https::name_certificate__ = "/CN=*.noos.cloud";
 asio_https::asio_https(
                         std::function<void(std::string)> cloud_callback,
                         std::function<void(error_code error)> error_callback,
@@ -37,9 +38,7 @@ void asio_https::begin(
 {
 	// if using a self-signed certificate the only way to pass verification
 	// is to "install" it locally and use it for comparison
-	//ctx_.load_verify_file("cert.pem"); // WARNING/BUG: what is this hardcoded???
-	socket_->set_verify_mode(boost::asio::ssl::verify_peer /*| 
-                             boost::asio::ssl::verify_fail_if_no_peer_cert*/);
+	socket_->set_verify_mode(boost::asio::ssl::verify_peer);
 	socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
                                              this, _1, _2));
 	// resolve and connect
@@ -65,7 +64,9 @@ bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_c
     char subject_name[256];
     X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
     X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-    return true;
+    if (strcmp(name_certificate__.c_str(), subject_name) == 0)
+        return true;
+    return false;
 }
 
 void asio_https::connect(const boost::system::error_code err)

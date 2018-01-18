@@ -5,29 +5,30 @@
  */
 #include "includes.ihh"
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @class face
- * @brief describes a face coordinate (cartesian)
+ * @brief Describes a face coordinate (cartesian)
  * @version 0.7.3
  * @date 10 June 2017
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 struct face
 {
-    /// coordinate x of the top left corner
+    /// Coordinate x of the top left corner
     float top_left_x;
-    /// coordinate y of the top left corner
+    /// Coordinate y of the top left corner
     float top_left_y;
-    /// coordinate x of the bottom right corner
+    /// Coordinate x of the bottom right corner
     float bottom_right_x;
-    /// coordinate y of the bottom right corner
+    /// Coordinate y of the bottom right corner
     float bottom_right_y;
 
     /// @brief Constructor using `json for modern C++`
     face(const json::const_iterator & face_it);
    
+    /// @brief Converts the data to a json format
     /// @return json object
     json::object_t to_json() const;
 

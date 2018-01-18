@@ -6,51 +6,50 @@
 #include <noos/cloud/asio/includes.ihh>
 #include <noos/cloud/asio/platform.hpp>
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class http_header
  * @version 0.7.0
  * @date August 2016
- * @author Maria Ramos <m.ramos@ortelio.co.uk>
- * @brief class encapsulates the HTTP Header 1.1 standard
+ * @brief Class encapsulates the HTTP Header 1.1 standard
  */
 class http_header
 {
 public:
     /** 
-     * @brief constructor of the http_header
-     * @brief set the \param uri 
-     * @warning requires newline
+     * @brief Constructor of the http_header
+     * @brief Set the \param uri 
+     * @warning Requires newline
      */
     http_header(std::string uri);
 
     /** 
-     * @brief constructor of the http_header
-     * @brief set the \param uri 
-     * @warning requires newline
-     * @brief set \param keep_alive
+     * @brief Constructor of the http_header
+     * @brief Set the \param uri 
+     * @warning Requires newline
+     * @brief Set \param keep_alive
      */
     http_header(std::string uri, 
                 bool keep_alive);
 
     /**
-     * @brief make this header a `multipart/form-data`
-     * @warning it will modify the HTTP Header
+     * @brief Make this header a `multipart/form-data`
+     * @warning It will modify the HTTP Header
      */
     void make_multipart_form();
     
     /**
-     * @brief complete the rest of parameters that we need for the http_header and 
-     * @return all of them in a string
+     * @brief Complete the rest of parameters that we need for the http_header and 
+     * @return All of them in a string
      * @param endpoint contains the data of the platform
      * @param length is the size of the content
      */
     std::string to_string(noos::cloud::platform endpoint, unsigned int length);
 
     /**
-     * @brief get boundary
-     * @return boundary string without they hyphens (--)
+     * @brief Get boundary
+     * @return Boundary string without they hyphens (--)
      */
     std::string get_boundary() const;
 

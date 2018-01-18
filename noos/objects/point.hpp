@@ -8,7 +8,7 @@ namespace noos {
 namespace object {
 /**
  * @struct point
- * @brief encapsulate point position vector
+ * @brief Encapsulate point of 3 dimensions
  * @version 0.7.0
  * @date 19 August 2016
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -16,17 +16,17 @@ namespace object {
 template <class value_type>
 struct point
 {
-    /// coordinate x
+    /// Coordinate x
 	value_type x = 0;
-    /// coordinate y
+    /// Coordinate y
     value_type y = 0;
-    /// coordinate z
+    /// Coordinate z
     value_type z = 0;
 
-    /// @brief default constructor
+    /// @brief Default constructor
     point() = default;
 
-    /// @brief constructor taking parameters x, y and z
+    /// @brief Constructor taking parameters x, y and z
     point(value_type x_data,
           value_type y_data,
           value_type z_data);
@@ -34,7 +34,8 @@ struct point
     /// @brief Construct using library "json for modern c++"
     point(const json::const_iterator & position);
    
-    /// @return a JSON object
+    /// @brief Converts the data to a json format
+    /// @return A JSON object
     json::object_t to_json() const;
    
     /// @brief Equality operator
@@ -43,29 +44,30 @@ struct point
 
 /**
  * @struct point2d
- * @brief encapsulate point of 2 dimensions (x, y)
+ * @brief Encapsulate point of 2 dimensions (x, y)
  * @version 0.8.0
  * @date 28.09.2017
  */
 template <class value_type>
 struct point2d
 {
-    /// coordinate x
+    /// Coordinate x
 	value_type x = 0;
-    /// coordinate y
+    /// Coordinate y
     value_type y = 0;
 
-    /// @brief default constructor
+    /// @brief Default constructor
     point2d() = default;
 
-    /// @brief constructor taking parameters x and y
+    /// @brief Constructor taking parameters x and y
     point2d(value_type x_data,
             value_type y_data);
 
     /// @brief Construct using library "json for modern c++"
     point2d(const json::const_iterator & position);
    
-    /// @return a JSON object
+    /// @brief Converts the data to a json format
+    /// @return A JSON object
     json::object_t to_json() const;
    
     /// @brief Equality operator
@@ -74,24 +76,24 @@ struct point2d
 
 /**
  * @struct pose2d
- * @brief encapsulate point of 2 dimensions (x, y) with an angle
+ * @brief Encapsulate point of 2 dimensions (x, y) with an angle
  * @version 0.8.0
  * @date 18.10.2017
  */
 template <class value_type>
 struct pose2d
 {
-    /// coordinate x
+    /// Coordinate x
 	value_type x = 0;
-    /// coordinate y
+    /// Coordinate y
     value_type y = 0;
-    /// angle theta
+    /// Angle theta
     value_type theta = 0;
 
-    /// @brief default constructor
+    /// @brief Default constructor
     pose2d() = default;
 
-    /// @brief constructor taking parameters x, y and theta
+    /// @brief Constructor taking parameters x, y and theta
     pose2d(value_type x_data,
            value_type y_data,
            value_type theta_data);
@@ -99,6 +101,7 @@ struct pose2d
     /// @brief Construct using library "json for modern c++"
     pose2d(const json::const_iterator & position);
    
+    /// @brief Converts the data to a json format
     /// @return a JSON object
     json::object_t to_json() const;
    

@@ -12,7 +12,7 @@ namespace noos {
 namespace cloud {
 /**
  * @struct object_recognition
- * @brief recognize object from an image
+ * @brief Recognize an object from an image
  * @version 0.8.0
  * @date 06.09.2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -26,16 +26,17 @@ struct object_recognition
     using callback = std::function<void(data_type)>; 
     static const std::string uri;
 
-    /// @param image is a picture object reference
+    /// @brief Constructor taking an image
+    /// @param image is a picture object reference @see noos::object::picture
     object_recognition(noos::object::picture image);
 
-    /// @brief empty ctor used by vision batch
+    /// @brief Empty ctor used by vision_batch
     object_recognition();
 };
 
 /**
  * @struct face_expression
- * @brief recognise facial expressions from a person's image
+ * @brief Recognise facial expressions from a person's image
  * @version 0.8.0
  * @date 06.09.2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -49,16 +50,19 @@ struct face_expression
     using callback = std::function<void(data_type)>; 
     static const std::string uri;
 
-    /// @param image is a picture 
+    /// @brief Constructor taking an image
+    /// @param image is a picture object reference @see noos::object::picture
+    /// @warning For this service, the face of the image has to be already cropped.
+    ///          Otherwise, the result will be random.
     face_expression(noos::object::picture image);
 
-    /// @brief empty ctor used by vision batch
+    /// @brief Empty ctor used by vision_batch
     face_expression();
 };
 
 /**
  * @struct qr_recognition
- * @brief service request to detect QR codes
+ * @brief Service request to detect QR codes
  * @version 0.7.0
  * @note data type passed back is `std::vector<noos::object::qr_code>`
  */
@@ -70,16 +74,17 @@ struct qr_recognition
     using callback = std::function<void(std::vector<noos::object::qr_code>)>;
     static const std::string uri;
 
-    /// @param image is a picture object
+    /// @brief Constructor taking an image
+    /// @param image is a picture object reference @see noos::object::picture
     qr_recognition(noos::object::picture image);
 
-    /// @brief empty ctor used by vision batch
+    /// @brief Empty ctor used by vision_batch
     qr_recognition();
 };
 
 /**
  * @struct face_recognition
- * @brief recognise faces
+ * @brief Service request to recognise a person from a face picture
  * @version 0.8.0
  * @date 13.09.2017
  * @note data type passed back is `std::vector<noos::object::person>`
@@ -92,10 +97,12 @@ struct face_recognition
     using callback = std::function<void(std::vector<noos::object::person>)>;
     static const std::string uri;
 
-    /// @param image is a picture object
+    /// @brief Constructor taking an image
+    /// @param image is a picture object reference @see noos::object::picture
+    /// @warning the face mustn't be cropped. The platform will do it automatically.
     face_recognition(noos::object::picture image);
 
-    /// @brief empty ctor used by vision batch
+    /// @brief Empty ctor used by vision_batch
     face_recognition();
 };
 }

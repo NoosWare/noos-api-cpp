@@ -6,14 +6,14 @@
 #include <string>
 #include "includes.ihh"
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @struct platform
  * @version 0.7.2
  * @date 19 December 2016
  * @author Alex Giokas <a.giokas@ortelio.co.uk>
- * @brief data of the platform where 
+ * @brief Data of the platform where 
  *        you are going to connect
  * @param address is the IP of the platform
  * @param port is the port used in the platform
@@ -28,26 +28,19 @@ struct platform
    std::string user;
    std::string protocol;
 
-   /// @brief deserialise a json to build the platform
+   /// @brief Deserialise a json to build the platform
    platform operator()(json);
 
-   /// @brief read a file with a json to build the platform
+   /// @brief Read a file with a json to build the platform
    platform operator()(std::string filename);
 };
 
 /**
- *  @brief default platform where to connect
+ *  @brief Default platform where to connect
  *  @version 0.7.3
  *  @date 05.07.2017
  */
 const platform default_node = {"demo.noos.cloud", "9001", "test_token", "test"};
-
-/**
- *  @brief european platform
- *  @version 0.7.3
- *  @date 05.07.2017
- */
-const platform eu_node = {"localhost", "9001", "test_token", "test"};
 
 }
 }

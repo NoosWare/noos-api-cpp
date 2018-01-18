@@ -6,11 +6,11 @@
 #include "includes.ihh"
 #include "face.hpp"
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @struct person
- * @brief describes a face coordinate,
+ * @brief Describes a face coordinate,
  *        the label and the confidence of 
  *        the result
  * @version 0.8.0
@@ -18,18 +18,19 @@ namespace object {
  */
 struct person
 {
-    /// @brief rectangle which contains the face
+    /// @brief Rectangle which contains the face
     face face_rect;
-    /// @brief confidence of the result
+    /// @brief Confidence of the result
     float confidence;
-    /// @brief name
+    /// @brief Name
     std::string name;
-    /// @brief label
+    /// @brief Label number
     int label;
 
     /// @brief Constructor using `json for modern C++`
     person(const json::const_iterator & face_it);
    
+    /// @brief Converts the data to a json format
     /// @return json object
     json::object_t to_json() const;
 

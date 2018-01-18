@@ -7,7 +7,7 @@
 #include <boost/asio.hpp>
 #include <noos/cloud/asio/asio_handler.hpp>
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class asio_http
@@ -24,11 +24,11 @@ class asio_http
 {
 public:
     /**
- 	 * @brief constructor
-	 * @brief `cloud_function` is the virtual `json_parser::deserialize` receiving the data
-	 * @brief `error_function` is the handler which may receive the errors
-	 * @brief `io_service` is the ASIO service controller
-	 * @brief `request` is a stream buffer containing the request
+ 	 * @brief Constructor
+	 * @param cloud_function is the virtual `json_parser::deserialize` receiving the data
+	 * @param error_function is the handler which may receive the errors
+	 * @param io_service is the ASIO service controller
+	 * @param request is a stream buffer containing the request
 	 */
     asio_http(
                 std::function<void(std::string)> cloud_callback,
@@ -39,7 +39,7 @@ public:
              );
 
 	/**
-	 * @brief begin connection
+	 * @brief Begin connection
 	 * @param query defines the URL/URI
 	 * @param resolver resolves the URL/URI address
      * @param io_service is the queue on which jobs are scheduled
@@ -51,7 +51,7 @@ public:
               );
 
 	/**
-	 * @brief send data in an existing connection
+	 * @brief Send data in an existing connection
 	 * @param query defines the URL/URI
 	 * @param resolver resolves the URL/URI address
      * @param io_service is the queue on which jobs are scheduled
@@ -63,13 +63,13 @@ public:
                 boost::asio::streambuf & request
              );
 
-    /// @brief shutdown connection
+    /// @brief Shutdown connection
     void shutdown(boost::system::error_code);
 
-    /// @brie stop timeout timer
+    /// @brie Stop timeout timer
     void stop_timeout();
 
-    /// @return if socket is connected
+    /// @return If socket is connected
     bool is_connected() const;
 
 private:

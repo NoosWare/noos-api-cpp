@@ -8,8 +8,8 @@
 namespace noos {
 namespace cloud {
 /**
- * @brief deserialize a json string to noos::object::*
- * this struct uses template specialisation for each service_type and return_type pair
+ * @brief Deserialize a json string to the `data_type` specific of every class
+ * @note this struct uses template specialisation for each service_type and return_type pair
  * the template parameter `service_type` is a cloud class
  * the template parameter `return_type` is the data (object) returned
  */

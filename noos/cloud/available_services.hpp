@@ -10,7 +10,7 @@ namespace noos {
 namespace cloud {
 /**
  * @class available_services
- * @brief requests available services from platform
+ * @brief Requests available services from platform
  * @version 0.8.0
  * @note data type passed back is `std::vector<std::string>`
  */
@@ -22,7 +22,7 @@ public:
     using callback = std::function<void(std::vector<std::string>)>;
     static const std::string uri;
 
-    /// @brief construct without any special parameters
+    /// @brief Construct without any special parameters
     available_services();
 };
 }

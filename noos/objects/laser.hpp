@@ -6,11 +6,11 @@
 #include "includes.ihh"
 #include "noos/objects/pose.hpp"
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @struct laser
- * @brief describes a laser scan data 
+ * @brief Describes a laser scan data 
  * @version 0.7.3
  * @date 27 June 2017
  */
@@ -36,6 +36,7 @@ struct laser
     /// @brief Constructor
     laser() = default;
 
+    /// @brief Converts the data to a json format
     /// @return json object
     json::object_t to_json() const;
 

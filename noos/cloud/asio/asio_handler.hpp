@@ -12,7 +12,7 @@ typedef boost::system::error_code error_code;
 typedef boost::asio::ip::tcp::resolver resolver;
 
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class asio_handler
@@ -29,7 +29,7 @@ class asio_handler
 {
 public:
     /**
-     * @brief construct by callbacks and socket T pointer 
+     * @brief Construct by callbacks and socket T pointer 
      * @param cloud_function will receive the platform JSON reply
      * @param error_function will receive any asio errors
      * @param socket is the actual type T socket pointer
@@ -37,33 +37,37 @@ public:
     asio_handler(const bool keep_alive,
                  std::function<void(error_code)> error_callback);
 
-    /// @brief set socket pointer
+    /// @brief Set socket pointer
     void set_socket(const std::shared_ptr<socket_type> socket);
 	    
     /** 
-     * @brief write the cloud request to the socket
+     * @brief Write the cloud request to the socket
      * @param err is propagated from boost asio
+     * @param bytes is the bytes transferred 
      */
     void write_request(const boost::system::error_code & err,
                        const std::size_t bytes);
 
     /** 
-     * @brief read first HTTP line and check for a 200 response
+     * @brief Read first HTTP line and check for a 200 response
      * @param err is propagated from boost asio
+     * @param bytes is the bytes transferred 
      */
     void read_status_line(const boost::system::error_code & err,
                           const std::size_t bytes);
     
     /** 
-     * @brief read HTTP headers and validate
+     * @brief Read HTTP headers and validate
      * @param err is propagated from boost asio
+     * @param bytes is the bytes transferred 
      */
     void read_headers(const boost::system::error_code & err,
                       const std::size_t bytes);
 
     /** 
-     * @brief strip the header and read the POST data
+     * @brief Strip the header and read the POST data
      * @param err is propagated from boost asio
+     * @param bytes is the bytes transferred 
      */
     void read_content(
                       const boost::system::error_code & err,
@@ -71,7 +75,7 @@ public:
                      );
 
     /**
-     * @brief close socket and cleanup members
+     * @brief Close socket and cleanup members
      * @param err is propagated from boost asio
      */
     void end(const boost::system::error_code & err);

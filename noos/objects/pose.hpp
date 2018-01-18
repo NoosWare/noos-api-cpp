@@ -10,35 +10,36 @@ namespace noos {
 namespace object {
 /**
  * @struct pose
- * @brief encapsulates position and orientation
+ * @brief Encapsulates position(x, y, z) and orientation(roll, pitch, yaw)
  * @version 0.7.3
  * @date 12.07.2017
  */
 template <class value_type>
 struct pose
 {
-    ///position
+    ///Position
     point<value_type> coordinates;
-    ///orientation
+    ///Orientation
 	orientation<value_type> angles;
 
-    /// @brief default constructor
+    /// @brief Default constructor
     pose() = default;
 
-    /// @brief constructor taking a point and an orientation
+    /// @brief Constructor taking a point and an orientation
     pose(point<value_type> coordinates,
          orientation<value_type> angles);
 
     /// @brief Construct using library "json for modern c++"
     pose(const json::const_iterator & position);
    
+    /// @brief Converts the data to a json format
     /// @return a JSON object
     json::object_t to_json() const;
    
     /// @brief Equality operator
     bool operator==(const noos::object::pose<value_type> & rhs) const;
 
-    /// @brief overload operator
+    /// @brief Overload operator
     friend std::ostream& operator<<(std::ostream& out, 
                                     const noos::object::pose<value_type>& pose3d)
     {

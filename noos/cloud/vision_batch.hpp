@@ -9,7 +9,7 @@
 namespace noos {
 namespace cloud {
 /**
- * @brief tied is a convenience pair struct for object + functors used by `vision_batch`
+ * @brief Tied is a convenience pair struct for object + functors used by `vision_batch`
  * @struct tied
  * @version 0.8.0
  * @date 21.09.2017
@@ -21,9 +21,9 @@ struct tied
     typedef typename cloud_type::callback callback;
     cloud_type object;
     callback functor;
-    /// @brief constructor requires only the functor
+    /// @brief Constructor requires only the functor
     tied(callback functor);
-    /// @brief constructor using the callback and 
+    /// @brief Constructor using the callback and 
     ///        the object
     tied(callback functor, cloud_type object);
 };
@@ -34,7 +34,7 @@ tied<cloud_type> make_tie(typename cloud_type::callback functor);
 
 /**
  * @brief vision_batch
- * @note creates a call with multiple vision services
+ * @note Creates a call with multiple vision services for the same image
  * @version 0.8.0
  * @date 21.09.2017
  * @author Maria Ramos <m.ramos@ortelio.co.uk>
@@ -50,14 +50,14 @@ public:
     using callback = std::function<void(std::string)>;
     typedef typename vision_batch<ties...>::data_type data_types;
     /**
-     * @brief construct a vision_batch using a list of `tied` wrappers
-     * @param image is a noos::object::picture 
-     * @note args will be called in a sequential manner
+     * @brief Construct a vision_batch using a list of `tied` wrappers
+     * @param image is a noos::object::picture  @see noos::object::picture
+     * @note `args` will be called in a sequential manner
      */
     vision_batch(noos::object::picture image,
                  ties... args);
     /** 
-     * @brief process the JSON reply and delegate to services
+     * @brief Process the JSON reply and delegate to services
      * This method becomes the specialisation of `deserialize<vision_batch<...>>`,
      * @note this is the callback for `callable` and calls the ties functors
      * using a fold expression and tuple unpacking

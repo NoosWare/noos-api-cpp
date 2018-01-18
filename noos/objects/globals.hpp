@@ -1,12 +1,12 @@
 #ifndef NOOS_OBJECTS_GLOBALS
 #define NOOS_OBJECTS_GLOBALS
 namespace noos {
-/// @brief type-defined namespace
+/// @brief Type-defined namespace
 namespace types {    
-/// @brief clarification 
+/// @brief Clarification 
 typedef char byte;
 
-/// @brief audio sources allowed in speech classes
+/// @brief Audio sources allowed in speech classes
 enum audio_source 
 { 
     nao_ogg = 0, 

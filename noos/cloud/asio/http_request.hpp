@@ -9,30 +9,30 @@
 #include <noos/cloud/asio/http_post.hpp>
 #include <noos/cloud/asio/platform.hpp>
 namespace noos {
-/// @brief common cloud namespace
+/// @brief Common cloud namespace
 namespace cloud {
 /**
  * @class http_request
- * @brief nooser for the classes `http_header` &`http_post` used for cloud requests
+ * @brief Nooser for the classes `http_header` & `http_post` used for cloud requests
  * @version 0.7.3
  * @date 12 August 2016
  */
 class http_request 
 {
 public:
-    /// @brief construct a cloud HTTP request (multipart/form-data)
+    /// @brief Construct a cloud HTTP request (multipart/form-data)
     http_request(const std::string uri);
 
-    /// @brief construct a cloud HTTP request (multipart/form-data)
+    /// @brief Construct a cloud HTTP request (multipart/form-data)
     ///        with keep_alive param
     http_request(const std::string uri,
                  bool keep_alive);
 
-    /// @brief copy constructor
+    /// @brief Copy constructor
     http_request(const http_request & arg);
 
     /**
-     * @brief fill the socket streambuf with the request header and post data
+     * @brief Fill the socket streambuf with the request header and post data
      * @param request is a reference to the socket streambuf being modified
      * @param info is the platform endpoint (address, port, etc)
      * @note this method will modify the header by setting the HOST, PORT and TOKEN
@@ -43,27 +43,27 @@ public:
                       noos::cloud::platform info
                     );
 
-    /// @brief add multiple content to the post with
+    /// @brief Add multiple content to the post with
     ///        HTTP Protocol 
     template <typename... Args>
     void add_content(Args... args);
 
-    /// @brief close this request properly
-    /// @warning a non-closed HTTP request is an illegal one!
+    /// @brief Close this request properly
+    /// @warning A non-closed HTTP request is an illegal one!
     void close();
 
-    /// @brief translate noos::cloud::platform parameters
+    /// @brief Translate noos::cloud::platform parameters
     ///        into a string with HTTP Protocol format
     std::string to_string(noos::cloud::platform info) const;
 
-    /// @brief translate post data into a string
+    /// @brief Translate post data into a string
     ///        with HTTP Protocol format    
     std::string to_post() const;
 
-    /// @brief compare if two http_request are equal
+    /// @brief Compare if two http_request are equal
     bool operator==(const http_request & rhs) const;
 
-    /// @brief make this a multipart-form, by creating
+    /// @brief Make this a multipart-form, by creating
     /// the correct header fields, boundaries and multipart entries
     void make_multipart_form();
 

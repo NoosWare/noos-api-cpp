@@ -4,21 +4,22 @@
 #include <noos/objects/globals.hpp>
 
 namespace noos {
-/// @brief common object namespace
+/// @brief Common object namespace
 namespace object {
 /**
  * @class config_file
- * @brief class which convert a file into a std::string
+ * @brief Class which convert a file into a std::string.
+ *        Used for SLAM services.
  * @version 0.7.4
  * @date 1.09.2017
  */
 class config_file
 {
 public:
-    /// @brief Construct from a file on disk
+    /// @brief Construct from a file 
     config_file(const std::string filepath);
 
-    /// @brief get data of the file
+    /// @brief Get data of the file
     std::string get_data();
 
 private:

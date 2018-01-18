@@ -18,7 +18,7 @@ namespace cloud {
 
 /**
  * @class callable
- * @brief a class which wraps around a cloud call, its socket, buffer and callback
+ * @brief A class which wraps around a cloud call, its socket, buffer and callback
  * @version 0.7.3
  * @date 8 June 2017
  * @author Alex Giokas <a.gkiokas@ortelio.co.uk>
@@ -33,30 +33,24 @@ public:
     using callback = typename cloud_type::callback;
     using cloud_class = cloud_type;
 
-    /// the actual `cloud_type` object
+    /// The actual `cloud_type` object
     /// you may change this between calls
     cloud_type object;
 
-    /// @brief no empty constructor allowed
-    callable() = delete;
-    
-    /// @warning you cannot copy a callable
-    callable(callable const &) = delete;
-
-	/// @warning you cannot assign a callable
-    callable & operator=(const callable &) = delete;
-    
-    /// @warning move assignment
-    callable & operator=(callable &&) = delete;
-
-    /// @brief construct a callable using a noos::cloud::platform object
+    /**
+     * @brief Construct a callable using a functor and a platform object
+     * @param functor is the callback receiving the reply
+     * @param platform is a noos::cloud::platform object 
+     * @see `cloud_type::callback` for callback signature
+     * @warning No empty constructor and copies of the object are allowed
+     */
     callable(callback functor,
              platform = default_node);
 
     /**
-     * @brief construct a callable object wrapper
-     * @param `args` are the `cloud_type` constructor arguments
-     * @param `functor` is the callback receiving the reply
+     * @brief Construct a callable object wrapper
+     * @param args are the `cloud_type` constructor arguments
+     * @param functor is the callback receiving the reply
      * @see `cloud_type::callback` for callback signature
      */
     template <typename... parameters,
@@ -65,25 +59,38 @@ public:
              platform info,
              parameters... args);
 
-    /// @brief overloaded constructor for `vision_batch` template `cloud_type`
+    /// @brief Overloaded constructor for `vision_batch` template `cloud_type`
     /// @warning a `vision_batch` does not require a callback!
     template <typename... parameters>
     callable(vision_batch<parameters...> arg,
              platform = default_node);
 
-    /// @brief convenience constructor for `vision_batch` classes will construct the object internally
+    /// @brief Convenience constructor for `vision_batch` classes will construct the object internally
     template <typename... parameters,
               typename = typename std::enable_if<std::is_same<cloud_type,cloud_batch>::value,bool>>
     callable(const noos::object::picture & image,
              platform info,
              parameters... args);
 
-    /// @brief send the cloud_type data once to the cloud endpoint
-    /// @note the default 2 second timeout value should suffice
+    /// @brief Send the cloud_type data once to the cloud endpoint
+    /// @note The default 2 second timeout value should suffice
     void send(unsigned int timeout = 2);
-    /// @brief stop calls and shutdown socket
+    /// @brief Stop calls and shutdown socket
     void stop();
 protected:
+
+    /// @brief No empty constructor allowed
+    callable() = delete;
+    
+    /// @warning You cannot copy a callable
+    callable(callable const &) = delete;
+
+	/// @warning You cannot assign a callable
+    callable & operator=(const callable &) = delete;
+    
+    /// @warning Move assignment
+    callable & operator=(callable &&) = delete;
+
     /// @brief set the parameter socket - used by `noos::cloud::node`
     void socket(std::function<void(std::string)> cloud_function);
     /// @brief the callback functor - hidden from others
