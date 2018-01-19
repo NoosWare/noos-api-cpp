@@ -3,7 +3,7 @@
 # 
 language: g++ 
 sudo: required
-dist: xenial
+dist: trusty
 compiler:
     - g++
 os:
@@ -14,10 +14,11 @@ branches:
     - master
 
 before_install: 
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     - sudo apt-get update -y
-    - sudo apt-get install gcc g++-6 libboost-all-dev cmake git -y
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 10
-    - sudo update-alternatives --set g++ /usr/bin/g++-6
+    - sudo apt-get install gcc-4.9 g++-4.9 libboost1.55-all-dev cmake git -y
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
+    - sudo update-alternatives --set g++ /usr/bin/g++-4.9
 
 install: true
 
