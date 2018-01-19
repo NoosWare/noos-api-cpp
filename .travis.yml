@@ -14,13 +14,10 @@ branches:
     - master
 
 before_install: 
-    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     - sudo apt-get update -y
-    - sudo apt-get install gcc-5 g++-5 libboost1.58-all-dev cmake git -y
-    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 10
-    - sudo update-alternatives --set gcc /usr/bin/gcc-5
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 10
-    - sudo update-alternatives --set g++ /usr/bin/g++-5
+    - sudo apt-get install gcc g++-6 libboost-all-dev cmake git -y
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 10
+    - sudo update-alternatives --set g++ /usr/bin/g++-6
 
 install: true
 
