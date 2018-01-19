@@ -63,14 +63,14 @@ _NOTE_: current version 0.8.2 is **under developlment**!
 The following dependencies are **required** to build the C++ API:
 
 * gcc/g++ >= 4.9
-* boost >= 1.49
+* boost >= 1.58
 * cmake >= 2.8
 * libssl-dev >= 1.0
 
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
 ```shell
-sudo apt-get install cmake gcc-4.9 libboost-all-dev libssl-dev
+sudo apt-get install cmake gcc g++ libboost-all-dev libssl-dev
 ```
 
 ## CMake Options
