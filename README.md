@@ -13,7 +13,7 @@
 - [Documentation](#documentation)
 - [Help](#help)
 
-[![Build Status](https://travis-ci.org/ortelio/noos-api-cpp.svg?branch=master)](https://travis-ci.org/ortelio/noos-api-cpp)
+[![Build Status](https://travis-ci.org/NoosWare/noos-api-cpp.svg?branch=master)](https://travis-ci.org/ortelio/noos-api-cpp)
 
 The NOOS API for C++ uses C++14 features and allows your apps to access the NOOS platform.
 It is portable on Linuxes and relies on cross-platform libraries: 
