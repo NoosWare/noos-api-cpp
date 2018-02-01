@@ -13,7 +13,7 @@
 - [Documentation](#documentation)
 - [Help](#help)
 
-[![Build Status](https://travis-ci.org/NoosWare/noos-api-cpp.svg?branch=master)](https://travis-ci.org/ortelio/noos-api-cpp)
+[![Build Status](https://travis-ci.org/NoosWare/noos-api-cpp.svg?branch=master)](https://travis-ci.org/NoosWare/noos-api-cpp)
 
 The NOOS API for C++ uses C++14 features and allows your apps to access the NOOS platform.
 It is portable on Linuxes and relies on cross-platform libraries: 
@@ -178,7 +178,7 @@ For further details please see the advanced tutorials.
 
 We have created a repository with ROS tutorials and examples, ranging from simple use to advanced projects.
 
-* [noos_ros_tutorials](https://github.com/ortelio/noos_ros_tutorials)
+* [noos_ros_tutorials](https://github.com/NoosWare/noos_ros_tutorials)
 
 ## Documentation
 
