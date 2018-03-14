@@ -36,7 +36,7 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/noos/misc/json.hpp")
     message(STATUS "${BoldWhite}header `json.hpp` already exists, not downloading${ColourReset}")
 else()
     set(wget_command "wget")
-    set(wget_arg "https://raw.githubusercontent.com/nlohmann/json/master/src/json.hpp")
+    set(wget_arg "https://raw.githubusercontent.com/nlohmann/json/develop/single_include/nlohmann/json.hpp")
     message(STATUS "${BoldGreen}fetching json.hpp header${ColourReset}")
     execute_process(COMMAND ${wget_command} ${wget_arg}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/noos/misc/)
