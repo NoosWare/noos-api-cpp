@@ -23,6 +23,7 @@ struct upload_slam_config_file;
 struct get_map;
 struct face_recognition;
 struct path_planning;
+struct chatbot;
 
 // available services
 template<>
@@ -372,5 +373,18 @@ std::deque<noos::object::point2d<float>>
     return points;
 }
 
+// chatbot
+template <>
+std::string deserialize<chatbot,
+                         std::string>:: operator()(std::string json)
+{
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+           return json_f["reply"];
+        }
+    }
+    return json_f["error"];
+}
 }
 }

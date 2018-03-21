@@ -20,6 +20,7 @@ function(build_examples)
                   face_recognition.cpp
                   class.cpp
                   custom_error_handler.cpp
+                  chatbot.cpp
                  )
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "${BoldGreen}Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}` ${ColourReset}")

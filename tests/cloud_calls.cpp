@@ -663,3 +663,26 @@ TEST_CASE("Test navigation services", "[navigation]")
         REQUIRE(path.at(1).y == 3);
     }
 }
+
+/**
+ * \brief check the navigation classes
+ * A callback is done to check that the desearilization
+ * is correct comparing with a json file done manually 
+ */
+TEST_CASE("Test chat services", "[chat]")
+{
+    SECTION("Chatbot") {
+        noos::cloud::chatbot new_chat("Hello");
+        REQUIRE(new_chat.uri == "chat");
+        REQUIRE(new_chat.is_single_callable());
+        auto j1 = R"(
+                    {
+                        "reply": "Hello",
+                        "error" : ""
+                    })"_json;
+        std::string j1_string = j1.dump(-1);
+        auto success = noos::cloud::deserialize<noos::cloud::chatbot,
+                                                typename noos::cloud::chatbot::data_type>()(j1_string);
+        REQUIRE(success == "Hello");
+    }
+}
