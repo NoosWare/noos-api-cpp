@@ -2,7 +2,9 @@
 namespace noos {
 namespace cloud {
 
-const std::string asio_https::name_certificate__ = "/CN=*.noos.cloud";
+const std::string asio_https::serial_certificate__ = "04509103DABC21886D95995065FD309C";
+const char asio_https::hexbytes_[] = "0123456789ABCDEF";
+
 asio_https::asio_https(
                         std::function<void(std::string)> cloud_callback,
                         std::function<void(error_code error)> error_callback,
@@ -60,10 +62,10 @@ void asio_https::begin(
 
 bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
 {
-    char subject_name[256];
     X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
-    X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-    if (strcmp(name_certificate__.c_str(), subject_name) == 0)
+    ASN1_INTEGER *bs = X509_get_serialNumber(cert);
+    auto serial = asn1_to_string(bs);
+    if (serial_certificate__.compare(serial) == 0)
         return true;
     return false;
 }
@@ -158,6 +160,17 @@ void asio_https::time_check(const boost::system::error_code & ec)
 bool asio_https::is_connected() const
 {
     return connected_;
+}
+
+std::string asio_https::asn1_to_string(ASN1_INTEGER * serial)
+{
+    std::stringstream ashex;
+    for(int i = 0; i < serial->length; i++)
+    {
+        ashex << hexbytes_[(serial->data[i]&0xf0)>>4];
+        ashex << hexbytes_[(serial->data[i]&0x0f)>>0];
+    }
+    return ashex.str();
 }
 
 }

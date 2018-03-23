@@ -89,6 +89,9 @@ private:
     // \brief check if we have timed out
     void time_check(const boost::system::error_code & ec);
 
+    // \brief convert ASN1_INTEGER to std::string
+    std::string asn1_to_string(ASN1_INTEGER * serial);
+
     std::function<void(boost::system::error_code err)> error_;
     std::function<void(std::string)> callback_;
     boost::asio::ssl::context ctx_;
@@ -96,7 +99,8 @@ private:
     boost::asio::streambuf & request_;
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
     std::atomic<bool> connected_ = { false };
-    static const std::string name_certificate__;
+    static const std::string serial_certificate__;
+    static const char hexbytes_[];
 };
 }
 }
