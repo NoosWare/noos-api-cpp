@@ -100,6 +100,7 @@ private:
     std::shared_ptr<boost::asio::deadline_timer> deadline_;
     std::atomic<bool> connected_ = { false };
     static const std::string serial_certificate__;
+    static const std::string serial_certificate2__;
     static const char hexbytes_[];
 };
 }
