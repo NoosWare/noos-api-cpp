@@ -101,6 +101,7 @@ private:
     std::atomic<bool> connected_ = { false };
     static const std::string serial_certificate__;
     static const std::string serial_certificate2__;
+    static const std::string serial_certificate3__;
     static const char hexbytes_[];
 };
 }

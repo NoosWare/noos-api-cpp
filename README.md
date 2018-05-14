@@ -54,9 +54,7 @@ all you need to do is keep a callable object active (but please don't spam too f
 
 Non-continuous calls (e.g., a one-off query) can be controlled by the lifetime of the callble object.
 
-_WARNING_: The communication between the platform and the API is with TLS, so you will need your own
-SSL certificate to use it.
-_NOTE_: current version 0.8.2 is **under developlment**!
+_NOTE_: current version 0.9.1 is **under developlment**!
 
 ## Dependencies
 
