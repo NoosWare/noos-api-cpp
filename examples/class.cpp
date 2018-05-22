@@ -8,6 +8,18 @@
 using namespace noos::cloud;
 
 /*
+ * Struct to configure the platform parameters
+ * IMPORTANT: Modify the user and password before run 
+ * the example
+ */
+struct get_platform
+{
+    platform operator()() {
+        platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
+        return node;
+    }
+};
+/*
  * Class where multiple inheritance is used to have
  * different callable objects
  */
@@ -17,8 +29,8 @@ class multiple_inheritance
 {
 public:
     multiple_inheritance(noos::object::picture pic)
-    : callable<face_detection, false>([this] (const auto faces) { this->callback_face(faces);}, default_node, pic),
-      callable<human_detection, false>([this] (const auto humans) { this->callback_human(humans);}, default_node, pic)
+    : callable<face_detection, false>([this] (const auto faces) { this->callback_face(faces);}, get_platform()(), pic),
+      callable<human_detection, false>([this] (const auto humans) { this->callback_human(humans);}, get_platform()(), pic)
     {}
 
     void callback_face(std::vector<noos::object::face> faces) {
@@ -34,7 +46,6 @@ public:
         callable<face_detection, false>::send();
         callable<human_detection, false>::send();
     }
-
 };
 
 /*
@@ -45,9 +56,9 @@ class composition
 {
 public:
     composition(noos::object::picture pic)
-    : query__([this] (const auto faces) { this->callback(faces);}, default_node, pic),
+    : query__([this] (const auto faces) { this->callback(faces);}, get_platform()(), pic),
       human_query__([this] (const auto humans) { std::cout << "Humans: " << humans.size() << std::endl;}, 
-                    default_node, pic)
+                    get_platform()(), pic)
     {}
 
     void callback(std::vector<noos::object::face> faces) {
@@ -76,7 +87,7 @@ class no_object_ctr
 public:
     no_object_ctr()
     : query__(std::bind(&no_object_ctr::callback, this, std::placeholders::_1), 
-              default_node)
+              get_platform()())
     {}
 
     void callback(std::vector<noos::object::person> people) {

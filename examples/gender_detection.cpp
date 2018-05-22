@@ -20,12 +20,18 @@ int main()
             std::cout << pair.first << " " << pair.second << std::endl;
         }
     };
+    //
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We make a callable object using `gender_detection` as the template parameter
     // and construct the callable data in one go.
     // @see noos::cloud::gender_detection
     // 
-    callable<gender_detection,false> query(callback, default_node, pic);
+    callable<gender_detection,false> query(callback, node, pic);
     query.send();
     return 0;
 }

@@ -20,6 +20,11 @@ int main()
             std::cout << name << std::endl;
          }
      };
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We create a callable object and send the information to the platform
     // with a timeout of 2 seconds.
@@ -28,7 +33,7 @@ int main()
     //
     // For more information @see noos::cloud::callable
     // 
-    callable<available_services,false> query(callback);
+    callable<available_services,false> query(callback, node);
     query.send(2);
     return 0;
 }

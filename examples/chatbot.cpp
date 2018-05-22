@@ -12,6 +12,11 @@ int main()
     auto callback = [](std::string reply) {
          std::cout << "Reply: " << reply << std::endl;
      };
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We create a callable object and send the information to the platform
     // with a timeout of 2 seconds.
@@ -21,7 +26,7 @@ int main()
     // For more information @see noos::cloud::callable
     // 
     std::string greet = "hello";
-    callable<chatbot,false> query(callback, default_node, greet);
+    callable<chatbot,false> query(callback, node, greet);
     query.send(2);
     return 0;
 }

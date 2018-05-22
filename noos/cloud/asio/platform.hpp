@@ -35,13 +35,6 @@ struct platform
    platform operator()(std::string filename);
 };
 
-/**
- *  @brief Default platform where to connect
- *  @version 0.7.3
- *  @date 05.07.2017
- */
-const platform default_node = {"demo.noos.cloud", "9001", "test_token", "test"};
-
 }
 }
 #endif

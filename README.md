@@ -1,4 +1,4 @@
-# NOOS API [0.9.1]
+# NOOS API [0.9.2]
 -----------------------
 
 ## Contents
@@ -54,7 +54,7 @@ all you need to do is keep a callable object active (but please don't spam too f
 
 Non-continuous calls (e.g., a one-off query) can be controlled by the lifetime of the callble object.
 
-_NOTE_: current version 0.9.1 is **under developlment**!
+_NOTE_: current version 0.9.2 is **under development**!
 
 ## Dependencies
 
@@ -63,7 +63,7 @@ The following dependencies are **required** to build the C++ API:
 * gcc/g++ >= 4.9
 * boost >= 1.58
 * cmake >= 2.8
-* libssl-dev >= 1.0
+* libssl-dev >= 1.0.1
 
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
@@ -155,8 +155,12 @@ will be built under `/noos-api/cpp/build/examples/`.
 
 You can run them individually, or use them as templates.
 
-_WARNING_: The communication between the platform and the API is with TLS, so you will need your own
-SSL certificate to use it. Place the certificate in `/build/examples/` and call it `cert.pem`.
+**WARNING**: Before run them you should be registered in the [Noos Cloud](https://noos.cloud/) and 
+change the user and the password in the following line of every example:
+
+```
+platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
+```
 
 ## Old Compilers
 

@@ -28,13 +28,19 @@ int main()
             std::cout << "didn't recognise anyone!" << std::endl;
         }
     };
+    //
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We make a callable object of face_detection class 
     // and send the information to the platform to detect faces 
     // in the file.
     // For more information @see noos::cloud::face_detection
     // 
-    callable<face_recognition,false> query(callback, default_node, pic);
+    callable<face_recognition,false> query(callback, node, pic);
     query.send();
     return 0;
 }

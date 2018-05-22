@@ -20,12 +20,18 @@ int main()
             std::cout << code.message << std::endl;
         }
     };
+    //
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We make a callable object of qr_recognition class to detect qr_codes in the file
     // and we send the information to the platform.
     // For more information @see noos::cloud::qr_recognition
     // 
-    callable<qr_recognition,false> query(callback, default_node, pic);
+    callable<qr_recognition,false> query(callback, node, pic);
     query.send();
     return 0;
 } 

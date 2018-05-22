@@ -10,6 +10,12 @@ int main()
     // A picture with humans
     //
     auto pic = noos::object::picture("data/object_classes_picture_7.jpg");
+    //
+    // We need to create a platform object with our user and password for using 
+    // the NOOS Cloud 
+    // IMPORTANT: You have to change your user and password. The example doesn't work
+    //
+    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
     // 
     // We make a callable object of human_detection class and we send
     // the information to the platform to detect humans in the file.
@@ -21,7 +27,7 @@ int main()
 	callable<human_detection,false> 
 	query([&](std::vector<noos::object::human> humans) {
                     std::cout << "Found " << humans.size() << " humans!" << std::endl;
-          }, default_node, pic);
+          }, node, pic);
     query.send();
 
     return 0;

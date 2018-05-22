@@ -45,7 +45,7 @@ public:
      * @warning No empty constructor and copies of the object are allowed
      */
     callable(callback functor,
-             platform = default_node);
+             platform);
 
     /**
      * @brief Construct a callable object wrapper
@@ -63,7 +63,7 @@ public:
     /// @warning a `vision_batch` does not require a callback!
     template <typename... parameters>
     callable(vision_batch<parameters...> arg,
-             platform = default_node);
+             platform);
 
     /// @brief Convenience constructor for `vision_batch` classes will construct the object internally
     template <typename... parameters,
@@ -113,12 +113,15 @@ template <class cloud_type,
                                                       cloud_batch>::value, bool>>
 callable<cloud_type,keep_alive,socket_type,error_handle> 
     call(typename cloud_type::callback functor,
+         const std::string user,
+         const std::string pass,
          args... params)
 {
+    platform node = {"demo.noos.cloud", "9001", pass, user};
     return callable<cloud_type,
                     keep_alive,
                     socket_type,
-                    error_handle>(functor, default_node, params...);
+                    error_handle>(functor, node, params...);
 }
 
 #include "callable.tpl"
