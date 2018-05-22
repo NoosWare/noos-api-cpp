@@ -22,6 +22,14 @@ std::string read_json_file(const std::string file)
         throw std::runtime_error("failed to open ifsteam");
     }
 }
+
+struct get_platform
+{
+    noos::cloud::platform operator()() {
+        noos::cloud::platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
+        return node;
+    }
+};
 /**
  * \brief check noos::cloud::callable
  */
@@ -34,7 +42,7 @@ SCENARIO("A service needs to be call")
             REQUIRE(faces.size() == 1);
         };
         THEN("A call can be made") {
-            callable<face_detection,false>callable_obj(callback, default_node, pic);
+            callable<face_detection,false>callable_obj(callback, get_platform()(), pic);
             REQUIRE(callable_obj.object.uri == "face_detection");
         }
     }
@@ -47,7 +55,7 @@ SCENARIO("A service needs to be call")
                                                   tied<face_detection>(face_cb), 
                                                   tied<human_detection>(human_cb));
         THEN("A call can be made") {
-            auto callable_obj = std::make_unique<callable<decltype(batch)>>(batch);
+            auto callable_obj = std::make_unique<callable<decltype(batch)>>(batch, get_platform()());
             REQUIRE(callable_obj);
         }
     }
