@@ -37,7 +37,7 @@ std::vector<std::string>
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
             for (auto it_s : json_f["services"]) {
-                services.push_back(misc::get_json_value<std::string>("name", it_s));
+                services.push_back(it_s);
             }
         }
     }

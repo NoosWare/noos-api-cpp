@@ -71,9 +71,9 @@ TEST_CASE("Test service Available services", "[available_services]")
     noos::cloud::available_services available_serv;
     auto j1 = R"(
               {
-                "services" : [{
-                               "name" : "name"
-                              }],
+                "services" : [
+                               "name" 
+                             ],
                 "error" : ""
               }
               )"_json;

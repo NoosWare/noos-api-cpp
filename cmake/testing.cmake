@@ -11,7 +11,7 @@ function(build_tests)
 			message(STATUS "${BoldWhite}header `catch.hpp` already exists, not downloading.${ColourReset}")
 		else()
 			set(wget_command "wget")
-			set(wget_arg "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp")
+            set(wget_arg "https://raw.githubusercontent.com/catchorg/Catch2/master/single_include/catch2/catch.hpp")
 			message(STATUS "${BoldGreen}fetching catch.hpp single header.${ColourReset}")
 			execute_process(COMMAND ${wget_command} ${wget_arg}
 							WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests/)

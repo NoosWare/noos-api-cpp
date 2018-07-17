@@ -22,7 +22,8 @@ struct chatbot
     using callback = std::function<void(data_type)>;
     static const std::string uri;
     /// @brief Constructor using an std::string with a sentence
-    chatbot(std::string sentence);
+    chatbot(std::string sentence,
+            std::string filename = "");
 
 };
 }
