@@ -22,6 +22,9 @@ struct chatbot
     using callback = std::function<void(data_type)>;
     static const std::string uri;
     /// @brief Constructor using an std::string with a sentence
+    ///        and the filename of the trained file the user
+    ///        requires to use. If it is empty, the default
+    ///        file will be used.
     chatbot(std::string sentence,
             std::string filename = "");
 
