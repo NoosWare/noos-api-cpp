@@ -2,9 +2,8 @@
 namespace noos {
 namespace cloud {
 
-const std::string asio_https::serial_certificate__ = "0D07782A133FC6F9A57296E131FFD179";
-const std::string asio_https::serial_certificate2__ = "04509103DABC21886D95995065FD309C";
-const std::string asio_https::serial_certificate3__ = "033AF1E6A711A9A0BB2864B11D09FAE5";
+const std::string asio_https::serial_certificate__ = "0546FE1823F7E1941DA39FCE14C46173";
+const std::string asio_https::serial_certificate2__ = "04657EB0E039746E962577974568B03B";
 const char asio_https::hexbytes_[] = "0123456789ABCDEF";
 
 asio_https::asio_https(
@@ -69,8 +68,7 @@ bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_c
     auto serial = asn1_to_string(bs);
     //Bundle certificate
     if (serial_certificate__.compare(serial) == 0 ||
-        serial_certificate2__.compare(serial) == 0 ||
-        serial_certificate3__.compare(serial) == 0)
+        serial_certificate2__.compare(serial) == 0)
         return true;
     return false;
 }
