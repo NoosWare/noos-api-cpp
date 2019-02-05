@@ -38,6 +38,9 @@ void asio_https::begin(
                         unsigned int timeout
 					  )
 {
+    if (!deadline_) {
+        throw std::runtime_error("NOOS API: Deadline timer canceled. Use keep_alive = true or create a new callable object"); 
+    }
 	// if using a self-signed certificate the only way to pass verification
 	// is to "install" it locally and use it for comparison
 	socket_->set_verify_mode(boost::asio::ssl::verify_peer);

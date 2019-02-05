@@ -24,16 +24,17 @@ int main()
     // the NOOS Cloud 
     // IMPORTANT: You have to change your user and password. The example doesn't work
     //
-    platform node = {"demo.noos.cloud", "9001", "your_pass", "your_user"};
+    platform node = {"demo.noos.cloud", "9001", "your_password", "your_user"};
     // 
     // We create a callable object and send the information to the platform
     // with a timeout of 2 seconds.
     // We specific this isn't a keep alive connection using `false` as the second
-    // template parameter.
+    // template parameter. 
     //
     // For more information @see noos::cloud::callable
     // 
     callable<available_services,false> query(callback, node);
-    query.send(2);
+    query.send();
+
     return 0;
 }
