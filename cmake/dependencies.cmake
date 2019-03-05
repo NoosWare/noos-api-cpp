@@ -41,3 +41,9 @@ else()
     execute_process(COMMAND ${wget_command} ${wget_arg}
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/noos/misc/)
 endif()
+
+if (${USE_OPENCV})
+    find_package(OpenCV REQUIRED)
+    include_directories(${OpenCV_INCLUDE_DIRS})
+    message(STATUS "${Green}Using OpenCV Version: ${OpenCV_VERSION} ${ColourReset}")    
+endif()
