@@ -10,6 +10,9 @@ qr_code::qr_code(const json::const_iterator & qr_it)
     if (check_component(qr_it, "y")) {
       centre_y = qr_it->find("y")->get<float>();
     }
+    if (check_component(qr_it, "size")) {
+      size = qr_it->find("size")->get<float>();
+    }
     if (check_component(qr_it, "message")) {
       message = qr_it->find("message")->get<std::string>();
     }
@@ -19,6 +22,7 @@ json::object_t qr_code::to_json() const
 {
     json::object_t qr {{"x", centre_x}, 
                        {"y", centre_y},
+                       {"size", size},
                        {"message", message}};
     return qr;
 }
@@ -32,7 +36,7 @@ bool qr_code::check_component(const json::const_iterator & it,
                               std::string component)
 {
     if (it->find(component) == it->end()) {
-        throw std::runtime_error("no " + component + "param in up left point");  
+        throw std::runtime_error("no " + component + " param in qr_code");  
     }
     return true;
 }

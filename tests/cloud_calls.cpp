@@ -311,6 +311,7 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
                     "qrs":[{ 
                             "x": 1, 
                             "y": 2,
+                            "size": 10,
                             "message": "label"
                           }], 
                     "error" : ""
@@ -322,6 +323,7 @@ TEST_CASE("Test services vision recognition", "[vision_recognition]")
         REQUIRE(qr_reply.at(0).message == "label");
         REQUIRE(qr_reply.at(0).centre_x == 1);
         REQUIRE(qr_reply.at(0).centre_y == 2);
+        REQUIRE(qr_reply.at(0).size == 10);
     }
 
     SECTION("Object recognition") {
@@ -435,6 +437,7 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
         REQUIRE(qrs.at(0).message == "label");
         REQUIRE(qrs.at(0).centre_x == 1);
         REQUIRE(qrs.at(0).centre_y == 2);
+        REQUIRE(qrs.at(0).size == 10);
     };
 
     //Class face_detection
@@ -468,6 +471,7 @@ TEST_CASE("Test service vision_batch", "[vision_batch]")
                     "qr_recognition" : { "qrs":[{ 
                                                     "x": 1, 
                                                     "y": 2,
+                                                    "size": 10,
                                                     "message": "label"
                                                }], 
                                          "error" : ""

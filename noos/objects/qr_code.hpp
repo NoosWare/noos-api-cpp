@@ -19,6 +19,8 @@ struct qr_code
     float centre_x;
     /// Coordinate y of the center of the QR position
     float centre_y;
+    /// Size of the QR
+    float size;
     /// Message of the QR found
     std::string message;
 
