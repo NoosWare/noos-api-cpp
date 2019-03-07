@@ -1,4 +1,4 @@
-# NOOS API [0.9.3]
+# NOOS API [0.9.4]
 -----------------------
 
 ## Contents
@@ -65,6 +65,10 @@ The following dependencies are **required** to build the C++ API:
 * cmake >= 2.8
 * libssl-dev >= 1.0.1
 
+Optional:
+
+* OpenCV >= 3.2
+
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
 ```shell
@@ -80,6 +84,7 @@ sudo apt-get install cmake gcc g++ libboost-all-dev libssl-dev
 * `-DBUILD_TESTS=ON`                                (Optional: compile various tests - run with `make test`)
 * `-DBUILD_EXAMPLES=ON`                             (Optional: compile various examples)
 * `-DCMAKE_BUILD_TYPE=Debug`                        (Optional: enable debug symbols)
+* `-DUSE_OPENCV=ON`                                 (Optional: include OpenCV as a dependency)
 * `-DOPEN_NAO=ON`                                   (Optional: compiling on OpenNAO builds binaries for ATOM CPU)
 * `-DCMAKE_INSTALL_PREFIX=/usr`	                    (Optional: specify the library install directory
 * `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`       (Optional: specify OpenSSL root directory)

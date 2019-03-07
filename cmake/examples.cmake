@@ -13,6 +13,7 @@ function(build_examples)
         set (EXAMPLES available_services.cpp
                       age_detection.cpp
                       face_detection.cpp
+                      face_detection_opencv.cpp
                       face_expression.cpp
                       gender_detection.cpp
                       human_detection.cpp
@@ -42,7 +43,7 @@ function(build_examples)
         foreach(ITEM ${EXAMPLES})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
             add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
-            target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
+            target_link_libraries(${TARGET} ${LIBTARGET} ${Noos_DEPENDENCIES} ${CMAKE_THREAD_LIBS_INIT})
             message(STATUS "${Yellow} ${TARGET} ${ColourReset}")
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
             add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})

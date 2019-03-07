@@ -1,6 +1,7 @@
 #ifndef NOOS_MISC
 #define NOOS_MISC
 #include "includes.ihh"
+
 namespace noos {
 /**
  * @brief Common misc helper functions

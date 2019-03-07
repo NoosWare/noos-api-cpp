@@ -51,6 +51,11 @@ include_directories(".")
 add_library(lnoos OBJECT ${SOURCES})
 
 ###
+# Set variable 
+###
+set(HAVE_OPENCV 0) #false by default
+
+###
 # Include all our custom cmake scripts
 ###
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/colours.cmake")
@@ -58,6 +63,11 @@ file(GLOB cmake_includes "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cmake")
 foreach(cmake_inc ${cmake_includes})
     include(${cmake_inc})
 endforeach()
+
+###
+# Set variable 
+###
+add_definitions(-DHAVE_OPENCV=${HAVE_OPENCV})
 
 ###
 #   Static Library - only if asked 
@@ -71,11 +81,7 @@ if (${BUILD_STATIC})
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lnoos>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING})
     set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${NOOS_VERSION_STRING}")
-    if (${USE_OPENCV})
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS} ${OPENCV_LIBRARIES})
-    else()
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
-    endif()
+    target_link_libraries(${LIBTARGET} ${Noos_DEPENDENCIES})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
 	#
@@ -115,11 +121,8 @@ else()
     set(LIBTARGET ${LIBTARGET} noos)
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lnoos>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${NOOS_VERSION_STRING} SOVERSION ${NOOS_VERSION_STRING})
-    if (${USE_OPENCV})
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${OPENCV_LIBRARIES})
-    else()
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-    endif()
+    target_link_libraries(${LIBTARGET} ${Noos_DEPENDENCIES})
+    #target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
     set_target_properties(${LIBTARGET} PROPERTIES INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib")
     message(STATUS "${BoldBlue}Building Shared library: lib${LIBTARGET} ${ColourReset}")
 	#
@@ -153,6 +156,6 @@ endif()
 #
 install_library()
 ###
-# Install rapp-config.cmake
+# Install noos-config.cmake
 #
 install_config()
