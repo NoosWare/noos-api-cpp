@@ -1,3 +1,5 @@
+<img src="https://github.com/NoosWare/List_repositories/blob/master/images/Noos.png" width="200" height="120" />
+
 # NOOS API [0.9.4]
 -----------------------
 
@@ -65,14 +67,18 @@ The following dependencies are **required** to build the C++ API:
 * cmake >= 2.8
 * libssl-dev >= 1.0.1
 
-Optional:
-
-* OpenCV >= 3.2
-
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
 ```shell
 sudo apt-get install cmake gcc g++ libboost-all-dev libssl-dev
+```
+
+Optional:
+
+* OpenCV >= 3.2
+
+```shell
+sudo apt install libopencv-dev
 ```
 
 ## CMake Options
@@ -183,9 +189,15 @@ For further details please see the advanced tutorials.
 
 ## Tutorials
 
-We have created a repository with ROS tutorials and examples, ranging from simple use to advanced projects.
+We have created different repositories of tutorials and examples, ranging from simple use to advanced projects.
 
+* [noos_api_tutorials](https://github.com/NoosWare/noos_api_tutorials)
 * [noos_ros_tutorials](https://github.com/NoosWare/noos_ros_tutorials)
+
+If you want to use the Noos Cloud with other language, like Python or Javascript, you don't have to install this API, just follow these tutorials:
+
+* [Python tutorials](https://github.com/NoosWare/noos-python-tutorials)
+* [Javascript tutorials](https://github.com/NoosWare/noos_javascript_tutorials)
 
 ## Documentation
 
