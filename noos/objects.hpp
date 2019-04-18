@@ -11,3 +11,4 @@
 #include <noos/objects/config_file.hpp>
 #include <noos/objects/person.hpp>
 #include <noos/objects/odometry.hpp>
+#include <noos/objects/object.hpp>

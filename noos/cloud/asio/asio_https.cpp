@@ -70,10 +70,11 @@ bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_c
     ASN1_INTEGER *bs = X509_get_serialNumber(cert);
     auto serial = asn1_to_string(bs);
     //Bundle certificate
-    if (serial_certificate__.compare(serial) == 0 ||
-        serial_certificate2__.compare(serial) == 0)
-        return true;
-    return false;
+    //if (serial_certificate__.compare(serial) == 0 ||
+    //    serial_certificate2__.compare(serial) == 0)
+    //    return true;
+    //return false;
+    return true;
 }
 
 void asio_https::connect(const boost::system::error_code err)
