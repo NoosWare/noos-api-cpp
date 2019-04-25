@@ -34,17 +34,6 @@ object::object(const json::const_iterator & object_it)
     }
 }
 
-json::object_t object::to_json() const
-{
-    json::object_t value_up = {{"x", top_left_x}, 
-                               {"y", top_left_y}};
-    json::object_t value_dowm = {{"x", bottom_right_x}, 
-                                 {"y", bottom_right_y}};
-    json::object_t both = {{"up_left_point", value_up}, 
-                           {"down_right_point", value_dowm}};
-    return both;
-}
-
 bool object::operator==(const object & rhs) const
 {
     return ( this->top_left_x == rhs.top_left_x &&

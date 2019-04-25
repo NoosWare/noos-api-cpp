@@ -31,10 +31,6 @@ struct object
     /// @brief Constructor using `json for modern C++`
     object(const json::const_iterator & object_it);
    
-    /// @brief Converts the data to a json format
-    /// @return json object
-    json::object_t to_json() const;
-
     /// @brief Equality operator
     bool operator==(const object & rhs) const;
 

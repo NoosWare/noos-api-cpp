@@ -15,9 +15,9 @@
 # After succesfull compilation, run as su/sudo: `make install`
 # 
 PROJECT(noos)
-set (NOOS_VERSION_MAJOR 0)
-set (NOOS_VERSION_MINOR 9)
-set (NOOS_VERSION_PATCH 4)
+set (NOOS_VERSION_MAJOR 1)
+set (NOOS_VERSION_MINOR 0)
+set (NOOS_VERSION_PATCH 0)
 set (NOOS_VERSION_STRING ${NOOS_VERSION_MAJOR}.${NOOS_VERSION_MINOR}.${NOOS_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 

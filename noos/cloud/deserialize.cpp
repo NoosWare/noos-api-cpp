@@ -399,6 +399,7 @@ std::vector<noos::object::object>
     nlohmann::json json_f;
     if (misc::check_json(json_f, json)) {
         if (misc::check_error(json_f)) {
+            std::cout << json_f.dump(4) << std::endl;
             auto it_obj = json_f.find("objects");
             for (auto it = it_obj->begin(); it != it_obj->end(); it++ ) {
                 obj.push_back(noos::object::object(it));
