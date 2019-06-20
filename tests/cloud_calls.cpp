@@ -558,6 +558,11 @@ TEST_CASE("Test navigation services", "[navigation]")
         REQUIRE(icp.uri == "slam");
         REQUIRE(icp.is_single_callable() == true);
 
+        auto icp_obs = icp_slam(laser);
+        REQUIRE(icp_obs.uri == "slam");
+        REQUIRE(icp_obs.is_single_callable() == true);
+
+
         auto j1 = R"(
                     {
                         "pose": {
@@ -593,6 +598,12 @@ TEST_CASE("Test navigation services", "[navigation]")
         auto rbpf = rbpf_slam("new_map", "rbpf.ini", laser, increase_od);
         REQUIRE(rbpf.uri == "slam");
         REQUIRE(rbpf.is_single_callable() == true);
+
+        auto rbpf_obs = rbpf_slam(laser, increase_od);
+        REQUIRE(rbpf_obs.uri == "slam");
+        REQUIRE(rbpf_obs.is_single_callable() == true);
+
+
 
         auto j1 = R"(
                     {

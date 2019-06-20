@@ -19,14 +19,30 @@ std::map<slam_type, std::string>
 //Class icp_slam 
 icp_slam::icp_slam(const std::string map_name,
                    const std::string config_file_name,
-                   const noos::object::laser laser_data)
+                   const noos::object::laser laser_data,
+                   const noos::object::pose2d<float> init,
+                   const bool update)
+
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
     http_request::make_multipart_form();
     nlohmann::json json_doc = { {"map_name", map_name},
                                 {"config_file", config_file_name},
-                                {"laser", laser_data.to_json()}
+                                {"laser", laser_data.to_json()},
+                                {"init", init.to_json()},
+                                {"update", update}
+                              };
+    http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::close();
+}
+
+icp_slam::icp_slam(const noos::object::laser laser_data)
+: http_request(make_http_uri(uri)),
+  cloud_base(true)
+{
+    http_request::make_multipart_form();
+    nlohmann::json json_doc = { {"laser", laser_data.to_json()}
                               };
     http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
@@ -36,7 +52,9 @@ icp_slam::icp_slam(const std::string map_name,
 rbpf_slam::rbpf_slam(const std::string map_name,
                      const std::string config_file_name,
                      const noos::object::laser laser_data,
-                     const noos::object::odometry & odometry)
+                     const noos::object::odometry & odometry,
+                     const noos::object::pose2d<float> init,
+                     const bool update)
 : http_request(make_http_uri(uri)),
   cloud_base(true)
 {
@@ -44,6 +62,21 @@ rbpf_slam::rbpf_slam(const std::string map_name,
     nlohmann::json json_doc = { {"map_name", map_name},
                                 {"config_file", config_file_name},
                                 {"laser", laser_data.to_json()},
+                                {"odometry", odometry.to_json()},
+                                {"init", init.to_json()},
+                                {"update", update}
+                              };
+    http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::close();
+}
+
+rbpf_slam::rbpf_slam(const noos::object::laser laser_data,
+                     const noos::object::odometry & odometry)
+: http_request(make_http_uri(uri)),
+  cloud_base(true)
+{
+    http_request::make_multipart_form();
+    nlohmann::json json_doc = { {"laser", laser_data.to_json()},
                                 {"odometry", odometry.to_json()}
                               };
     http_request::add_content("json", json_doc.dump(-1), true);

@@ -74,40 +74,6 @@ struct point2d
     bool operator==(const noos::object::point2d<value_type> & rhs) const;
 };
 
-/**
- * @struct pose2d
- * @brief Encapsulate point of 2 dimensions (x, y) with an angle
- * @version 0.8.0
- * @date 18.10.2017
- */
-template <class value_type>
-struct pose2d
-{
-    /// Coordinate x
-	value_type x = 0;
-    /// Coordinate y
-    value_type y = 0;
-    /// Angle theta
-    value_type theta = 0;
-
-    /// @brief Default constructor
-    pose2d() = default;
-
-    /// @brief Constructor taking parameters x, y and theta
-    pose2d(value_type x_data,
-           value_type y_data,
-           value_type theta_data);
-
-    /// @brief Construct using library "json for modern c++"
-    pose2d(const json::const_iterator & position);
-   
-    /// @brief Converts the data to a json format
-    /// @return a JSON object
-    json::object_t to_json() const;
-   
-    /// @brief Equality operator
-    bool operator==(const noos::object::pose2d<value_type> & rhs) const;
-};
 #include "point.tpl"
 }
 }
