@@ -25,6 +25,7 @@ function(build_examples)
                       class.cpp
                       custom_error_handler.cpp
                       chatbot.cpp
+                      object_detection.cpp
                      )
         set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
         message(STATUS "${BoldGreen}Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}` ${ColourReset}")

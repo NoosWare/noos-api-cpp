@@ -186,6 +186,30 @@ struct orb_query
               const float threshold);
 };
 
+/**
+ * @struct object_detection
+ * @brief Service request to detect all the objects in a image
+ * @version 1.0.0
+ * @note data type passed back is `std::vector<noos::object::object>`
+ */
+struct object_detection 
+: public http_request, 
+  public cloud_base<std::vector<noos::object::object>>,
+  public vision_base
+{
+    using callback = std::function<void(data_type)>;
+    static const std::string uri;
+
+    /// @brief Constructor using an image
+    /// @param image is the input picture object @see noos::object::picture
+    /// @param threshold minimum threshold to accept an object (0.5 by default)
+    object_detection(noos::object::picture image,
+                     const float threshold = 0.5);
+
+    /// @brief Constructor without an image - part of a vision_batch
+    object_detection(const float threshold = 0.5);
+};
+
 }
 }
 #endif

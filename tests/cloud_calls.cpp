@@ -288,6 +288,49 @@ TEST_CASE("Test services vision detection", "[vision_detection]")
         REQUIRE(age.at(0).first == "20-30");
         REQUIRE(age.at(0).second == 10);
     }
+
+    SECTION ("Object detection") 
+    {
+        //Construct
+        auto pic = noos::object::picture("tests/data/object_classes_picture_10.jpg");
+        auto object_detect = object_detection(pic); 
+        REQUIRE(object_detect.uri == "object_detection"); 
+        REQUIRE(object_detect.is_single_callable() == true);
+
+        auto object_detect_batch = object_detection();
+        REQUIRE(object_detect_batch.uri == "object_detection");
+        REQUIRE(object_detect_batch.is_single_callable() == false);
+
+        //Deserialize
+        auto j1 = R"(
+                  {
+                    "objects": [
+                                {
+                                    "confidence": 0.9681121706962585,
+                                    "down_right_point": {
+                                        "x": 467,
+                                        "y": 489
+                                    },
+                                    "label": "chair",
+                                    "up_left_point": {
+                                        "x": 178,
+                                        "y": 110
+                                    }
+                                }],
+                     "error" : ""
+                   })"_json;
+        std::string j1_string = j1.dump(-1);
+        std::vector<noos::object::object> objects;
+        objects = deserialize<object_detection,
+                            typename object_detection::data_type>()(j1_string);
+        REQUIRE(objects.at(0).top_left_x == 178);
+        REQUIRE(objects.at(0).top_left_y == 110);   
+        REQUIRE(objects.at(0).bottom_right_x == 467);
+        REQUIRE(objects.at(0).bottom_right_y == 489);
+        REQUIRE(objects.at(0).confidence == 0.9681121706962585 );
+        REQUIRE(objects.at(0).label == "chair");
+
+    }
 }
 
 /**
@@ -515,6 +558,11 @@ TEST_CASE("Test navigation services", "[navigation]")
         REQUIRE(icp.uri == "slam");
         REQUIRE(icp.is_single_callable() == true);
 
+        auto icp_obs = icp_slam(laser);
+        REQUIRE(icp_obs.uri == "slam");
+        REQUIRE(icp_obs.is_single_callable() == true);
+
+
         auto j1 = R"(
                     {
                         "pose": {
@@ -550,6 +598,12 @@ TEST_CASE("Test navigation services", "[navigation]")
         auto rbpf = rbpf_slam("new_map", "rbpf.ini", laser, increase_od);
         REQUIRE(rbpf.uri == "slam");
         REQUIRE(rbpf.is_single_callable() == true);
+
+        auto rbpf_obs = rbpf_slam(laser, increase_od);
+        REQUIRE(rbpf_obs.uri == "slam");
+        REQUIRE(rbpf_obs.is_single_callable() == true);
+
+
 
         auto j1 = R"(
                     {

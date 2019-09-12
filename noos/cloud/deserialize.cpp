@@ -11,6 +11,7 @@ struct orb_add_model;
 struct orb_del_model;
 struct orb_query;
 struct object_recognition;
+struct object_detection;
 struct qr_recognition;
 struct age_detection;
 struct gender_detection;
@@ -44,7 +45,7 @@ std::vector<std::string>
     return services;
 }
 
-// face_detection and faces
+// face_detection
 template <>
 std::vector<noos::object::face> 
     deserialize<face_detection,
@@ -385,6 +386,27 @@ std::string deserialize<chatbot,
         }
     }
     return json_f["error"];
+}
+
+// object_detection
+template <>
+std::vector<noos::object::object> 
+    deserialize<object_detection,
+                std::vector<noos::object::object>
+               >::operator()(std::string json)
+{
+    std::vector<noos::object::object> obj;
+    nlohmann::json json_f;
+    if (misc::check_json(json_f, json)) {
+        if (misc::check_error(json_f)) {
+            std::cout << json_f.dump(4) << std::endl;
+            auto it_obj = json_f.find("objects");
+            for (auto it = it_obj->begin(); it != it_obj->end(); it++ ) {
+                obj.push_back(noos::object::object(it));
+            }
+        }
+    }
+    return obj;
 }
 }
 }

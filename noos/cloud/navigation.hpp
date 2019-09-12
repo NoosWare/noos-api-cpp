@@ -27,8 +27,8 @@ enum class slam_type
 /**
  * @struct icp_slam
  * @brief Send laser/pointcloud data to create a map
- * @version 0.8.0
- * @date 30.08.2017
+ * @version 1.0.1
+ * @date 18.06.2019
  * @note data type passed back is `noos::object::pose<float>`
  */
 struct icp_slam 
@@ -48,10 +48,24 @@ struct icp_slam
      * @param config_file_name is the name of the config file
      *        which is going to be loaded in the platform
      * @see noos::object::laser
+     * @param init is the initial pose of the robot in the map.
+     * @see noos::object::pose2d
+     * @param update to indicate if the new laser readings 
+     *        will update the map or not. True by default.
      */
     icp_slam(const std::string map_name,
              const std::string config_file_name,
-             const noos::object::laser laser_data);
+             const noos::object::laser laser_data,
+             const noos::object::pose2d<float> init = noos::object::pose2d<float>(),
+             const bool update = true);
+
+    /**
+     * @brief Constructor using the following parameters:
+     * @param laser_data is the laser reading
+     * @see noos::object::laser
+     */
+    icp_slam(const noos::object::laser laser_data);
+
 
     // TODO:overload constructor with 3d data(pointcloud)
 };
@@ -59,7 +73,7 @@ struct icp_slam
 /**
  * @struct rbpf_slam
  * @brief Send laser/pointcloud data and odometry to create a map
- * @version 0.8.0
+ * @version 1.0.1
  * @date 16.09.2017
  * @note data type passed back is `noos::object::pose<float>`
  */
@@ -83,10 +97,27 @@ struct rbpf_slam
      *        previous and the next laser reading.
      * @see noos::object::laser  
      * @see noos::object::odometry
+     * @param init is the initial pose of the robot in the map.
+     * @see noos::object::pose2d
+     * @param update to indicate if the new laser readings 
+     *        will update the map or not. True by default.
      */
     rbpf_slam(const std::string map_name,
               const std::string config_file_name,
               const noos::object::laser laser_data,
+              const noos::object::odometry & odometry,
+              const noos::object::pose2d<float> init = noos::object::pose2d<float>(),
+              const bool update = true);
+
+    /**
+     * @brief Constructor using the following parameters:
+     * @param laser_data is the laser reading
+     * @param odometry is the increment of the odometry between the 
+     *        previous and the next laser reading.
+     * @see noos::object::laser  
+     * @see noos::object::odometry
+     */
+    rbpf_slam(const noos::object::laser laser_data,
               const noos::object::odometry & odometry);
 
     // TODO:overload constructor with 3d data(pointcloud)
