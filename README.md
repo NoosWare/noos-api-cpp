@@ -1,6 +1,6 @@
 <img src="https://github.com/NoosWare/List_repositories/blob/master/images/Noos.png" width="200" height="120" />
 
-# NOOS API [1.0.0]
+# NOOS API [1.0.1]
 -----------------------
 
 ## Contents
